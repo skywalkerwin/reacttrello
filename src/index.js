@@ -1,4 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import Board from "./Board";
 
-ReactDOM.render("hello World", document.getElementById("root"));
+ReactDOM.render(<Board />, document.getElementById("root"));
