@@ -5,6 +5,13 @@ import testBoard from "./testdata";
 import Cards from "./Cards";
 import Tasks from "./Tasks";
 
+const boardStyle = {
+  display: "flex",
+  flexDirection: "row",
+  padding: "10px",
+  border: "1px solid grey"
+};
+
 export default function Board() {
   var res = testBoard.tasks.filter(task => task.id > 0).map(a => a.content);
   console.log(res);
@@ -19,11 +26,10 @@ export default function Board() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div>
+      <div style={boardStyle}>
         <Cards />
         <Cards />
         <Cards />
-        hello world
       </div>
     </DndProvider>
   );
