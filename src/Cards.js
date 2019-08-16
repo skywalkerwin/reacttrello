@@ -8,19 +8,28 @@ const cardStyle = {
   display: "flex",
   width: "30%",
   flexDirection: "column",
-  padding: "10%",
+  padding: "5px",
   border: "2px solid blue",
   margin: "10px"
 };
 
-export default class Cards extends Component {
-  render() {
-    return (
-      <div style={cardStyle}>
-        <Tasks>Task1</Tasks>
-        <Tasks>Task2</Tasks>
-        <Tasks>Task3</Tasks>
-      </div>
-    );
-  }
+export default function Cards() {
+  const [{ isDragging }, drag] = useDrag({
+    item: { type: ItemTypes.CARD },
+    collect: monitor => ({
+      isDragging: !!monitor.isDragging()
+    })
+  });
+
+  console.log(this.props);
+  return (
+    <div ref={drag} style={cardStyle}>
+      <h2 style={{ display: "flex", justifyContent: "center", margin: "4px" }}>
+        {this.props.card}
+      </h2>
+      <Tasks>Task1</Tasks>
+      <Tasks>Task2</Tasks>
+      <Tasks>Task3</Tasks>
+    </div>
+  );
 }
