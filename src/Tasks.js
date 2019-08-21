@@ -11,6 +11,18 @@ const taskStyle = {
   margin: "5px"
 };
 
-export default function Tasks() {
-  return <div style={taskStyle}> Task </div>;
+export default function Tasks(props) {
+  const [{ isDragging }, drag] = useDrag({
+    item: { type: ItemTypes.TASK },
+    collect: monitor => ({
+      isDragging: !!monitor.isDragging()
+    })
+  });
+
+  return (
+    <div ref={drag} style={taskStyle}>
+      {" "}
+      Task{" "}
+    </div>
+  );
 }

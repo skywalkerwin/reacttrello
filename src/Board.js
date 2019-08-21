@@ -17,13 +17,17 @@ const boardStyle = {
 };
 
 export default function Board() {
-  var res = testBoard.tasks.filter(task => task.id > 0).map(a => a.content);
-  console.log(res);
+  // var res = testBoard.tasks.filter(task => task.id > 0).map(a => a.content);
+  // console.log(res);
 
-  const drop = useDrop({ accept: ItemTypes.CARD });
+  // const drop = useDrop({ accept: ItemTypes.CARD });
 
   function renderCards() {
-    return <Cards />;
+    var cardList = [];
+    testBoard.cards.forEach(c => {
+      cardList.push(<Cards card={c} />);
+    });
+    return cardList;
   }
 
   function renderTasks() {
@@ -32,14 +36,10 @@ export default function Board() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      {/* <h1 style={{ display: "flex", justifyContent: "center" }}>
+      <h1 style={{ display: "flex", justifyContent: "center" }}>
         TRELLO CLONE
-      </h1> */}
-      <div ref={drop} style={boardStyle}>
-        <Cards card={testBoard.cards[0].title} />
-        <Cards card={testBoard.cards[1].title} />
-        <Cards card={testBoard.cards[2].title} />
-      </div>
+      </h1>
+      <div style={boardStyle}>{renderCards()}</div>
     </DndProvider>
   );
 }

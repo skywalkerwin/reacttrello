@@ -13,19 +13,20 @@ const cardStyle = {
   margin: "10px"
 };
 
-export default function Cards() {
+function renderTasks() {}
+
+export default function Cards(props) {
   const [{ isDragging }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
     collect: monitor => ({
       isDragging: !!monitor.isDragging()
     })
   });
-
-  console.log(this.props);
+  console.log(props.card);
   return (
     <div ref={drag} style={cardStyle}>
       <h2 style={{ display: "flex", justifyContent: "center", margin: "4px" }}>
-        {this.props.card}
+        {props.card.title}
       </h2>
       <Tasks>Task1</Tasks>
       <Tasks>Task2</Tasks>
