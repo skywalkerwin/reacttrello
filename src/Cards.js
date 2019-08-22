@@ -31,7 +31,7 @@ export default function Cards(props) {
       isDragging: !!monitor.isDragging()
     })
   });
-  console.log(props.card);
+  isDragging ? console.log("ISDRAGGING") : console.log("NOT DRAGGING");
   return (
     <div ref={drag} style={cardStyle}>
       <h2 style={{ display: "flex", justifyContent: "center", margin: "4px" }}>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { DndProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { useDrop } from "react-dnd";
@@ -6,7 +6,17 @@ import testBoard from "./testdata";
 import { ItemTypes } from "./Constants";
 import Cards from "./Cards";
 import Tasks from "./Tasks";
-
+function getStyle(backgroundColor) {
+  return {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    height: "25rem",
+    padding: "5px",
+    border: "1px solid orange",
+    backgroundColor
+  };
+}
 const boardStyle = {
   display: "flex",
   flexDirection: "row",
@@ -17,9 +27,24 @@ const boardStyle = {
 };
 
 export default function Board() {
-  // var res = testBoard.tasks.filter(task => task.id > 0).map(a => a.content);
-  // console.log(res);
-
+  const [hasDropped, setHasDropped] = useState(false);
+  const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
+  const [{ isOver, isOverCurrent }, drop] = useDrop({
+    accept: ItemTypes.CARD,
+    drop(item, monitor) {
+      const didDrop = monitor.didDrop();
+      if (didDrop) {
+        console.log("HASDROPPED");
+        return;
+      }
+      setHasDropped(true);
+      setHasDroppedOnChild(didDrop);
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+      isOverCurrent: monitor.isOver({ shallow: true })
+    })
+  });
   // const drop = useDrop({ accept: ItemTypes.CARD });
 
   function renderCards() {
@@ -33,13 +58,21 @@ export default function Board() {
   function renderTasks() {
     return <Tasks />;
   }
-
+  let backgroundColor = "rgba(255,255,255,.5)";
+  if (isOverCurrent || isOver) {
+    backgroundColor = "lightgreen";
+  }
+  if (hasDropped == true) {
+    console.log("HASDROPPED");
+  }
   return (
     <DndProvider backend={HTML5Backend}>
       <h1 style={{ display: "flex", justifyContent: "center" }}>
         TRELLO CLONE
       </h1>
-      <div style={boardStyle}>{renderCards()}</div>
+      <div ref={drop} style={getStyle(backgroundColor)}>
+        {renderCards()}
+      </div>
     </DndProvider>
   );
 }
