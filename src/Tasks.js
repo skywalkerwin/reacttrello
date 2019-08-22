@@ -21,8 +21,7 @@ export default function Tasks(props) {
 
   return (
     <div ref={drag} style={taskStyle}>
-      {" "}
-      Task{" "}
+      {props.task.content}
     </div>
   );
 }
