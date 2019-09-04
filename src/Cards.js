@@ -6,6 +6,8 @@ import testBoard from "./testdata";
 
 //<style>card {display: flex;}</style>;
 const cardStyle = {
+  backgroundColor: "white",
+  cursor: "move",
   display: "flex",
   width: "30%",
   flexDirection: "column",
@@ -32,8 +34,9 @@ export default function Cards(props) {
     })
   });
   isDragging ? console.log("ISDRAGGING") : console.log("NOT DRAGGING");
+  const opacity = isDragging ? 0 : 1;
   return (
-    <div ref={drag} style={cardStyle}>
+    <div ref={drag} style={{ ...cardStyle, opacity }}>
       <h2 style={{ display: "flex", justifyContent: "center", margin: "4px" }}>
         {props.card.title}
       </h2>

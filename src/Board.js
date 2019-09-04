@@ -34,7 +34,7 @@ export default function Board() {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
-        console.log("HASDROPPED");
+        console.log("DIDDROPPED");
         return;
       }
       setHasDropped(true);
@@ -64,6 +64,7 @@ export default function Board() {
   }
   if (hasDropped == true) {
     console.log("HASDROPPED");
+    console.log(drop[0]);
   }
   return (
     <DndProvider backend={HTML5Backend}>
