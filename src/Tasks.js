@@ -18,9 +18,13 @@ export default function Tasks(props) {
       isDragging: !!monitor.isDragging()
     })
   });
+  isDragging
+    ? console.log("TASK IS DRAGGING")
+    : console.log("TASK NOT DRAGGING");
+  const opacity = isDragging ? 0 : 1;
 
   return (
-    <div ref={drag} style={taskStyle}>
+    <div ref={drag} style={{ ...taskStyle, opacity }}>
       {props.task.content}
     </div>
   );

@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, { useState, Component } from "react";
 import { ItemTypes } from "./Constants";
-import { useDrag } from "react-dnd";
+import { useDrag, useDrop } from "react-dnd";
 import Tasks from "./Tasks";
 import testBoard from "./testdata";
 
@@ -33,10 +33,44 @@ export default function Cards(props) {
       isDragging: !!monitor.isDragging()
     })
   });
-  isDragging ? console.log("ISDRAGGING") : console.log("NOT DRAGGING");
+  const [hasDropped, setHasDropped] = useState(false);
+  const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
+  const [{ isOver, isOverCurrent }, drop] = useDrop({
+    accept: ItemTypes.TASK,
+    drop(item, monitor) {
+      const didDrop = monitor.didDrop();
+      if (didDrop) {
+        return;
+      }
+      console.log(item);
+      setHasDropped(true);
+      setHasDroppedOnChild(didDrop);
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+      isOverCurrent: monitor.isOver({ shallow: true })
+    })
+  });
+
+  let backgroundColor = "rgba(255,255,255,.5)";
+  if (isOverCurrent || isOver) {
+    backgroundColor = "lightblue";
+  }
+  isOver || isOverCurrent
+    ? console.log("TASK OVER")
+    : console.log("TASK NOT OVER");
+  isDragging
+    ? console.log("CARD IS DRAGGING")
+    : console.log("CARD NOT DRAGGING");
+  console.log("hasDropped:....");
+  console.log(hasDropped);
   const opacity = isDragging ? 0 : 1;
   return (
-    <div ref={drag} style={{ ...cardStyle, opacity }}>
+    <div
+      // ref={isDragging ? drag : drop}
+      ref={drag}
+      style={{ ...cardStyle, opacity, backgroundColor }}
+    >
       <h2 style={{ display: "flex", justifyContent: "center", margin: "4px" }}>
         {props.card.title}
       </h2>
