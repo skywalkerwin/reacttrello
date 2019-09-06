@@ -33,6 +33,7 @@ export default function Cards(props) {
       isDragging: !!monitor.isDragging()
     })
   });
+
   const [hasDropped, setHasDropped] = useState(false);
   const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
   const [{ isOver, isOverCurrent }, drop] = useDrop({
@@ -62,12 +63,16 @@ export default function Cards(props) {
   isDragging
     ? console.log("CARD IS DRAGGING")
     : console.log("CARD NOT DRAGGING");
-  console.log("hasDropped:....");
-  console.log(hasDropped);
+
   const opacity = isDragging ? 0 : 1;
+  const rref = isDragging ? drag : drop;
+  console.log("CARD DETAILS:...");
+  console.log(drag);
+  console.log(drop);
   return (
     <div
       // ref={isDragging ? drag : drop}
+      // ref={{ ...drag, drop }}
       ref={drag}
       style={{ ...cardStyle, opacity, backgroundColor }}
     >

@@ -32,13 +32,14 @@ export default function Board() {
   const [{ isOver, isOverCurrent }, drop] = useDrop({
     accept: ItemTypes.CARD,
     drop(item, monitor) {
-      const didDrop = monitor.didDrop();
-      if (didDrop) {
-        return;
-      }
+      // const didDrop = monitor.didDrop();
+      // if (didDrop) {
+      //   console.log("did drop");
+      //   return;
+      // }
       console.log(item);
       setHasDropped(true);
-      setHasDroppedOnChild(didDrop);
+      // setHasDroppedOnChild(didDrop);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
