@@ -32,21 +32,19 @@ export default function Board() {
   const [{ isOver, isOverCurrent }, drop] = useDrop({
     accept: ItemTypes.CARD,
     drop(item, monitor) {
-      // const didDrop = monitor.didDrop();
-      // if (didDrop) {
-      //   console.log("did drop");
-      //   return;
-      // }
-      console.log(item);
+      const didDrop = monitor.didDrop();
+      if (didDrop) {
+        console.log("did drop");
+        return;
+      }
       setHasDropped(true);
-      // setHasDroppedOnChild(didDrop);
+      setHasDroppedOnChild(didDrop);
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
       isOverCurrent: monitor.isOver({ shallow: true })
     })
   });
-  // const drop = useDrop({ accept: ItemTypes.CARD });
 
   function renderCards() {
     var cardList = [];
@@ -63,10 +61,7 @@ export default function Board() {
   if (isOverCurrent || isOver) {
     backgroundColor = "lightgreen";
   }
-  if (hasDropped == true) {
-    console.log("HASDROPPED");
-    //console.log(drop[0][0]);
-  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <h1 style={{ display: "flex", justifyContent: "center" }}>

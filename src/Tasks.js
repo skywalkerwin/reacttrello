@@ -12,20 +12,16 @@ const taskStyle = {
 };
 
 export default function Tasks(props) {
-  const [{ isDragging }, drag] = useDrag({
+  const [{ isDragging, xy }, drag] = useDrag({
     item: { type: ItemTypes.TASK },
     collect: monitor => ({
-      isDragging: !!monitor.isDragging()
+      isDragging: !!monitor.isDragging(),
+      xy: monitor.getClientOffset()
     })
   });
-  // isDragging
-  //   ? console.log("TASK IS DRAGGING")
-  //   : console.log("TASK NOT DRAGGING");
   const opacity = isDragging ? 0 : 1;
-
-  return (
-    <div ref={drag} style={{ ...taskStyle, opacity }}>
-      {props.task.content}
-    </div>
+  // console.log(xy);
+  return drag(
+    <div style={{ ...taskStyle, opacity }}>{props.task.content}</div>
   );
 }
