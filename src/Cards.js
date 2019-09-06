@@ -27,10 +27,11 @@ function renderTasks(cid) {
 }
 
 export default function Cards(props) {
-  const [{ isDragging }, drag] = useDrag({
+  const [{ isDragging, getitem }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
     collect: monitor => ({
-      isDragging: !!monitor.isDragging()
+      isDragging: !!monitor.isDragging(),
+      getitem: monitor.getItem()
     })
   });
 
@@ -43,7 +44,6 @@ export default function Cards(props) {
       if (didDrop) {
         return;
       }
-      console.log(item);
       setHasDropped(true);
       setHasDroppedOnChild(didDrop);
     },
@@ -57,29 +57,25 @@ export default function Cards(props) {
   if (isOverCurrent || isOver) {
     backgroundColor = "lightblue";
   }
-  isOver || isOverCurrent
-    ? console.log("TASK OVER")
-    : console.log("TASK NOT OVER");
-  isDragging
-    ? console.log("CARD IS DRAGGING")
-    : console.log("CARD NOT DRAGGING");
-
   const opacity = isDragging ? 0 : 1;
   const rref = isDragging ? drag : drop;
-  console.log("CARD DETAILS:...");
-  console.log(drag);
-  console.log(drop);
-  return (
-    <div
-      // ref={isDragging ? drag : drop}
-      // ref={{ ...drag, drop }}
-      ref={drag}
-      style={{ ...cardStyle, opacity, backgroundColor }}
-    >
-      <h2 style={{ display: "flex", justifyContent: "center", margin: "4px" }}>
-        {props.card.title}
-      </h2>
-      {renderTasks(props.card.id)}
-    </div>
+
+  return drag(
+    drop(
+      <div
+        // ref={isDragging ? drag : drop}
+        // ref={{ ...drag, drop }}
+        // ref={drag}
+        // ref={drop}
+        style={{ ...cardStyle, opacity, backgroundColor }}
+      >
+        <h2
+          style={{ display: "flex", justifyContent: "center", margin: "4px" }}
+        >
+          {props.card.title}
+        </h2>
+        {renderTasks(props.card.id)}
+      </div>
+    )
   );
 }
