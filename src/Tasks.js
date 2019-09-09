@@ -20,7 +20,6 @@ export default function Tasks(props) {
     })
   });
   const opacity = isDragging ? 0 : 1;
-  // console.log(xy);
   return drag(
     <div style={{ ...taskStyle, opacity }}>{props.task.content}</div>
   );

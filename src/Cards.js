@@ -27,6 +27,7 @@ function renderTasks(cid) {
 }
 
 export default function Cards(props) {
+  const cid = props.card.id;
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
     collect: monitor => ({
@@ -38,21 +39,23 @@ export default function Cards(props) {
 
   const [hasDropped, setHasDropped] = useState(false);
   const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
-  const [{ isOver, isOverCurrent, xy }, drop] = useDrop({
+  const [{ isOver, isOverCurrent, xy, res }, drop] = useDrop({
     accept: ItemTypes.TASK,
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
-        console.log("DROPPED");
         return;
       }
       setHasDropped(true);
       setHasDroppedOnChild(didDrop);
+      console.log("RETURN ITEM");
+      console.log(testBoard.tasks.filter(t => t.cid == cid));
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
       isOverCurrent: monitor.isOver({ shallow: true }),
-      xy: monitor.getSourceClientOffset()
+      xy: monitor.getSourceClientOffset(),
+      res: monitor.getDropResult()
     })
   });
 
@@ -63,7 +66,6 @@ export default function Cards(props) {
   const opacity = isDragging ? 0 : 1;
   // console.log("card drop xy");
   // console.log(xy);
-  console.log(didDrop);
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
