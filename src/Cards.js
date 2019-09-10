@@ -43,13 +43,17 @@ export default function Cards(props) {
     accept: ItemTypes.TASK,
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
+      console.log(didDrop);
       if (didDrop) {
+        console.log("DID DROP");
         return;
       }
       setHasDropped(true);
       setHasDroppedOnChild(didDrop);
-      console.log("RETURN ITEM");
+      console.log("Card's Tasks");
       console.log(testBoard.tasks.filter(t => t.cid == cid));
+      // return testBoard.tasks.filter(t => t.cid == cid);
+      return { cid: cid };
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -64,8 +68,6 @@ export default function Cards(props) {
     backgroundColor = "lightblue";
   }
   const opacity = isDragging ? 0 : 1;
-  // console.log("card drop xy");
-  // console.log(xy);
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
