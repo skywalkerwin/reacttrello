@@ -6,6 +6,7 @@ import testBoard from "./testdata";
 
 //<style>card {display: flex;}</style>;
 const cardStyle = {
+  position: "relative",
   backgroundColor: "white",
   cursor: "move",
   display: "flex",
@@ -14,6 +15,14 @@ const cardStyle = {
   padding: "5px",
   border: "2px solid blue",
   margin: "10px"
+};
+
+const editCard = {
+  display: "flex",
+  position: "relative",
+  height: "20px",
+  // bottom: "20%",
+  left: "88%"
 };
 
 function renderTasks(cid) {
@@ -71,6 +80,15 @@ export default function Cards(props) {
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
+        <a style={editCard}>
+          <button
+            // style={buttonStyle}
+            type="button"
+            class="btn btn-default btn-sm"
+          >
+            Edit
+          </button>
+        </a>
         <h2
           style={{ display: "flex", justifyContent: "center", margin: "4px" }}
         >

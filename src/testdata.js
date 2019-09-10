@@ -6,7 +6,12 @@ const testBoard = {
     { id: 1, cid: 2, content: "CARD 21" },
     { id: 2, cid: 2, content: "CARD 22" },
     { id: 3, cid: 2, content: "CARD 23" },
-    { id: 1, cid: 3, content: "fdsfsdgaadfnt" },
+    {
+      id: 1,
+      cid: 3,
+      content:
+        "fdsfsdgaadfnt fdsfsdgaadfnt fdsfsdfdsafasdfadsffaadfnt fdsfsdgaadfnt fdsfsdgaadfnt fdsfsdgaadfnt fdsfsdgaadfnt fdsfsdgaadfnt "
+    },
     { id: 2, cid: 3, content: "gdsgadft" },
     { id: 3, cid: 3, content: "dsadsada" }
   ],
