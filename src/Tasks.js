@@ -5,7 +5,7 @@ import { useDrag } from "react-dnd";
 const taskStyle = {
   display: "flex",
   padding: "2px",
-  border: "2px solid green",
+  border: "3px solid green",
   margin: "5px"
 };
 const editTask = {
@@ -26,9 +26,10 @@ const buttonStyle = {
 
 const taskContent = {
   position: "relative",
-  align: "left",
-  right: "10%",
-  margin: "1px"
+  textAlign: "left",
+  right: "20px",
+  margin: "1px",
+  width: "85%"
 };
 export default function Tasks(props) {
   const [{ isDragging, xy }, drag] = useDrag({
@@ -48,9 +49,10 @@ export default function Tasks(props) {
       xy: monitor.getClientOffset()
     })
   });
+  let backgroundColor = "rgba(255,255,255,.9)";
   const opacity = isDragging ? 0 : 1;
   return drag(
-    <div style={{ ...taskStyle, opacity }}>
+    <div style={{ ...taskStyle, opacity, backgroundColor }}>
       <p style={editTask}>
         <button
           // style={buttonStyle}

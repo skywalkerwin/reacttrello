@@ -13,7 +13,7 @@ function getStyle(backgroundColor) {
     justifyContent: "center",
     height: "25rem",
     padding: "5px",
-    border: "1px solid orange",
+    border: "3px solid orange",
     backgroundColor
   };
 }
@@ -51,13 +51,27 @@ export default function Board() {
     testBoard.cards.forEach(c => {
       cardList.push(<Cards card={c} />);
     });
+    cardList.push(
+      <button
+        style={{
+          margin: "10px",
+          padding: "5px",
+          width: "20%",
+          height: "10%",
+          textAlign: "left"
+        }}
+      >
+        + Add List
+      </button>
+    );
     return cardList;
   }
 
   function renderTasks() {
     return <Tasks />;
   }
-  let backgroundColor = "rgba(255,255,255,.5)";
+  // let backgroundColor = "rgba(255,255,255,.5)";
+  let backgroundColor = "rgba(255,255,150,.5)";
   if (isOverCurrent || isOver) {
     backgroundColor = "lightgreen";
   }

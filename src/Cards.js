@@ -13,7 +13,7 @@ const cardStyle = {
   width: "30%",
   flexDirection: "column",
   padding: "5px",
-  border: "2px solid blue",
+  border: "4px solid blue",
   margin: "10px"
 };
 
@@ -40,6 +40,13 @@ function renderTasks(cid) {
   ctasks.forEach(t => {
     taskList.push(<Tasks task={t} />);
   });
+  taskList.push(
+    <input
+      type="button"
+      value="+ Add Task"
+      style={{ margin: "5px", textAlign: "left" }}
+    ></input>
+  );
   return taskList;
 }
 
@@ -80,7 +87,7 @@ export default function Cards(props) {
     })
   });
 
-  let backgroundColor = "rgba(255,255,255,.5)";
+  let backgroundColor = "rgba(200,200,230,1)";
   if (isOverCurrent || isOver) {
     backgroundColor = "lightblue";
   }
