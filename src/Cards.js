@@ -80,7 +80,7 @@ export default function Cards(props) {
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
-        <a style={editCard}>
+        {/* <a style={editCard}>
           <button
             // style={buttonStyle}
             type="button"
@@ -88,7 +88,7 @@ export default function Cards(props) {
           >
             Edit
           </button>
-        </a>
+        </a> */}
         <h2
           style={{ display: "flex", justifyContent: "center", margin: "4px" }}
         >
