@@ -17,12 +17,20 @@ const cardStyle = {
   margin: "10px"
 };
 
+const buttonStyle = {
+  height: "15px",
+  width: "10%",
+  border: "5px",
+  padding: "1px",
+  margin: "3px"
+};
+
 const editCard = {
-  display: "flex",
-  position: "relative",
-  height: "20px",
+  // position: "relative",
+  // height: "20px",
   // bottom: "20%",
-  left: "88%"
+  // left: "88%"
+  margin: "1px"
 };
 
 function renderTasks(cid) {
@@ -80,7 +88,8 @@ export default function Cards(props) {
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
-        {/* <a style={editCard}>
+        <p style={editCard}>
+          {/* <a> */}
           <button
             // style={buttonStyle}
             type="button"
@@ -88,9 +97,15 @@ export default function Cards(props) {
           >
             Edit
           </button>
-        </a> */}
+        </p>
         <h2
-          style={{ display: "flex", justifyContent: "center", margin: "4px" }}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            margin: "1px",
+            position: "relative",
+            bottom: "3%"
+          }}
         >
           {props.card.title}
         </h2>
