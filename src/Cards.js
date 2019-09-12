@@ -16,7 +16,7 @@ const cardStyle = {
   flexDirection: "column",
   padding: "5px",
   border: "4px solid blue",
-  margin: "10px"
+  margin: "8px"
 };
 
 const buttonStyle = {
@@ -28,11 +28,11 @@ const buttonStyle = {
 };
 
 const editCard = {
-  // position: "relative",
+  position: "relative",
   // height: "20px",
   // bottom: "20%",
   // left: "88%"
-  margin: "1px"
+  margin: "6px"
 };
 
 function renderTasks(cid) {
@@ -89,9 +89,10 @@ export default function Cards(props) {
     })
   });
 
-  let backgroundColor = "rgba(200,200,230,1)";
+  let backgroundColor = "rgba(200,200,255,1)";
   if (isOverCurrent || isOver) {
-    backgroundColor = "lightblue";
+    // backgroundColor = "lightblue";
+    backgroundColor = "lightgreen";
   }
   const opacity = isDragging ? 0 : 1;
   return drag(
@@ -109,11 +110,15 @@ export default function Cards(props) {
         </p>
         <h2
           style={{
+            position: "absolute",
+            top: "0",
+            left: "0",
+            right: "0",
+            bottom: "0",
             display: "flex",
             justifyContent: "center",
-            margin: "1px",
-            position: "relative",
-            bottom: "3%"
+            margin: "3px"
+            // bottom: "5%"
           }}
         >
           {props.card.title}

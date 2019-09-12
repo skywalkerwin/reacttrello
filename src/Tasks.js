@@ -41,7 +41,9 @@ export default function Tasks(props) {
     end(item, monitor) {
       console.log("DROPPED");
       console.log(monitor.didDrop());
-      console.log(monitor.getDropResult().cid);
+      if (monitor.getDropResult() != null) {
+        console.log(monitor.getDropResult().cid);
+      }
       console.log(props.task.cid);
     },
     collect: monitor => ({

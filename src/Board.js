@@ -29,7 +29,7 @@ const boardStyle = {
 export default function Board() {
   const [hasDropped, setHasDropped] = useState(false);
   const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
-  const [{ isOver, isOverCurrent }, drop] = useDrop({
+  const [{ isOver, isOverCurrent, obj }, drop] = useDrop({
     accept: [ItemTypes.CARD, ItemTypes.TASK],
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
@@ -42,7 +42,8 @@ export default function Board() {
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
-      isOverCurrent: monitor.isOver({ shallow: true })
+      isOverCurrent: monitor.isOver({ shallow: true }),
+      obj: monitor.getItemType()
     })
   });
 
@@ -73,7 +74,7 @@ export default function Board() {
   // let backgroundColor = "rgba(255,255,255,.5)";
   let backgroundColor = "rgba(255,255,150,.5)";
   if (isOverCurrent || isOver) {
-    backgroundColor = "lightgreen";
+    if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
   }
 
   return (
