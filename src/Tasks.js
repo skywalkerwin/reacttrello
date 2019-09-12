@@ -13,17 +13,17 @@ const editTask = {
   position: "relative",
   height: "20px",
   // top: "5%",
-  bottom: "12px",
-  left: "87%"
+  bottom: "15px",
+  left: "92%"
   // left: "10px"
 };
 
 const buttonStyle = {
   height: "15px",
-  width: "8%",
-  border: "4px",
+  width: "4%",
+  border: "2px",
   padding: "1px",
-  margin: "2px"
+  margin: "1px"
 };
 
 const taskContent = {
@@ -31,7 +31,7 @@ const taskContent = {
   textAlign: "left",
   right: "20px",
   margin: "1px",
-  width: "80%"
+  width: "88%"
 };
 export default function Tasks(props) {
   const [{ isDragging, xy }, drag] = useDrag({
@@ -61,7 +61,7 @@ export default function Tasks(props) {
         <button
           // style={buttonStyle}
           type="button"
-          class="btn btn-default btn-sm"
+          className="btn btn-default btn-sm"
         >
           Edit
         </button>

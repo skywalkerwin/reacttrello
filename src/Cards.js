@@ -50,7 +50,7 @@ function renderTasks(cid) {
       style={{
         margin: "5px",
         textAlign: "left",
-        width: "25%",
+        width: "85px",
         height: "25px"
       }}
     ></input>
@@ -123,7 +123,7 @@ export default function Cards(props) {
           <button
             // style={buttonStyle}
             type="button"
-            class="btn btn-default btn-sm"
+            className="btn btn-default btn-sm"
           >
             Edit
           </button>

@@ -6,6 +6,7 @@ import testBoard from "./testdata";
 import { ItemTypes } from "./Constants";
 import Cards from "./Cards";
 import Tasks from "./Tasks";
+import axios from "axios";
 function getStyle(backgroundColor) {
   return {
     display: "flex",
@@ -57,7 +58,7 @@ export default function Board() {
         style={{
           margin: "10px",
           padding: "5px",
-          width: "7%",
+          width: "85px",
           height: "10%",
           textAlign: "left"
         }}
@@ -77,10 +78,17 @@ export default function Board() {
     if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
   }
 
+  function apidata() {
+    axios.get("http://127.0.0.1:5000/cd").then(res => {
+      console.log(res);
+    });
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
+      {apidata()}
       <h1 style={{ display: "flex", justifyContent: "center" }}>
-        TRELLO CLONE
+        ADD TRASH CAN CARD TO DELETE ITEMS
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
         {renderCards()}
