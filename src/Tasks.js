@@ -12,16 +12,18 @@ const editTask = {
   display: "flex",
   position: "relative",
   height: "20px",
+  // top: "5%",
   bottom: "12px",
-  left: "85%"
+  left: "87%"
+  // left: "10px"
 };
 
 const buttonStyle = {
   height: "15px",
-  width: "10%",
-  border: "5px",
+  width: "8%",
+  border: "4px",
   padding: "1px",
-  margin: "3px"
+  margin: "2px"
 };
 
 const taskContent = {
@@ -29,7 +31,7 @@ const taskContent = {
   textAlign: "left",
   right: "20px",
   margin: "1px",
-  width: "85%"
+  width: "80%"
 };
 export default function Tasks(props) {
   const [{ isDragging, xy }, drag] = useDrag({

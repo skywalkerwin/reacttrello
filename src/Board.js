@@ -57,7 +57,7 @@ export default function Board() {
         style={{
           margin: "10px",
           padding: "5px",
-          width: "20%",
+          width: "7%",
           height: "10%",
           textAlign: "left"
         }}

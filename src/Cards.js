@@ -22,13 +22,14 @@ const cardStyle = {
 const buttonStyle = {
   height: "15px",
   width: "10%",
-  border: "5px",
+  border: "2px",
   padding: "1px",
-  margin: "3px"
+  margin: "2px"
 };
 
 const editCard = {
   position: "absolute",
+  // left: "1px",
   // height: "20px",
   // bottom: "20%",
   // left: "88%"
@@ -46,7 +47,12 @@ function renderTasks(cid) {
     <input
       type="button"
       value="+ Add Task"
-      style={{ margin: "5px", textAlign: "left" }}
+      style={{
+        margin: "5px",
+        textAlign: "left",
+        width: "25%",
+        height: "25px"
+      }}
     ></input>
   );
   return taskList;
@@ -119,7 +125,7 @@ export default function Cards(props) {
             type="button"
             class="btn btn-default btn-sm"
           >
-            Edit Name
+            Edit
           </button>
         </a>
         {renderTasks(props.card.id)}
