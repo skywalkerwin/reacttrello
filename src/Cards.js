@@ -6,11 +6,13 @@ import testBoard from "./testdata";
 
 //<style>card {display: flex;}</style>;
 const cardStyle = {
+  alignSelf: "flex-start",
   position: "relative",
   backgroundColor: "white",
   cursor: "move",
   display: "flex",
   width: "30%",
+  height: "auto",
   flexDirection: "column",
   padding: "5px",
   border: "4px solid blue",

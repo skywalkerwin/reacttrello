@@ -11,7 +11,7 @@ function getStyle(backgroundColor) {
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    height: "25rem",
+    height: "auto",
     padding: "5px",
     border: "3px solid orange",
     backgroundColor

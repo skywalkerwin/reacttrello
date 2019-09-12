@@ -12,8 +12,8 @@ const editTask = {
   display: "flex",
   position: "relative",
   height: "20px",
-  bottom: "20%",
-  left: "88%"
+  bottom: "12px",
+  left: "85%"
 };
 
 const buttonStyle = {
