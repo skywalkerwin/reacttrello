@@ -30,7 +30,7 @@ export default function Board() {
   const [hasDropped, setHasDropped] = useState(false);
   const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
   const [{ isOver, isOverCurrent }, drop] = useDrop({
-    accept: ItemTypes.CARD,
+    accept: [ItemTypes.CARD, ItemTypes.TASK],
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
