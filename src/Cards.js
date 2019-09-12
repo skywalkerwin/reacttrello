@@ -28,7 +28,7 @@ const buttonStyle = {
 };
 
 const editCard = {
-  position: "relative",
+  position: "absolute",
   // height: "20px",
   // bottom: "20%",
   // left: "88%"
@@ -98,19 +98,9 @@ export default function Cards(props) {
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
-        <p style={editCard}>
-          {/* <a> */}
-          <button
-            // style={buttonStyle}
-            type="button"
-            class="btn btn-default btn-sm"
-          >
-            Edit
-          </button>
-        </p>
         <h2
           style={{
-            position: "absolute",
+            // position: "absolute",
             top: "0",
             left: "0",
             right: "0",
@@ -123,6 +113,15 @@ export default function Cards(props) {
         >
           {props.card.title}
         </h2>
+        <a style={editCard}>
+          <button
+            // style={buttonStyle}
+            type="button"
+            class="btn btn-default btn-sm"
+          >
+            Edit Name
+          </button>
+        </a>
         {renderTasks(props.card.id)}
       </div>
     )
