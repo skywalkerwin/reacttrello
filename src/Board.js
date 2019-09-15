@@ -12,7 +12,7 @@ function getStyle(backgroundColor) {
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    height: "85vh",
+    height: "80vh",
     padding: "5px",
     border: "3px solid orange",
     backgroundColor
@@ -59,7 +59,7 @@ export default function Board() {
           margin: "10px",
           padding: "5px",
           width: "85px",
-          height: "10%",
+          height: "30px",
           textAlign: "left"
         }}
       >
@@ -72,19 +72,21 @@ export default function Board() {
   function renderTasks() {
     return <Tasks />;
   }
-  // let backgroundColor = "rgba(255,255,255,.5)";
   let backgroundColor = "rgba(255,255,150,.5)";
   if (isOverCurrent || isOver) {
     if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
   }
 
   function apidata() {
-    axios.get("http://127.0.0.1:5000/cd").then(res => {
+    axios.get("http://127.0.0.1:5000/boardData").then(res => {
       console.log(res);
       console.log(res.data);
-      const cardData = res.data["cards"];
-      console.log(cardData);
-      cardData.forEach(x => console.log(x[0], x[1]));
+      const cardres = res.data["cards"];
+      console.log(cardres);
+      cardres.forEach(x => console.log(x[0], x[1], x[2], x[3], x[4]));
+      // const cardData = {};
+      console.log("LENGTH");
+      console.log(cardres.length);
     });
   }
 
@@ -92,10 +94,21 @@ export default function Board() {
     <DndProvider backend={HTML5Backend}>
       {apidata()}
       <h1 style={{ display: "flex", justifyContent: "center", height: "3vh" }}>
-        ADD TRASH CAN CARD TO DELETE ITEMS
+        Brain Board
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
         {renderCards()}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          height: "9vh",
+          margin: "5px",
+          border: "2px solid red"
+        }}
+      >
+        <h1>🗑️ TRASH CAN - implement functionality</h1>
       </div>
     </DndProvider>
   );
