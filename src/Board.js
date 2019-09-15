@@ -12,7 +12,7 @@ function getStyle(backgroundColor) {
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    height: "auto",
+    height: "85vh",
     padding: "5px",
     border: "3px solid orange",
     backgroundColor
@@ -81,13 +81,17 @@ export default function Board() {
   function apidata() {
     axios.get("http://127.0.0.1:5000/cd").then(res => {
       console.log(res);
+      console.log(res.data);
+      const cardData = res.data["cards"];
+      console.log(cardData);
+      cardData.forEach(x => console.log(x[0], x[1]));
     });
   }
 
   return (
     <DndProvider backend={HTML5Backend}>
       {apidata()}
-      <h1 style={{ display: "flex", justifyContent: "center" }}>
+      <h1 style={{ display: "flex", justifyContent: "center", height: "3vh" }}>
         ADD TRASH CAN CARD TO DELETE ITEMS
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>

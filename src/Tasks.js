@@ -6,7 +6,8 @@ const taskStyle = {
   display: "flex",
   padding: "2px",
   border: "3px solid green",
-  margin: "5px"
+  margin: "5px",
+  borderRadius: "12px"
 };
 const editTask = {
   display: "flex",

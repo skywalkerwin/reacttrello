@@ -16,7 +16,8 @@ const cardStyle = {
   flexDirection: "column",
   padding: "5px",
   border: "4px solid blue",
-  margin: "8px"
+  margin: "8px",
+  borderRadius: "12px"
 };
 
 const buttonStyle = {
