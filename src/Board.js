@@ -52,7 +52,7 @@ export default function Board(props) {
   function renderCards() {
     var aList = [];
     props.board.forEach(c => aList.push(<Cards card={c} />));
-    // props.board.forEach(c => console.log(c));
+    props.board.forEach(c => console.log(c));
     // console.log(boardData);
     aList.push(
       <button
@@ -71,9 +71,6 @@ export default function Board(props) {
     return aList;
   }
 
-  function renderTasks() {
-    return <Tasks />;
-  }
   let backgroundColor = "rgba(255,255,150,.5)";
   if (isOverCurrent || isOver) {
     if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";

@@ -4,7 +4,6 @@ import { useDrag, useDrop } from "react-dnd";
 import Tasks from "./Tasks";
 import testBoard from "./testdata";
 
-//<style>card {display: flex;}</style>;
 const cardStyle = {
   alignSelf: "flex-start",
   position: "relative",
@@ -69,7 +68,6 @@ export default function Cards(props) {
       didDrop: monitor.didDrop()
     })
   });
-
   const [hasDropped, setHasDropped] = useState(false);
   const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
   const [{ isOver, isOverCurrent, xy, res }, drop] = useDrop({
@@ -93,7 +91,6 @@ export default function Cards(props) {
       res: monitor.getDropResult()
     })
   });
-
   let backgroundColor = "rgba(200,200,255,1)";
   if (isOverCurrent || isOver) {
     backgroundColor = "lightgreen";
@@ -116,6 +113,7 @@ export default function Cards(props) {
           }}
         >
           {props.card.title}
+          {/* {props.card} */}
         </h2>
         <a style={editCard}>
           <button type="button" className="btn btn-default btn-sm">
