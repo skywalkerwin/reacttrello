@@ -50,29 +50,54 @@ export default function Board() {
 
   function renderCards() {
     var cardList = [];
-    // axios.get("http://127.0.0.1:5000/boardData").then(res => {
-    //   const cardres = res.data["cards"];
-    //   // console.log(cardres);
-    //   cardres.forEach(c => cardList.push(<Cards card={c} />));
-    //   // cardres.forEach(c => console.log(c));
-    // });
-    testBoard.cards.forEach(c => {
-      cardList.push(<Cards card={c} />);
+    axios.get("http://127.0.0.1:5000/boardData").then(res => {
+      // console.log(res);
+      const cardres = res.data.cards;
+      const taskres = res.data.tasks;
+      // console.log(cardres);
+      cardres.forEach(c => {
+        // const tempTasks = taskres.filter(t => t[1] == c[0]);
+        // console.log(tempTasks);
+        // const tempCard = {
+        //   id: c[0],
+        //   title: c[1],
+        //   num_tasks: c[2],
+        //   created: c[3],
+        //   tasks: tempTasks
+        // };
+        // console.log(tempCard);
+        // const tempData = [c, tempTasks];
+        // const tempData = c[1];
+        // console.log(tempData);
+        const tempCard = { id: c[0], title: c[1] };
+        console.log(tempCard);
+        // cardList.push(<Cards card={tempCard} />);
+        // cardList.push(<div>{tempCard.title} </div>);
+        testBoard.cards.forEach(cc => {
+          console.log(cc);
+          cardList.push(<Cards card={cc} />);
+        });
+      });
     });
+    console.log(cardList);
+    // testBoard.cards.forEach(c => {
+    //   console.log(c);
+    //   cardList.push(<Cards card={c} />);
+    // });
     // console.log(cardList);
-    cardList.push(
-      <button
-        style={{
-          margin: "10px",
-          padding: "5px",
-          width: "85px",
-          height: "30px",
-          textAlign: "left"
-        }}
-      >
-        + Add List
-      </button>
-    );
+    // cardList.push(
+    //   <button
+    //     style={{
+    //       margin: "10px",
+    //       padding: "5px",
+    //       width: "85px",
+    //       height: "30px",
+    //       textAlign: "left"
+    //     }}
+    //   >
+    //     + Add List
+    //   </button>
+    // );
     return cardList;
   }
 
@@ -96,9 +121,8 @@ export default function Board() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      {/* {apidata()} */}
       <h1 style={{ display: "flex", justifyContent: "center", height: "3vh" }}>
-        Brain Board
+        KanBan
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
         {renderCards()}
