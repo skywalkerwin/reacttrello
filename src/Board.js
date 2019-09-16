@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { useDrop } from "react-dnd";
@@ -7,6 +7,8 @@ import { ItemTypes } from "./Constants";
 import Cards from "./Cards";
 import Tasks from "./Tasks";
 import axios from "axios";
+// const axios = require("axios");
+
 function getStyle(backgroundColor) {
   return {
     display: "flex",
@@ -27,7 +29,7 @@ const boardStyle = {
   border: "1px solid orange"
 };
 
-export default function Board() {
+export default function Board(props) {
   const [hasDropped, setHasDropped] = useState(false);
   const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
   const [{ isOver, isOverCurrent, obj }, drop] = useDrop({
@@ -48,22 +50,26 @@ export default function Board() {
     })
   });
 
+  // const [boardData, setBoardData] = useState([]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await axios
+  //       .get("http://127.0.0.1:5000/boardData")
+  //       .then(res => {
+  //         // console.log(res.data);
+  //         setBoardData(res.data["cards"]);
+  //       })
+  //       .catch(err => console.log(err));
+  //   };
+  //   fetchData();
+  // }, []);
+
   function renderCards() {
-    var cardList = [];
-    // axios.get("http://127.0.0.1:5000/boardData").then(res => {
-    //   const cardres = res.data["cards"];
-    //   // console.log(cardres);
-    //   // cardres.forEach(c => cardList.push(<Cards card={c} />));
-    //   // cardres.forEach(c => console.log(c));
-    //   testBoard.cards.forEach(c => {
-    //     cardList.push(<Cards card={c} />);
-    //   });
-    // });
-    testBoard.cards.forEach(c => {
-      cardList.push(<Cards card={c} />);
-    });
-    // console.log(cardList);
-    cardList.push(
+    var aList = [];
+    // boardData.forEach(c => aList.push(<Cards card={c} />));
+    // boardData.forEach(c => console.log(c));
+    // console.log(boardData);
+    aList.push(
       <button
         style={{
           margin: "10px",
@@ -76,7 +82,8 @@ export default function Board() {
         + Add List
       </button>
     );
-    return cardList;
+    // console.log(aList);
+    // return cardList;
   }
 
   function renderTasks() {
@@ -99,12 +106,12 @@ export default function Board() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      {/* {apidata()} */}
       <h1 style={{ display: "flex", justifyContent: "center", height: "3vh" }}>
         Brain Board
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
         {renderCards()}
+        {console.log(props.board)}
       </div>
       <div
         style={{
