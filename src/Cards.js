@@ -3,6 +3,9 @@ import { ItemTypes } from "./Constants";
 import { useDrag, useDrop } from "react-dnd";
 import Tasks from "./Tasks";
 import testBoard from "./testdata";
+// import Button from "react-bootstrap/Button";
+// import Modal from "react-bootstrap/Modal";
+import { Button, Form, Modal } from "react-bootstrap";
 
 const cardStyle = {
   alignSelf: "flex-start",
@@ -22,7 +25,7 @@ const cardStyle = {
 const buttonStyle = {
   height: "15px",
   width: "10%",
-  border: "2px",
+  border: "2px solid red",
   padding: "1px",
   margin: "2px"
 };
@@ -39,7 +42,6 @@ const editCard = {
 function renderTasks(tasks) {
   var taskList = [];
   var ctasks = [];
-  // ctasks = testBoard.tasks.filter(t => t.cid === cid);
   tasks.forEach(t => {
     taskList.push(<Tasks task={t} />);
   });
@@ -50,8 +52,8 @@ function renderTasks(tasks) {
       style={{
         margin: "5px",
         textAlign: "left",
-        width: "85px",
-        height: "25px"
+        width: "100px",
+        height: "30px"
       }}
     ></input>
   );
@@ -59,6 +61,7 @@ function renderTasks(tasks) {
 }
 
 export default function Cards(props) {
+  let textInput = React.createRef();
   const cid = props.card.id;
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
@@ -74,14 +77,13 @@ export default function Cards(props) {
     accept: ItemTypes.TASK,
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
-      console.log(didDrop);
       if (didDrop) {
         return;
       }
       setHasDropped(true);
       setHasDroppedOnChild(didDrop);
       // console.log("Card's Tasks");
-      console.log(testBoard.tasks.filter(t => t.cid == cid));
+      // console.log(testBoard.tasks.filter(t => t.cid == cid));
       return { cid: cid };
     },
     collect: monitor => ({
@@ -96,6 +98,23 @@ export default function Cards(props) {
     backgroundColor = "lightgreen";
   }
   const opacity = isDragging ? 0 : 1;
+
+  const [show, setShow] = useState(false);
+  const [cardTitle, setCardTitle] = useState(props.card.title);
+  const handleClose = () => setShow(false);
+  const handleChange = e => {
+    console.log(e);
+    setCardTitle(e);
+  };
+  const handleSubmit = () => {
+    console.log(textInput);
+    setShow(false);
+  };
+  const handleShow = () => setShow(true);
+  function titleEdit() {
+    console.log("CLICK");
+    handleShow();
+  }
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
@@ -112,15 +131,49 @@ export default function Cards(props) {
             margin: "3px"
           }}
         >
+          {/* <input value={props.card.title}></input> */}
           {props.card.title}
           {/* {props.card} */}
         </h2>
         <a style={editCard}>
-          <button type="button" className="btn btn-default btn-sm">
+          <button
+            onClick={handleShow}
+            type="button"
+            className="btn btn-default btn-sm"
+          >
             Edit
           </button>
         </a>
         {renderTasks(props.card.tasks)}
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Card Title</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group controlId="formCardTitle">
+                {/* <Form.Label>Email address</Form.Label> */}
+                <Form.Control
+                  type="cardTitle"
+                  // value={props.card.title}
+                  placeholder={props.card.title}
+                  onChange={handleChange}
+                  ref={textInput}
+                />
+                {/* {console.log(cardTitle)} */}
+                {/* <textarea>hello</textarea> */}
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleSubmit}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     )
   );

@@ -13,20 +13,20 @@ function getStyle(backgroundColor) {
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
-    height: "80vh",
+    height: "85vh",
     padding: "5px",
     border: "3px solid orange",
     backgroundColor
   };
 }
-const boardStyle = {
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "center",
-  height: "25rem",
-  padding: "5px",
-  border: "1px solid orange"
-};
+// const boardStyle = {
+//   display: "flex",
+//   flexDirection: "row",
+//   justifyContent: "center",
+//   height: "25rem",
+//   padding: "5px",
+//   border: "1px solid orange"
+// };
 
 export default function Board(props) {
   const [hasDropped, setHasDropped] = useState(false);
@@ -36,7 +36,7 @@ export default function Board(props) {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
-        console.log("did drop");
+        // console.log("did drop");
         return;
       }
       setHasDropped(true);
@@ -59,8 +59,8 @@ export default function Board(props) {
         style={{
           margin: "10px",
           padding: "5px",
-          width: "85px",
-          height: "30px",
+          width: "100px",
+          height: "40px",
           textAlign: "left"
         }}
       >
@@ -78,7 +78,7 @@ export default function Board(props) {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <h1 style={{ display: "flex", justifyContent: "center", height: "3vh" }}>
+      <h1 style={{ display: "flex", justifyContent: "center", height: "4vh" }}>
         KanBan
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>

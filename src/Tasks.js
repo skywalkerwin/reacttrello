@@ -7,15 +7,15 @@ const taskStyle = {
   padding: "2px",
   border: "3px solid green",
   margin: "5px",
-  borderRadius: "12px"
+  borderRadius: "10px"
 };
 const editTask = {
   display: "flex",
   position: "relative",
   height: "20px",
   // top: "5%",
-  bottom: "15px",
-  left: "92%"
+  bottom: "10px",
+  left: "90%"
   // left: "10px"
 };
 
@@ -38,16 +38,16 @@ export default function Tasks(props) {
   const [{ isDragging, xy }, drag] = useDrag({
     item: { type: ItemTypes.TASK },
     begin(monitor) {
-      console.log("TASK:...");
-      console.log(props.task.content);
+      // console.log("TASK:...");
+      // console.log(props.task.content);
     },
     end(item, monitor) {
-      console.log("DROPPED");
-      console.log(monitor.didDrop());
+      // console.log("DROPPED");
+      // console.log(monitor.didDrop());
       if (monitor.getDropResult() != null) {
-        console.log(monitor.getDropResult().cid);
+        // console.log(monitor.getDropResult().cid);
       }
-      console.log(props.task.cid);
+      // console.log(props.task.cid);
     },
     collect: monitor => ({
       isDragging: !!monitor.isDragging(),
