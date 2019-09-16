@@ -7,7 +7,6 @@ import { ItemTypes } from "./Constants";
 import Cards from "./Cards";
 import Tasks from "./Tasks";
 import axios from "axios";
-// const axios = require("axios");
 
 function getStyle(backgroundColor) {
   return {
@@ -50,24 +49,10 @@ export default function Board(props) {
     })
   });
 
-  // const [boardData, setBoardData] = useState([]);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     await axios
-  //       .get("http://127.0.0.1:5000/boardData")
-  //       .then(res => {
-  //         // console.log(res.data);
-  //         setBoardData(res.data["cards"]);
-  //       })
-  //       .catch(err => console.log(err));
-  //   };
-  //   fetchData();
-  // }, []);
-
   function renderCards() {
     var aList = [];
-    // boardData.forEach(c => aList.push(<Cards card={c} />));
-    // boardData.forEach(c => console.log(c));
+    props.board.forEach(c => aList.push(<Cards card={c} />));
+    // props.board.forEach(c => console.log(c));
     // console.log(boardData);
     aList.push(
       <button
@@ -82,8 +67,8 @@ export default function Board(props) {
         + Add List
       </button>
     );
-    // console.log(aList);
-    // return cardList;
+    console.log(aList);
+    return aList;
   }
 
   function renderTasks() {
@@ -94,16 +79,6 @@ export default function Board(props) {
     if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
   }
 
-  // function apidata() {
-  //   axios.get("http://127.0.0.1:5000/boardData").then(res => {
-  //     console.log(res);
-  //     console.log(res.data);
-  //     const cardres = res.data["cards"];
-  //     console.log(cardres);
-  //     cardres.forEach(x => console.log(x[0], x[1], x[2], x[3], x[4]));
-  //   });
-  // }
-
   return (
     <DndProvider backend={HTML5Backend}>
       <h1 style={{ display: "flex", justifyContent: "center", height: "3vh" }}>
@@ -111,7 +86,6 @@ export default function Board(props) {
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
         {renderCards()}
-        {console.log(props.board)}
       </div>
       <div
         style={{

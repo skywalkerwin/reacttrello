@@ -67,7 +67,7 @@ export default function Tasks(props) {
           Edit
         </button>
       </p>
-      <p style={taskContent}>{props.task.content}</p>
+      <p style={taskContent}>{props.task.body}</p>
     </div>
   );
 }

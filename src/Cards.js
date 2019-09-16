@@ -37,11 +37,11 @@ const editCard = {
   margin: "6px"
 };
 
-function renderTasks(cid) {
+function renderTasks(tasks) {
   var taskList = [];
   var ctasks = [];
-  ctasks = testBoard.tasks.filter(t => t.cid === cid);
-  ctasks.forEach(t => {
+  // ctasks = testBoard.tasks.filter(t => t.cid === cid);
+  tasks.forEach(t => {
     taskList.push(<Tasks task={t} />);
   });
   taskList.push(
@@ -102,8 +102,8 @@ export default function Cards(props) {
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
-        {console.log(props.card["title"])}
-        {console.log("propsssss")}
+        {/* {console.log(props.card["title"])}
+        {console.log("propsssss")} */}
         <h2
           style={{
             top: "0",
@@ -122,7 +122,7 @@ export default function Cards(props) {
             Edit
           </button>
         </a>
-        {renderTasks(props.card.id)}
+        {renderTasks(props.card.tasks)}
       </div>
     )
   );
