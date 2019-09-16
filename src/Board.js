@@ -50,9 +50,16 @@ export default function Board() {
 
   function renderCards() {
     var cardList = [];
+    // axios.get("http://127.0.0.1:5000/boardData").then(res => {
+    //   const cardres = res.data["cards"];
+    //   // console.log(cardres);
+    //   cardres.forEach(c => cardList.push(<Cards card={c} />));
+    //   // cardres.forEach(c => console.log(c));
+    // });
     testBoard.cards.forEach(c => {
       cardList.push(<Cards card={c} />);
     });
+    // console.log(cardList);
     cardList.push(
       <button
         style={{
@@ -77,22 +84,19 @@ export default function Board() {
     if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
   }
 
-  function apidata() {
-    axios.get("http://127.0.0.1:5000/boardData").then(res => {
-      console.log(res);
-      console.log(res.data);
-      const cardres = res.data["cards"];
-      console.log(cardres);
-      cardres.forEach(x => console.log(x[0], x[1], x[2], x[3], x[4]));
-      // const cardData = {};
-      console.log("LENGTH");
-      console.log(cardres.length);
-    });
-  }
+  // function apidata() {
+  //   axios.get("http://127.0.0.1:5000/boardData").then(res => {
+  //     console.log(res);
+  //     console.log(res.data);
+  //     const cardres = res.data["cards"];
+  //     console.log(cardres);
+  //     cardres.forEach(x => console.log(x[0], x[1], x[2], x[3], x[4]));
+  //   });
+  // }
 
   return (
     <DndProvider backend={HTML5Backend}>
-      {apidata()}
+      {/* {apidata()} */}
       <h1 style={{ display: "flex", justifyContent: "center", height: "3vh" }}>
         Brain Board
       </h1>

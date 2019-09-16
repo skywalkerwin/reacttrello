@@ -60,7 +60,7 @@ function renderTasks(cid) {
 }
 
 export default function Cards(props) {
-  const cid = props.card.id;
+  const cid = props.card["id"];
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
     collect: monitor => ({
@@ -78,14 +78,12 @@ export default function Cards(props) {
       const didDrop = monitor.didDrop();
       console.log(didDrop);
       if (didDrop) {
-        console.log("DID DROP");
         return;
       }
       setHasDropped(true);
       setHasDroppedOnChild(didDrop);
-      console.log("Card's Tasks");
+      // console.log("Card's Tasks");
       console.log(testBoard.tasks.filter(t => t.cid == cid));
-      // return testBoard.tasks.filter(t => t.cid == cid);
       return { cid: cid };
     },
     collect: monitor => ({
@@ -98,16 +96,16 @@ export default function Cards(props) {
 
   let backgroundColor = "rgba(200,200,255,1)";
   if (isOverCurrent || isOver) {
-    // backgroundColor = "lightblue";
     backgroundColor = "lightgreen";
   }
   const opacity = isDragging ? 0 : 1;
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
+        {console.log(props.card["title"])}
+        {console.log("propsssss")}
         <h2
           style={{
-            // position: "absolute",
             top: "0",
             left: "0",
             right: "0",
@@ -115,17 +113,12 @@ export default function Cards(props) {
             display: "flex",
             justifyContent: "center",
             margin: "3px"
-            // bottom: "5%"
           }}
         >
           {props.card.title}
         </h2>
         <a style={editCard}>
-          <button
-            // style={buttonStyle}
-            type="button"
-            className="btn btn-default btn-sm"
-          >
+          <button type="button" className="btn btn-default btn-sm">
             Edit
           </button>
         </a>
