@@ -52,7 +52,7 @@ export default function Board(props) {
   function renderCards() {
     var aList = [];
     props.board.forEach(c => aList.push(<Cards card={c} />));
-    props.board.forEach(c => console.log(c));
+    // props.board.forEach(c => console.log(c));
     // console.log(boardData);
     aList.push(
       <button
@@ -67,7 +67,7 @@ export default function Board(props) {
         + Add List
       </button>
     );
-    console.log(aList);
+    // console.log(aList);
     return aList;
   }
 
