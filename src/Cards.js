@@ -60,7 +60,7 @@ function renderTasks(tasks) {
 }
 
 export default function Cards(props) {
-  const cid = props.card["id"];
+  const cid = props.card.id;
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
     collect: monitor => ({

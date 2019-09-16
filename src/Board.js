@@ -82,7 +82,7 @@ export default function Board(props) {
   return (
     <DndProvider backend={HTML5Backend}>
       <h1 style={{ display: "flex", justifyContent: "center", height: "3vh" }}>
-        Brain Board
+        KanBan
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
         {renderCards()}
