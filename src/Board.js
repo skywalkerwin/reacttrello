@@ -53,8 +53,11 @@ export default function Board() {
     // axios.get("http://127.0.0.1:5000/boardData").then(res => {
     //   const cardres = res.data["cards"];
     //   // console.log(cardres);
-    //   cardres.forEach(c => cardList.push(<Cards card={c} />));
+    //   // cardres.forEach(c => cardList.push(<Cards card={c} />));
     //   // cardres.forEach(c => console.log(c));
+    //   testBoard.cards.forEach(c => {
+    //     cardList.push(<Cards card={c} />);
+    //   });
     // });
     testBoard.cards.forEach(c => {
       cardList.push(<Cards card={c} />);
