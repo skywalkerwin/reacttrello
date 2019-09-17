@@ -5,7 +5,6 @@ import Tasks from "./Tasks";
 import testBoard from "./testdata";
 import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
-import { format } from "url";
 
 const cardStyle = {
   alignSelf: "flex-start",
@@ -113,6 +112,7 @@ export default function Cards(props) {
     setShow(false);
     var formdata = new FormData();
     formdata.set("title", tempTitle);
+    formdata.set("id", cid);
 
     // axios.post("http://127.0.0.1:5000/updateCard", {
     //   title: cardTitle
@@ -130,7 +130,10 @@ export default function Cards(props) {
       .then(res => console.log(res))
       .catch(err => console.log(err));
   };
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setShow(true);
+    // textInput.current.focus();
+  };
   function titleEdit() {
     console.log("CLICK");
     handleShow();
@@ -166,25 +169,17 @@ export default function Cards(props) {
             <Modal.Title>Edit Card Title</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form>
+            <form autofocus="true" onSubmit={handleSubmit}>
               <Form.Group controlId="formCardTitle">
-                {/* <Form.Label>Email address</Form.Label> */}
                 <Form.Control
+                  autofocus="true"
                   type="cardTitle"
-                  // value={props.card.title}
-                  placeholder={props.card.title}
+                  defaultValue={cardTitle}
                   onChange={e => handleChange(e.target.value)}
                   ref={textInput}
                 />
-                {/* <input
-                  // value={props.card.title}
-                  placeholder={props.card.title}
-                  onChange={handleChange}
-                ></input> */}
-                {/* {console.log(cardTitle)} */}
-                {/* <textarea>hello</textarea> */}
               </Form.Group>
-            </Form>
+            </form>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

@@ -1,6 +1,8 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { ItemTypes } from "./Constants";
 import { useDrag } from "react-dnd";
+import axios from "axios";
+import { Button, Form, Modal } from "react-bootstrap";
 
 const taskStyle = {
   display: "flex",
@@ -35,6 +37,8 @@ const taskContent = {
   width: "88%"
 };
 export default function Tasks(props) {
+  // let textInput = React.createRef();
+  const tid = props.task.id;
   const [{ isDragging, xy }, drag] = useDrag({
     item: { type: ItemTypes.TASK },
     begin(monitor) {
@@ -56,6 +60,48 @@ export default function Tasks(props) {
   });
   let backgroundColor = "rgba(255,255,255,.9)";
   const opacity = isDragging ? 0 : 1;
+
+  const [show, setShow] = useState(false);
+  const [tempBody, setTempBody] = useState(props.task.body);
+  const [taskBody, setTaskBody] = useState(props.task.body);
+  const handleClose = () => setShow(false);
+  function handleChange(e) {
+    setTempBody(e);
+  }
+  const handleSubmit = () => {
+    setTaskBody(tempBody);
+    // console.log("TEMP TITLE:", tempTitle);
+    // console.log("CARD TITLE:", cardTitle);
+    setShow(false);
+    var formdata = new FormData();
+    formdata.set("body", tempBody);
+    formdata.set("id", tid);
+
+    // axios.post("http://127.0.0.1:5000/updateCard", {
+    //   title: cardTitle
+    // });
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/updateTask",
+      data: formdata
+      // headers: {
+      //   "Access-Control-Allow-Origin": "*",
+      //   "Content-Type": "multipart/form-data",
+      //   "Accept-Encoding": "gzip, deflate"
+      // }
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
+  const handleShow = () => {
+    setShow(true);
+    // textInput.value = "TEST";
+  };
+  function titleEdit() {
+    console.log("CLICK");
+    handleShow();
+  }
+
   return drag(
     <div style={{ ...taskStyle, opacity, backgroundColor }}>
       <p style={editTask}>
@@ -63,11 +109,39 @@ export default function Tasks(props) {
           // style={buttonStyle}
           type="button"
           className="btn btn-default btn-sm"
+          onClick={handleShow}
         >
           Edit
         </button>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Task Body</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form autoFocus={"true"} onSubmit={handleSubmit}>
+              <Form.Group controlId="formCardTitle">
+                <Form.Control
+                  defaultValue={taskBody}
+                  autoFocus={"true"}
+                  type="cardTitle"
+                  // placeholder={taskBody}
+                  onChange={e => handleChange(e.target.value)}
+                  // ref={textInput}
+                />
+              </Form.Group>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleSubmit}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </p>
-      <p style={taskContent}>{props.task.body}</p>
+      <p style={taskContent}>{taskBody}</p>
     </div>
   );
 }
