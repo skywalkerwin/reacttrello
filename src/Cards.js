@@ -100,14 +100,17 @@ export default function Cards(props) {
   const opacity = isDragging ? 0 : 1;
 
   const [show, setShow] = useState(false);
+  const [tempTitle, setTempTitle] = useState(props.card.title);
   const [cardTitle, setCardTitle] = useState(props.card.title);
   const handleClose = () => setShow(false);
-  const handleChange = e => {
-    console.log(e);
-    setCardTitle(e);
-  };
+  function handleChange(e) {
+    // e.preventDefault();
+    // console.log(e);
+    setTempTitle(e);
+  }
   const handleSubmit = () => {
-    console.log(textInput);
+    setCardTitle(tempTitle);
+    console.log(cardTitle);
     setShow(false);
   };
   const handleShow = () => setShow(true);
@@ -118,8 +121,6 @@ export default function Cards(props) {
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
-        {/* {console.log(props.card["title"])}
-        {console.log("propsssss")} */}
         <h2
           style={{
             top: "0",
@@ -131,9 +132,7 @@ export default function Cards(props) {
             margin: "3px"
           }}
         >
-          {/* <input value={props.card.title}></input> */}
-          {props.card.title}
-          {/* {props.card} */}
+          {cardTitle}
         </h2>
         <a style={editCard}>
           <button
@@ -157,10 +156,15 @@ export default function Cards(props) {
                   type="cardTitle"
                   // value={props.card.title}
                   placeholder={props.card.title}
-                  onChange={handleChange}
+                  onChange={e => handleChange(e.target.value)}
                   ref={textInput}
                 />
-                {/* {console.log(cardTitle)} */}
+                {/* <input
+                  // value={props.card.title}
+                  placeholder={props.card.title}
+                  onChange={handleChange}
+                ></input> */}
+                {console.log(cardTitle)}
                 {/* <textarea>hello</textarea> */}
               </Form.Group>
             </Form>
