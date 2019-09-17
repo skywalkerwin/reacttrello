@@ -3,9 +3,9 @@ import { ItemTypes } from "./Constants";
 import { useDrag, useDrop } from "react-dnd";
 import Tasks from "./Tasks";
 import testBoard from "./testdata";
-// import Button from "react-bootstrap/Button";
-// import Modal from "react-bootstrap/Modal";
+import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
+import { format } from "url";
 
 const cardStyle = {
   alignSelf: "flex-start",
@@ -104,14 +104,31 @@ export default function Cards(props) {
   const [cardTitle, setCardTitle] = useState(props.card.title);
   const handleClose = () => setShow(false);
   function handleChange(e) {
-    // e.preventDefault();
-    // console.log(e);
     setTempTitle(e);
   }
   const handleSubmit = () => {
     setCardTitle(tempTitle);
-    console.log(cardTitle);
+    // console.log("TEMP TITLE:", tempTitle);
+    // console.log("CARD TITLE:", cardTitle);
     setShow(false);
+    var formdata = new FormData();
+    formdata.set("title", tempTitle);
+
+    // axios.post("http://127.0.0.1:5000/updateCard", {
+    //   title: cardTitle
+    // });
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/updateCard",
+      data: formdata
+      // headers: {
+      //   "Access-Control-Allow-Origin": "*",
+      //   "Content-Type": "multipart/form-data",
+      //   "Accept-Encoding": "gzip, deflate"
+      // }
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
   };
   const handleShow = () => setShow(true);
   function titleEdit() {
@@ -164,7 +181,7 @@ export default function Cards(props) {
                   placeholder={props.card.title}
                   onChange={handleChange}
                 ></input> */}
-                {console.log(cardTitle)}
+                {/* {console.log(cardTitle)} */}
                 {/* <textarea>hello</textarea> */}
               </Form.Group>
             </Form>
