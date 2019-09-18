@@ -41,7 +41,9 @@ const taskContent = {
 };
 export default function Tasks(props) {
   // let textInput = React.createRef();
-  const tid = props.task.id;
+  console.log("in TASK PROPS");
+  console.log(props);
+  const taskID = props.task.taskID;
   const [{ isDragging, xy }, drag] = useDrag({
     item: { type: ItemTypes.TASK },
     begin(monitor) {
@@ -78,27 +80,17 @@ export default function Tasks(props) {
     setShow(false);
     var formdata = new FormData();
     formdata.set("body", tempBody);
-    formdata.set("id", tid);
-
-    // axios.post("http://127.0.0.1:5000/updateCard", {
-    //   title: cardTitle
-    // });
+    formdata.set("taskID", taskID);
     axios({
       method: "post",
       url: "http://127.0.0.1:5000/updateTask",
       data: formdata
-      // headers: {
-      //   "Access-Control-Allow-Origin": "*",
-      //   "Content-Type": "multipart/form-data",
-      //   "Accept-Encoding": "gzip, deflate"
-      // }
     })
       .then(res => console.log(res))
       .catch(err => console.log(err));
   };
   const handleShow = () => {
     setShow(true);
-    // textInput.value = "TEST";
   };
   function titleEdit() {
     console.log("CLICK");
@@ -127,11 +119,8 @@ export default function Tasks(props) {
                   as="textarea"
                   rows="3"
                   defaultValue={taskBody}
-                  // autoFocus={"true"}
                   type="cardTitle"
-                  // placeholder={taskBody}
                   onChange={e => handleChange(e.target.value)}
-                  // ref={textInput}
                 />
               </Form.Group>
             </Form>

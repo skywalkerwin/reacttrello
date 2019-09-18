@@ -88,9 +88,17 @@ export default function Cards(props) {
     var taskList = [];
     console.log("IN RENDER TASKS");
     console.log(tasks);
+    console.log(props.card);
     if (props.card !== undefined && tasks !== undefined) {
-      tasks.forEach(t => {
-        taskList.push(<Tasks task={t} />);
+      Array.from(tasks).forEach(t => {
+        taskList.push(
+          <Tasks
+            task={t}
+            nextCardID={props.nextCardID}
+            nextTaskID={props.nextTaskID}
+            numCards={props.numCards}
+          />
+        );
       });
     }
     return taskList;
@@ -125,22 +133,11 @@ export default function Cards(props) {
       .catch(err => console.log(err));
   };
   const handleSubmitTask = () => {
-    // setCardTitle(tempTitle);
     const boardID = props.card.boardID;
     const cardID = props.card.cardID;
+    // const taskID = props.nextTaskID;
+    const created = new Date().toUTCString();
     const numTasks = props.card.numTasks + 1;
-    const extraTask = {
-      boardID: boardID,
-      body: tempTask,
-      cardID: cardID,
-      created: Date.UTC(),
-      taskOrder: numTasks
-    };
-    if (allTasks !== undefined) {
-      setAllTasks([...allTasks, extraTask]);
-    } else {
-      setAllTasks(extraTask);
-    }
     setShowTaskModal(false);
     var formdata = new FormData();
     formdata.set("boardID", boardID);
@@ -152,9 +149,24 @@ export default function Cards(props) {
       url: "http://127.0.0.1:5000/addTask",
       data: formdata
     })
-      .then(res => console.log(res))
+      .then(res => {
+        console.log("IN TASK RESULT");
+        console.log(res);
+        const extraTask = {
+          boardID: res.data.boardID,
+          body: tempTask,
+          cardID: res.data.cardID,
+          created: res.data.created,
+          taskID: res.data.taskID,
+          taskOrder: res.data.numTasks
+        };
+        if (allTasks !== undefined) {
+          setAllTasks([...Array.from(allTasks), extraTask]);
+        } else {
+          setAllTasks(extraTask);
+        }
+      })
       .catch(err => console.log(err));
-    // return renderTasks([extraTask]);
   };
   const handleShow = () => {
     setShow(true);

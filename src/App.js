@@ -15,7 +15,9 @@ export default class App extends React.Component {
     this.state = {
       cards: [],
       boardID: -1,
-      numCards: 0
+      numCards: 0,
+      nextCardID: 1,
+      nextTaskID: 1
     };
   }
 
@@ -27,10 +29,28 @@ export default class App extends React.Component {
       this.setState({
         cards: res.data["cards"],
         boardID: res.data["boardID"],
+        nextCardID: res.data["nextCardID"],
+        nextTaskID: res.data["nextTaskID"],
         numCards: res.data["numCards"]
       });
     });
   }
+  // componentDidUpdate(prevProps) {
+  //   console.log("updated");
+  //   // if(prevProps !== )
+  //   axios.get("http://127.0.0.1:5000/boardData").then(res => {
+  //     // console.log(res);
+  //     // console.log(res.data);
+  //     //   console.log(res.data.cards);
+  //     this.setState({
+  //       cards: res.data["cards"],
+  //       boardID: res.data["boardID"],
+  //       nextCardID: res.data["nextCardID"],
+  //       nextTaskID: res.data["nextTaskID"],
+  //       numCards: res.data["numCards"]
+  //     });
+  //   });
+  // }
   render() {
     return (
       <DndProvider backend={HTML5Backend}>
@@ -38,6 +58,8 @@ export default class App extends React.Component {
           <Board
             cards={this.state.cards}
             boardID={this.state.boardID}
+            nextCardID={this.state.nextCardID}
+            nextTaskID={this.state.nextTaskID}
             numCards={this.state.numCards}
           />
         )}

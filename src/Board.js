@@ -58,7 +58,16 @@ export default function Board(props) {
     var cardList = [];
     if (totalCards !== undefined) {
       // props.cards.forEach(c => console.log(c));
-      totalCards.forEach(c => cardList.push(<Cards card={c} />));
+      totalCards.forEach(c =>
+        cardList.push(
+          <Cards
+            card={c}
+            // nextCardID={props.nextCardID}
+            // nextTaskID={props.nextTaskID}
+            // numCards={props.numCards}
+          />
+        )
+      );
     }
     return cardList;
   }
@@ -82,14 +91,8 @@ export default function Board(props) {
   }
   const handleSubmit = () => {
     const cardOrder = props.numCards + 1;
-    const extraCard = {
-      boardID: props.boardID,
-      cardOrder: cardOrder,
-      created: Date.UTC(),
-      title: tempTitle
-    };
+    const created = new Date().toUTCString();
     setCardTitle(tempTitle);
-    setAllCards([...allCards, extraCard]);
     setShow(false);
     var formdata = new FormData();
     formdata.set("boardID", props.boardID);
@@ -100,10 +103,22 @@ export default function Board(props) {
       url: "http://127.0.0.1:5000/addCard",
       data: formdata
     })
-      .then(res => console.log(res))
+      .then(res => {
+        console.log("IN NEW CARD");
+        console.log(res);
+        const extraCard = {
+          boardID: res.data.boardID,
+          cardID: res.data.cardID,
+          cardOrder: res.data.cardOrder,
+          created: res.data.created,
+          numTasks: 0,
+          tasks: [],
+          title: tempTitle
+        };
+        setAllCards([...allCards, extraCard]);
+      })
       .catch(err => console.log(err));
   };
-
   const handleShow = () => {
     setShow(true);
   };
@@ -131,7 +146,7 @@ export default function Board(props) {
         </Button>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Edit Card Title</Modal.Title>
+            <Modal.Title>Add Card</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={handleSubmit}>
@@ -139,7 +154,8 @@ export default function Board(props) {
                 <Form.Control
                   // autofocus="true"
                   type="cardTitle"
-                  defaultValue={cardTitle}
+                  // defaultValue={cardTitle}
+                  placeholder={"Title..."}
                   onChange={e => handleChange(e.target.value)}
                   // ref={textInput}
                 />
@@ -174,7 +190,7 @@ export default function Board(props) {
               display: "flex",
               justifyContent: "center",
               top: "20%",
-              overflowX: "hidden"
+              overflow: "hidden"
             }}
           >
             🗑️ TRASH CAN - Drag here to Delete
