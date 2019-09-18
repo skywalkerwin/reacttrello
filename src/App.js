@@ -13,25 +13,34 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      boardData: []
+      cards: [],
+      boardID: -1,
+      numCards: 0
     };
   }
 
   componentDidMount() {
     axios.get("http://127.0.0.1:5000/boardData").then(res => {
-      //   console.log(res);
-      //   console.log(res.data);
+      // console.log(res);
+      // console.log(res.data);
       //   console.log(res.data.cards);
       this.setState({
-        boardData: res.data["cards"]
+        cards: res.data["cards"],
+        boardID: res.data["boardID"],
+        numCards: res.data["numCards"]
       });
     });
   }
   render() {
     return (
       <DndProvider backend={HTML5Backend}>
-        {/* {console.log(this.state.boardData)} */}
-        <Board board={this.state.boardData} />
+        {this.state.boardID != -1 && (
+          <Board
+            cards={this.state.cards}
+            boardID={this.state.boardID}
+            numCards={this.state.numCards}
+          />
+        )}
       </DndProvider>
     );
   }

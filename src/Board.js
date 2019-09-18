@@ -42,7 +42,6 @@ export default function Board(props) {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
-        // console.log("did drop");
         return;
       }
       setHasDropped(true);
@@ -55,11 +54,13 @@ export default function Board(props) {
     })
   });
 
-  function renderCards() {
-    var aList = [];
-    props.board.forEach(c => aList.push(<Cards card={c} />));
-    // props.board.forEach(c => console.log(c));
-    return aList;
+  function renderCards(totalCards) {
+    var cardList = [];
+    if (totalCards !== undefined) {
+      // props.cards.forEach(c => console.log(c));
+      totalCards.forEach(c => cardList.push(<Cards card={c} />));
+    }
+    return cardList;
   }
 
   let backgroundColor = "rgba(255,255,150,.5)";
@@ -67,23 +68,36 @@ export default function Board(props) {
     if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
   }
 
+  const [allCards, setAllCards] = useState(props.cards);
+  // console.log("ALL CARDS");
+  // console.log(allCards);
+  // console.log(props.cards);
   const [show, setShow] = useState(false);
-  const [tempTitle, setTempTitle] = useState(props.card.title);
-  const [cardTitle, setCardTitle] = useState(props.card.title);
+  const [tempTitle, setTempTitle] = useState("");
+  const [cardTitle, setCardTitle] = useState("");
 
   const handleClose = () => setShow(false);
   function handleChange(e) {
     setTempTitle(e);
   }
   const handleSubmit = () => {
+    const cardOrder = props.numCards + 1;
+    const extraCard = {
+      boardID: props.boardID,
+      cardOrder: cardOrder,
+      created: Date.UTC(),
+      title: tempTitle
+    };
     setCardTitle(tempTitle);
+    setAllCards([...allCards, extraCard]);
     setShow(false);
     var formdata = new FormData();
+    formdata.set("boardID", props.boardID);
+    formdata.set("cardOrder", cardOrder);
     formdata.set("title", tempTitle);
-    formdata.set("id", cid);
     axios({
       method: "post",
-      url: "http://127.0.0.1:5000/updateCard",
+      url: "http://127.0.0.1:5000/addCard",
       data: formdata
     })
       .then(res => console.log(res))
@@ -100,7 +114,7 @@ export default function Board(props) {
         KanBan Drag-n-Drop
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
-        {renderCards()}
+        {renderCards(allCards)}
         <Button
           onClick={handleShow}
           variant="secondary"

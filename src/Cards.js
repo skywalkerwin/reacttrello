@@ -46,7 +46,8 @@ const editCard = {
 
 export default function Cards(props) {
   // let textInput = React.createRef();
-  const cid = props.card.id;
+  // console.log(props.card);
+  const cardID = props.card.cardID;
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
     collect: monitor => ({
@@ -68,7 +69,7 @@ export default function Cards(props) {
       setHasDroppedOnChild(didDrop);
       // console.log("Card's Tasks");
       // console.log(testBoard.tasks.filter(t => t.cid == cid));
-      return { cid: cid };
+      return { cardID: cardID };
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -85,10 +86,13 @@ export default function Cards(props) {
 
   function renderTasks(tasks) {
     var taskList = [];
-    var ctasks = [];
-    tasks.forEach(t => {
-      taskList.push(<Tasks task={t} />);
-    });
+    console.log("IN RENDER TASKS");
+    console.log(tasks);
+    if (props.card !== undefined && tasks !== undefined) {
+      tasks.forEach(t => {
+        taskList.push(<Tasks task={t} />);
+      });
+    }
     return taskList;
   }
   const [allTasks, setAllTasks] = useState(props.card.tasks);
@@ -111,7 +115,7 @@ export default function Cards(props) {
     setShow(false);
     var formdata = new FormData();
     formdata.set("title", tempTitle);
-    formdata.set("id", cid);
+    formdata.set("cardID", cardID);
     axios({
       method: "post",
       url: "http://127.0.0.1:5000/updateCard",
@@ -122,18 +126,27 @@ export default function Cards(props) {
   };
   const handleSubmitTask = () => {
     // setCardTitle(tempTitle);
+    const boardID = props.card.boardID;
+    const cardID = props.card.cardID;
+    const numTasks = props.card.numTasks + 1;
     const extraTask = {
+      boardID: boardID,
       body: tempTask,
-      cid: cid,
+      cardID: cardID,
       created: Date.UTC(),
-      torder: props.card["num_tasks"]
+      taskOrder: numTasks
     };
-    setAllTasks([...allTasks, extraTask]);
+    if (allTasks !== undefined) {
+      setAllTasks([...allTasks, extraTask]);
+    } else {
+      setAllTasks(extraTask);
+    }
     setShowTaskModal(false);
     var formdata = new FormData();
+    formdata.set("boardID", boardID);
     formdata.set("body", tempTask);
-    formdata.set("cid", cid);
-    formdata.set("torder", props.card["num_tasks"]);
+    formdata.set("cardID", cardID);
+    formdata.set("taskOrder", numTasks);
     axios({
       method: "post",
       url: "http://127.0.0.1:5000/addTask",
