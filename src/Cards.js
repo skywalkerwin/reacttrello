@@ -14,7 +14,7 @@ const cardStyle = {
   // float: "left",
   // display: "table-column",
   display: "flex",
-  maxHeight: "75vh",
+  maxHeight: "82vh",
   // minWidth: "20%",
   // height: "auto",
   flexDirection: "column",
@@ -57,7 +57,8 @@ function renderTasks(tasks) {
         margin: "4px",
         textAlign: "left",
         minWidth: "100px",
-        height: "35px"
+        height: "35px",
+        width: "120px"
       }}
     >
       + Add Task

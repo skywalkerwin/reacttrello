@@ -67,7 +67,7 @@ export default function Board(props) {
           padding: "5px",
           minWidth: "100px",
           height: "40px",
-          width: "100px",
+          width: "120px",
           textAlign: "left"
         }}
       >
@@ -94,24 +94,27 @@ export default function Board(props) {
           style={{
             position: "absolute",
             display: "flex",
-            justifyContent: "center",
-            height: "10vh",
-            margin: "5px",
-            border: "2px dashed black",
+            justifyContent: "left",
+            height: "7vh",
+            margin: "0px",
+            border: "4px dashed black",
             bottom: "0%",
             width: "100%",
             backgroundColor: "rgba(255,0,0,.5)"
           }}
         >
-          <h1
+          <h3
             style={{
               position: "relative",
-              top: "20%",
-              overflow: "auto"
+              display: "flex",
+              justifyContent: "center",
+              top: "20%"
+              // overflow: "auto"
             }}
           >
-            🗑️ TRASH CAN - might have to put inside board, limit card height
-          </h1>
+            🗑️ TRASH CAN - Drag here to Delete - might have to put inside board,
+            limit card height
+          </h3>
         </div>
       </div>
     </DndProvider>
