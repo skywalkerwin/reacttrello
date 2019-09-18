@@ -59,23 +59,6 @@ export default function Board(props) {
     var aList = [];
     props.board.forEach(c => aList.push(<Cards card={c} />));
     // props.board.forEach(c => console.log(c));
-    // console.log(boardData);
-    aList.push(
-      <Button
-        variant="secondary"
-        style={{
-          margin: "10px",
-          padding: "5px",
-          minWidth: "100px",
-          height: "40px",
-          width: "120px",
-          textAlign: "left"
-        }}
-      >
-        + Add List
-      </Button>
-    );
-    // console.log(aList);
     return aList;
   }
 
@@ -84,6 +67,33 @@ export default function Board(props) {
     if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
   }
 
+  const [show, setShow] = useState(false);
+  const [tempTitle, setTempTitle] = useState(props.card.title);
+  const [cardTitle, setCardTitle] = useState(props.card.title);
+
+  const handleClose = () => setShow(false);
+  function handleChange(e) {
+    setTempTitle(e);
+  }
+  const handleSubmit = () => {
+    setCardTitle(tempTitle);
+    setShow(false);
+    var formdata = new FormData();
+    formdata.set("title", tempTitle);
+    formdata.set("id", cid);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/updateCard",
+      data: formdata
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
+
+  const handleShow = () => {
+    setShow(true);
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <h1 style={{ display: "flex", justifyContent: "center", height: "4vh" }}>
@@ -91,6 +101,46 @@ export default function Board(props) {
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
         {renderCards()}
+        <Button
+          onClick={handleShow}
+          variant="secondary"
+          style={{
+            margin: "10px",
+            padding: "5px",
+            minWidth: "100px",
+            height: "40px",
+            width: "120px",
+            textAlign: "left"
+          }}
+        >
+          + Add List
+        </Button>
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Card Title</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form onSubmit={handleSubmit}>
+              <Form.Group controlId="formCardTitle">
+                <Form.Control
+                  // autofocus="true"
+                  type="cardTitle"
+                  defaultValue={cardTitle}
+                  onChange={e => handleChange(e.target.value)}
+                  // ref={textInput}
+                />
+              </Form.Group>
+            </form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleSubmit}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
         <div
           style={{
             position: "absolute",

@@ -15,6 +15,7 @@ const cardStyle = {
   // display: "table-column",
   display: "flex",
   maxHeight: "82vh",
+  // minHeight: "15vh",
   // minWidth: "20%",
   // height: "auto",
   flexDirection: "column",
@@ -44,7 +45,7 @@ const editCard = {
 };
 
 export default function Cards(props) {
-  let textInput = React.createRef();
+  // let textInput = React.createRef();
   const cid = props.card.id;
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
@@ -88,64 +89,66 @@ export default function Cards(props) {
     tasks.forEach(t => {
       taskList.push(<Tasks task={t} />);
     });
-    taskList.push(
-      <Button
-        variant="secondary"
-        onClick={console.log("add task")}
-        type="button"
-        style={{
-          margin: "4px",
-          textAlign: "left",
-          minWidth: "100px",
-          height: "35px",
-          width: "120px"
-        }}
-      >
-        + Add Task
-      </Button>
-    );
     return taskList;
   }
+  const [allTasks, setAllTasks] = useState(props.card.tasks);
   const [show, setShow] = useState(false);
+  const [showTaskModal, setShowTaskModal] = useState(false);
   const [tempTitle, setTempTitle] = useState(props.card.title);
   const [cardTitle, setCardTitle] = useState(props.card.title);
+  const [tempTask, setTempTask] = useState("");
+
   const handleClose = () => setShow(false);
+  const handleCloseTask = () => setShowTaskModal(false);
   function handleChange(e) {
     setTempTitle(e);
   }
+  function handleChangeTask(e) {
+    setTempTask(e);
+  }
   const handleSubmit = () => {
     setCardTitle(tempTitle);
-    // console.log("TEMP TITLE:", tempTitle);
-    // console.log("CARD TITLE:", cardTitle);
     setShow(false);
     var formdata = new FormData();
     formdata.set("title", tempTitle);
     formdata.set("id", cid);
-
-    // axios.post("http://127.0.0.1:5000/updateCard", {
-    //   title: cardTitle
-    // });
     axios({
       method: "post",
       url: "http://127.0.0.1:5000/updateCard",
       data: formdata
-      // headers: {
-      //   "Access-Control-Allow-Origin": "*",
-      //   "Content-Type": "multipart/form-data",
-      //   "Accept-Encoding": "gzip, deflate"
-      // }
     })
       .then(res => console.log(res))
       .catch(err => console.log(err));
   };
+  const handleSubmitTask = () => {
+    // setCardTitle(tempTitle);
+    const extraTask = {
+      body: tempTask,
+      cid: cid,
+      created: Date.UTC(),
+      torder: props.card["num_tasks"]
+    };
+    setAllTasks([...allTasks, extraTask]);
+    setShowTaskModal(false);
+    var formdata = new FormData();
+    formdata.set("body", tempTask);
+    formdata.set("cid", cid);
+    formdata.set("torder", props.card["num_tasks"]);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/addTask",
+      data: formdata
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+    // return renderTasks([extraTask]);
+  };
   const handleShow = () => {
     setShow(true);
-    // textInput.current.focus();
   };
-  function titleEdit() {
-    console.log("CLICK");
-    handleShow();
-  }
+  const handleShowTask = () => {
+    setShowTaskModal(true);
+  };
   return drag(
     drop(
       <div style={{ ...cardStyle, opacity, backgroundColor }}>
@@ -171,7 +174,51 @@ export default function Cards(props) {
             Edit
           </button>
         </a>
-        {renderTasks(props.card.tasks)}
+        {renderTasks(allTasks)}
+        <Button
+          variant="secondary"
+          onClick={handleShowTask}
+          type="button"
+          style={{
+            // position: "absolute",
+            margin: "5px",
+            textAlign: "left",
+            minWidth: "100px",
+            height: "35px",
+            width: "120px"
+            // bottom: "0"
+          }}
+        >
+          + Add Task
+        </Button>
+
+        <Modal show={showTaskModal} onHide={handleCloseTask}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add Task</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={handleSubmit}>
+              <Form.Group controlId="formCardTitle">
+                <Form.Control
+                  as="textarea"
+                  rows="3"
+                  type="cardTitle"
+                  placeholder={"Add Task"}
+                  onChange={e => handleChangeTask(e.target.value)}
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseTask}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleSubmitTask}>
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        {/* {------------------------------------------------------------------------------------------------------------------------------} */}
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Edit Card Title</Modal.Title>
@@ -184,7 +231,7 @@ export default function Cards(props) {
                   type="cardTitle"
                   defaultValue={cardTitle}
                   onChange={e => handleChange(e.target.value)}
-                  ref={textInput}
+                  // ref={textInput}
                 />
               </Form.Group>
             </form>

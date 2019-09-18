@@ -5,6 +5,7 @@ import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
 
 const taskStyle = {
+  // position: "absolute",
   display: "flex",
   padding: "2px",
   // width: "300px",
