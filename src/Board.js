@@ -7,6 +7,7 @@ import { ItemTypes } from "./Constants";
 import Cards from "./Cards";
 import Tasks from "./Tasks";
 import axios from "axios";
+import { Button, Form, Modal } from "react-bootstrap";
 
 function getStyle(backgroundColor) {
   return {
@@ -60,7 +61,7 @@ export default function Board(props) {
     // props.board.forEach(c => console.log(c));
     // console.log(boardData);
     aList.push(
-      <button
+      <Button
         style={{
           margin: "10px",
           padding: "5px",
@@ -71,7 +72,7 @@ export default function Board(props) {
         }}
       >
         + Add List
-      </button>
+      </Button>
     );
     // console.log(aList);
     return aList;

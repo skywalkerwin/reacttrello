@@ -15,10 +15,10 @@ const taskStyle = {
 const editTask = {
   display: "flex",
   position: "relative",
-  height: "20px",
-  // top: "5%",
-  bottom: "10px",
-  left: "85%"
+  height: "25px",
+  top: "1px",
+  // bottom: "1px",
+  left: "86%"
   // left: "10px"
 };
 
@@ -27,13 +27,14 @@ const buttonStyle = {
   width: "4%",
   border: "2px",
   padding: "1px",
-  margin: "1px"
+  margin: "1px",
+  border: "1px solid black"
 };
 
 const taskContent = {
   position: "relative",
   textAlign: "left",
-  right: "20px",
+  right: "35px",
   margin: "1px",
   width: "88%"
 };
@@ -119,7 +120,7 @@ export default function Tasks(props) {
             <Modal.Title>Edit Task Body</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <form autoFocus={"true"} onSubmit={handleSubmit}>
+            <Form autoFocus={"true"} onSubmit={handleSubmit}>
               <Form.Group controlId="formCardTitle">
                 <Form.Control
                   defaultValue={taskBody}
@@ -130,7 +131,7 @@ export default function Tasks(props) {
                   // ref={textInput}
                 />
               </Form.Group>
-            </form>
+            </Form>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

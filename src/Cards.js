@@ -14,6 +14,7 @@ const cardStyle = {
   // float: "left",
   // display: "table-column",
   display: "flex",
+  maxHeight: "75vh",
   // minWidth: "20%",
   // height: "auto",
   flexDirection: "column",
@@ -21,8 +22,8 @@ const cardStyle = {
   border: "4px solid blue",
   margin: "8px",
   borderRadius: "12px",
-  width: "400px"
-  // overflowX: "visible"
+  width: "340px",
+  overflowY: "auto"
 };
 
 const buttonStyle = {
@@ -49,16 +50,18 @@ function renderTasks(tasks) {
     taskList.push(<Tasks task={t} />);
   });
   taskList.push(
-    <input
+    <Button
       type="button"
-      value="+ Add Task"
+      // value="+ Add Task"
       style={{
-        margin: "5px",
+        margin: "4px",
         textAlign: "left",
-        minWidth: "150px",
-        height: "30px"
+        minWidth: "100px",
+        height: "35px"
       }}
-    ></input>
+    >
+      + Add Task
+    </Button>
   );
   return taskList;
 }
