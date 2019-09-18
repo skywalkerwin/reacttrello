@@ -10,12 +10,17 @@ import axios from "axios";
 
 function getStyle(backgroundColor) {
   return {
+    position: "absolute",
     display: "flex",
+    alignSelf: "flex-start",
     flexDirection: "row",
     justifyContent: "center",
-    height: "85vh",
+    height: "94.5%",
+    // width: "auto",
+    // maxWidth: "auto",
     padding: "5px",
-    border: "3px solid orange",
+    border: "5px solid orange",
+    // overflowX: "auto",
     backgroundColor
   };
 }
@@ -59,8 +64,9 @@ export default function Board(props) {
         style={{
           margin: "10px",
           padding: "5px",
-          width: "100px",
+          minWidth: "100px",
           height: "40px",
+          width: "100px",
           textAlign: "left"
         }}
       >
@@ -79,21 +85,33 @@ export default function Board(props) {
   return (
     <DndProvider backend={HTML5Backend}>
       <h1 style={{ display: "flex", justifyContent: "center", height: "4vh" }}>
-        KanBan
+        KanBan Drag-n-Drop
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
         {renderCards()}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          height: "9vh",
-          margin: "5px",
-          border: "2px solid red"
-        }}
-      >
-        <h1>🗑️ TRASH CAN - implement functionality</h1>
+        <div
+          style={{
+            position: "absolute",
+            display: "flex",
+            justifyContent: "center",
+            height: "10vh",
+            margin: "5px",
+            border: "2px dashed black",
+            bottom: "0%",
+            width: "100%",
+            backgroundColor: "rgba(255,0,0,.5)"
+          }}
+        >
+          <h1
+            style={{
+              position: "relative",
+              top: "20%",
+              overflow: "auto"
+            }}
+          >
+            🗑️ TRASH CAN - might have to put inside board, limit card height
+          </h1>
+        </div>
       </div>
     </DndProvider>
   );

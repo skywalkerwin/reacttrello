@@ -11,14 +11,18 @@ const cardStyle = {
   position: "relative",
   backgroundColor: "white",
   cursor: "move",
+  // float: "left",
+  // display: "table-column",
   display: "flex",
-  width: "30%",
-  height: "auto",
+  // minWidth: "20%",
+  // height: "auto",
   flexDirection: "column",
   padding: "5px",
   border: "4px solid blue",
   margin: "8px",
-  borderRadius: "12px"
+  borderRadius: "12px",
+  width: "400px"
+  // overflowX: "visible"
 };
 
 const buttonStyle = {
@@ -51,7 +55,7 @@ function renderTasks(tasks) {
       style={{
         margin: "5px",
         textAlign: "left",
-        width: "100px",
+        minWidth: "150px",
         height: "30px"
       }}
     ></input>

@@ -7,6 +7,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 const taskStyle = {
   display: "flex",
   padding: "2px",
+  // width: "300px",
   border: "3px solid green",
   margin: "5px",
   borderRadius: "10px"
@@ -17,7 +18,7 @@ const editTask = {
   height: "20px",
   // top: "5%",
   bottom: "10px",
-  left: "90%"
+  left: "85%"
   // left: "10px"
 };
 
