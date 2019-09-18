@@ -62,6 +62,7 @@ export default function Board(props) {
     // console.log(boardData);
     aList.push(
       <Button
+        variant="secondary"
         style={{
           margin: "10px",
           padding: "5px",
@@ -108,12 +109,11 @@ export default function Board(props) {
               position: "relative",
               display: "flex",
               justifyContent: "center",
-              top: "20%"
-              // overflow: "auto"
+              top: "20%",
+              overflowX: "hidden"
             }}
           >
-            🗑️ TRASH CAN - Drag here to Delete - might have to put inside board,
-            limit card height
+            🗑️ TRASH CAN - Drag here to Delete
           </h3>
         </div>
       </div>

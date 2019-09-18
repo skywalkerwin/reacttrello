@@ -43,30 +43,6 @@ const editCard = {
   margin: "6px"
 };
 
-function renderTasks(tasks) {
-  var taskList = [];
-  var ctasks = [];
-  tasks.forEach(t => {
-    taskList.push(<Tasks task={t} />);
-  });
-  taskList.push(
-    <Button
-      type="button"
-      // value="+ Add Task"
-      style={{
-        margin: "4px",
-        textAlign: "left",
-        minWidth: "100px",
-        height: "35px",
-        width: "120px"
-      }}
-    >
-      + Add Task
-    </Button>
-  );
-  return taskList;
-}
-
 export default function Cards(props) {
   let textInput = React.createRef();
   const cid = props.card.id;
@@ -106,6 +82,30 @@ export default function Cards(props) {
   }
   const opacity = isDragging ? 0 : 1;
 
+  function renderTasks(tasks) {
+    var taskList = [];
+    var ctasks = [];
+    tasks.forEach(t => {
+      taskList.push(<Tasks task={t} />);
+    });
+    taskList.push(
+      <Button
+        variant="secondary"
+        onClick={console.log("add task")}
+        type="button"
+        style={{
+          margin: "4px",
+          textAlign: "left",
+          minWidth: "100px",
+          height: "35px",
+          width: "120px"
+        }}
+      >
+        + Add Task
+      </Button>
+    );
+    return taskList;
+  }
   const [show, setShow] = useState(false);
   const [tempTitle, setTempTitle] = useState(props.card.title);
   const [cardTitle, setCardTitle] = useState(props.card.title);
@@ -177,10 +177,10 @@ export default function Cards(props) {
             <Modal.Title>Edit Card Title</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <form autofocus="true" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
               <Form.Group controlId="formCardTitle">
                 <Form.Control
-                  autofocus="true"
+                  // autofocus="true"
                   type="cardTitle"
                   defaultValue={cardTitle}
                   onChange={e => handleChange(e.target.value)}

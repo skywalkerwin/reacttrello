@@ -120,11 +120,13 @@ export default function Tasks(props) {
             <Modal.Title>Edit Task Body</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form autoFocus={"true"} onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit}>
               <Form.Group controlId="formCardTitle">
                 <Form.Control
+                  as="textarea"
+                  rows="3"
                   defaultValue={taskBody}
-                  autoFocus={"true"}
+                  // autoFocus={"true"}
                   type="cardTitle"
                   // placeholder={taskBody}
                   onChange={e => handleChange(e.target.value)}
