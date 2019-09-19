@@ -19,11 +19,13 @@ const cardStyle = {
   // minWidth: "20%",
   // height: "auto",
   flexDirection: "column",
-  padding: "5px",
+  padding: "4px",
   border: "4px solid blue",
-  margin: "8px",
-  borderRadius: "12px",
-  width: "340px",
+  margin: "6px",
+  marginTop: "12px",
+  borderRadius: "15px",
+  width: "320px",
+  overflow: "hidden",
   overflowY: "auto"
 };
 
@@ -45,6 +47,7 @@ const editCard = {
 };
 
 export default function Cards(props) {
+  const card = props.card;
   const cardID = props.card.cardID;
   const [allTasks, setAllTasks] = useState(props.card.tasks);
   const [show, setShow] = useState(false);
@@ -52,6 +55,7 @@ export default function Cards(props) {
   const [tempTitle, setTempTitle] = useState(props.card.title);
   const [cardTitle, setCardTitle] = useState(props.card.title);
   const [tempTask, setTempTask] = useState("");
+  const [numTasks, setNumTasks] = useState(card.numTasks);
   const [deleted, setDeleted] = useState(false);
 
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
@@ -80,10 +84,10 @@ export default function Cards(props) {
           return null;
         } else if (dropTarget == "board") {
           console.log("board");
-          return;
+          // return;
         } else if (dropTarget == "card") {
           console.log("card");
-          return;
+          // return;
         }
       }
     },
@@ -102,9 +106,10 @@ export default function Cards(props) {
       if (didDrop) {
         return;
       }
+      // console.log(didDrop);
       setHasDropped(true);
       setHasDroppedOnChild(didDrop);
-      return { droppedOn: "card", cardID: cardID };
+      return { droppedOn: "card", title: props.card.title, cardID: cardID };
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -114,15 +119,38 @@ export default function Cards(props) {
       obj: monitor.getItemType()
     })
   });
+
+  const [hasDroppedTop, setHasDroppedTop] = useState(false);
+  const [hasDroppedOnChildTop, setHasDroppedOnChildTop] = useState(false);
+  const [{ isOverTop, isOverCurrentTop, objTop, resTop }, dropTop] = useDrop({
+    accept: [ItemTypes.CARD, ItemTypes.TASK],
+    drop(item, monitor) {
+      const didDrop = monitor.didDrop();
+      if (didDrop) {
+        return;
+      }
+      // console.log(didDrop);
+      setHasDroppedTop(true);
+      setHasDroppedOnChildTop(didDrop);
+      return { droppedOn: "cardTop", title: props.card.title, cardID: cardID };
+    },
+    collect: monitor => ({
+      isOverTop: monitor.isOver(),
+      isOverCurrentTop: monitor.isOver({ shallow: true }),
+      resTop: monitor.getDropResult(),
+      objTop: monitor.getItemType()
+    })
+  });
+
   let backgroundColor = "rgba(200,200,255,1)";
-  if (isOverCurrent || isOver) {
+  if (isOverCurrent || isOverCurrentTop) {
     if (obj == ItemTypes.TASK) {
       backgroundColor = "lightgreen";
     } else if (obj == ItemTypes.CARD) {
       backgroundColor = "violet";
     }
   }
-  const opacity = isDragging ? 0 : 1;
+  const opacity = isDragging ? 0.2 : 1;
 
   function renderTasks(tasks) {
     var taskList = [];
@@ -157,17 +185,19 @@ export default function Cards(props) {
       .catch(err => console.log(err));
   };
   const handleSubmitTask = () => {
-    const boardID = props.card.boardID;
-    const cardID = props.card.cardID;
+    const boardID = card.boardID;
+    const cardID = card.cardID;
     // const taskID = props.nextTaskID;
     const created = new Date().toUTCString();
-    const numTasks = props.card.numTasks + 1;
+    // setNumTasks(numTasks + 1);
+    // console.log("num_tasks");
+    // console.log(numTasks);
     setShowTaskModal(false);
     var formdata = new FormData();
     formdata.set("boardID", boardID);
     formdata.set("body", tempTask);
     formdata.set("cardID", cardID);
-    formdata.set("taskOrder", numTasks);
+    // formdata.set("taskOrder", numTasks);
     axios({
       method: "post",
       url: "http://127.0.0.1:5000/addTask",
@@ -175,7 +205,7 @@ export default function Cards(props) {
     })
       .then(res => {
         // console.log("IN TASK RESULT");
-        // console.log(res);
+        console.log(res);
         const extraTask = {
           boardID: res.data.boardID,
           body: tempTask,
@@ -184,6 +214,11 @@ export default function Cards(props) {
           taskID: res.data.taskID,
           taskOrder: res.data.numTasks
         };
+        console.log(extraTask);
+        while (extraTask == undefined) {
+          console.log("wait");
+        }
+        console.log(extraTask.taskOrder);
         if (allTasks !== undefined) {
           setAllTasks([...Array.from(allTasks), extraTask]);
         } else {
@@ -205,6 +240,7 @@ export default function Cards(props) {
       drop(
         <div style={{ ...cardStyle, opacity, backgroundColor }}>
           <h2
+            ref={dropTop}
             style={{
               top: "0",
               left: "0",
@@ -212,10 +248,11 @@ export default function Cards(props) {
               bottom: "0",
               display: "flex",
               justifyContent: "center",
-              margin: "3px"
+              margin: "4px"
             }}
           >
             {cardTitle}
+            numTasks{card.numTasks}
           </h2>
           <a style={editCard}>
             <button
@@ -233,12 +270,14 @@ export default function Cards(props) {
             type="button"
             style={{
               // position: "absolute",
-              margin: "5px",
+              borderRadius: "5px",
+              marginTop: "5px",
+              marginBottom: "5px",
+              marginLeft: "8px",
               textAlign: "left",
               minWidth: "100px",
               height: "35px",
-              width: "120px"
-              // bottom: "0"
+              width: "110px"
             }}
           >
             + Add Task

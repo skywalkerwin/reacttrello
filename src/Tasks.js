@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { ItemTypes } from "./Constants";
-import { useDrag } from "react-dnd";
+import { useDrag, useDrop } from "react-dnd";
 import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
 
 const taskStyle = {
   // position: "absolute",
+  overflow: "hidden",
   display: "flex",
-  padding: "2px",
+  padding: "3px",
   // width: "300px",
-  border: "3px solid green",
+  border: "4px solid green",
   margin: "5px",
   borderRadius: "10px"
 };
@@ -40,18 +41,48 @@ const taskContent = {
   width: "88%"
 };
 export default function Tasks(props) {
-  const taskID = props.task.taskID;
+  const task = props.task;
+  const taskID = task.taskID;
   const [show, setShow] = useState(false);
   const [tempBody, setTempBody] = useState(props.task.body);
   const [taskBody, setTaskBody] = useState(props.task.body);
   const [deleted, setDeleted] = useState(false);
   const handleClose = () => setShow(false);
-
+  function deleteTask(tid) {
+    var formdata = new FormData();
+    formdata.set("taskID", tid);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/deleteTask",
+      data: formdata
+    })
+      .then(res => {
+        console.log(res);
+        setDeleted(true);
+      })
+      .catch(err => console.log(err));
+  }
+  function moveTask(tid, droppedid, cid) {
+    var formdata = new FormData();
+    formdata.set("taskID", tid);
+    formdata.set("droppedID", Number(droppedid));
+    formdata.set("cardID", Number(cid));
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/moveTask",
+      data: formdata
+    })
+      .then(res => {
+        console.log(res);
+        // setDeleted(true);
+      })
+      .catch(err => console.log(err));
+  }
   const [{ isDragging, xy }, drag] = useDrag({
     item: { type: ItemTypes.TASK },
     begin(monitor) {},
     end(item, monitor) {
-      console.log("DROPPED");
+      console.log("TASK DROPPED");
       const dropRes = monitor.getDropResult();
       if (dropRes != null) {
         console.log(dropRes);
@@ -59,24 +90,39 @@ export default function Tasks(props) {
         // console.log(dropTarget);
         if (dropTarget == "trash") {
           console.log("Task dropped on trash");
-          var formdata = new FormData();
-          formdata.set("taskID", taskID);
-          axios({
-            method: "post",
-            url: "http://127.0.0.1:5000/deleteTask",
-            data: formdata
-          })
-            .then(res => {
-              console.log(res);
-              setDeleted(true);
-            })
-            .catch(err => console.log(err));
+          deleteTask(taskID);
           return null;
         } else if (dropTarget == "board") {
           console.log("board");
           return;
+        } else if (dropTarget == "cardTop") {
+          console.log("cardTop");
+          return;
         } else if (dropTarget == "card") {
           console.log("card");
+          return;
+        } else if (dropTarget == "task") {
+          if (task.cardID == dropRes.cardID) {
+            if (task.taskID != dropRes.taskID) {
+              console.log("ReOrder on same Card");
+              // console.log(task.taskID);
+              // console.log(dropRes.taskID);
+              moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+            }
+          }
+          if (task.cardID != dropRes.cardID) {
+            console.log("Moved to different Card");
+            // deleteTask(taskID);
+          }
+          // console.log("task");
+          // const moveTask = {
+          //   boardID: task.boardID,
+          //   body: task.body,
+          //   cardID: task.cardID,
+          //   created: task.created,
+          //   taskID: task.taskID,
+          //   taskOrder: task.taskOrder
+          // };
           return;
         }
       }
@@ -86,8 +132,51 @@ export default function Tasks(props) {
       xy: monitor.getClientOffset()
     })
   });
+
+  const [hasDropped, setHasDropped] = useState(false);
+  const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
+  const [{ isOver, isOverCurrent, obj, res }, drop] = useDrop({
+    accept: [ItemTypes.TASK],
+    drop(item, monitor) {
+      const didDrop = monitor.didDrop();
+      if (didDrop) {
+        // console.log("DROPPED ON TASK");
+        return;
+      }
+      setHasDropped(true);
+      setHasDroppedOnChild(didDrop);
+      console.log(monitor.isOver());
+      return {
+        droppedOn: "task",
+        taskID: Number(taskID),
+        cardID: Number(task.cardID)
+      };
+    },
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+      isOverCurrent: monitor.isOver({ shallow: true }),
+      res: monitor.getDropResult(),
+      obj: monitor.getItemType()
+    })
+  });
+  // console.log("in TASK");
+  // if (isOver || isOverCurrent) {
+  //   console.log("in TASK");
+  //   console.log(isOver);
+  //   console.log(isOverCurrent);
+  // }
+  // console.log(isOver);
+  // console.log(isOverCurrent);
   let backgroundColor = "rgba(255,255,255,.9)";
-  const opacity = isDragging ? 0 : 1;
+  if (isOverCurrent || isOver) {
+    if (obj == ItemTypes.TASK) {
+      backgroundColor = "yellow";
+    }
+    //  else if (obj == ItemTypes.CARD) {
+    //   backgroundColor = "violet";
+    // }
+  }
+  const opacity = isDragging ? 0.2 : 1;
 
   function handleChange(e) {
     setTempBody(e);
@@ -117,45 +206,51 @@ export default function Tasks(props) {
     return null;
   } else {
     return drag(
-      <div style={{ ...taskStyle, opacity, backgroundColor }}>
-        <p style={editTask}>
-          <button
-            // style={buttonStyle}
-            type="button"
-            className="btn btn-default btn-sm"
-            onClick={handleShow}
-          >
-            Edit
-          </button>
-          <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Edit Task Body</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="formCardTitle">
-                  <Form.Control
-                    as="textarea"
-                    rows="3"
-                    defaultValue={taskBody}
-                    type="cardTitle"
-                    onChange={e => handleChange(e.target.value)}
-                  />
-                </Form.Group>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              <Button variant="primary" onClick={handleSubmit}>
-                Save Changes
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </p>
-        <p style={taskContent}>{taskBody}</p>
-      </div>
+      drop(
+        <div style={{ ...taskStyle, opacity, backgroundColor }}>
+          <p style={editTask}>
+            <button
+              // style={buttonStyle}
+              type="button"
+              className="btn btn-default btn-sm"
+              onClick={handleShow}
+            >
+              Edit
+            </button>
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Edit Task Body</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group controlId="formCardTitle">
+                    <Form.Control
+                      as="textarea"
+                      rows="3"
+                      defaultValue={taskBody}
+                      type="cardTitle"
+                      onChange={e => handleChange(e.target.value)}
+                    />
+                  </Form.Group>
+                </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={handleSubmit}>
+                  Save Changes
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </p>
+          <p style={taskContent}>
+            {taskBody}
+            ORDER
+            {task.taskOrder}
+          </p>
+        </div>
+      )
     );
   }
 }

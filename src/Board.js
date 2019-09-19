@@ -15,14 +15,17 @@ function getStyle(backgroundColor) {
     display: "flex",
     alignSelf: "flex-start",
     flexDirection: "row",
-    justifyContent: "center",
-    height: "94.5%",
+    justifyContent: "left",
+    height: "94%",
+    bottom: "0",
     // width: "auto",
     // maxWidth: "auto",
     minWidth: "100vw",
     padding: "5px",
     border: "5px solid orange",
-    // overflowX: "auto",
+    borderTopLeftRadius: "25px",
+    borderTopRightRadius: "25px",
+    overflow: "hidden",
     backgroundColor
   };
 }
@@ -105,13 +108,13 @@ export default function Board(props) {
     setTempTitle(e);
   }
   const handleSubmit = () => {
-    const cardOrder = props.numCards + 1;
+    // const cardOrder = props.numCards + 1;
     const created = new Date().toUTCString();
     setCardTitle(tempTitle);
     setShow(false);
     var formdata = new FormData();
     formdata.set("boardID", props.boardID);
-    formdata.set("cardOrder", cardOrder);
+    // formdata.set("cardOrder", cardOrder);
     formdata.set("title", tempTitle);
     axios({
       method: "post",
@@ -126,7 +129,7 @@ export default function Board(props) {
           created: res.data.created,
           numTasks: 0,
           tasks: [],
-          title: tempTitle
+          title: res.data.title
         };
         setAllCards([...allCards, extraCard]);
       })
@@ -139,7 +142,7 @@ export default function Board(props) {
   return (
     <DndProvider backend={HTML5Backend}>
       <h1 style={{ display: "flex", justifyContent: "center", height: "4vh" }}>
-        KanBan Drag-n-Drop
+        KanBan | Drag-n-Drop | Flask backend API / React frontend UI
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
         {renderCards(allCards)}
@@ -147,12 +150,13 @@ export default function Board(props) {
           onClick={handleShow}
           variant="secondary"
           style={{
+            borderRadius: "5px",
             margin: "10px",
             padding: "5px",
             minWidth: "100px",
             height: "40px",
-            width: "120px",
-            textAlign: "left"
+            width: "120px"
+            // textAlign: "left"
           }}
         >
           + Add List
@@ -189,12 +193,16 @@ export default function Board(props) {
           style={{
             position: "absolute",
             display: "flex",
-            justifyContent: "left",
+            justifyContent: "center",
             height: "8vh",
             margin: "0px",
-            border: "4px dashed black",
-            bottom: "0%",
+            border: "5px dashed black",
+            bottom: "0",
+            left: "0",
+            right: "0",
             width: "100%",
+            borderRadius: "6px",
+            // overflow: "visible",
             backgroundColor: backgroundColorTrash
           }}
         >
@@ -207,7 +215,8 @@ export default function Board(props) {
               overflow: "hidden"
             }}
           >
-            🗑️ TRASH CAN - Drag here to Delete
+            🗑️ TRASH CAN - Drag here to Delete - ... Persistent Data
+            (postgreSQL) - authorization/multi-users/multi-boards coming soon?
           </h2>
         </div>
       </div>
