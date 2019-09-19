@@ -198,103 +198,107 @@ export default function Cards(props) {
   const handleShowTask = () => {
     setShowTaskModal(true);
   };
-  return drag(
-    drop(
-      <div style={{ ...cardStyle, opacity, backgroundColor }}>
-        <h2
-          style={{
-            top: "0",
-            left: "0",
-            right: "0",
-            bottom: "0",
-            display: "flex",
-            justifyContent: "center",
-            margin: "3px"
-          }}
-        >
-          {cardTitle}
-        </h2>
-        <a style={editCard}>
-          <button
-            onClick={handleShow}
-            type="button"
-            className="btn btn-default btn-sm"
+  if (deleted == true) {
+    return null;
+  } else {
+    return drag(
+      drop(
+        <div style={{ ...cardStyle, opacity, backgroundColor }}>
+          <h2
+            style={{
+              top: "0",
+              left: "0",
+              right: "0",
+              bottom: "0",
+              display: "flex",
+              justifyContent: "center",
+              margin: "3px"
+            }}
           >
-            Edit
-          </button>
-        </a>
-        {renderTasks(allTasks)}
-        <Button
-          variant="secondary"
-          onClick={handleShowTask}
-          type="button"
-          style={{
-            // position: "absolute",
-            margin: "5px",
-            textAlign: "left",
-            minWidth: "100px",
-            height: "35px",
-            width: "120px"
-            // bottom: "0"
-          }}
-        >
-          + Add Task
-        </Button>
+            {cardTitle}
+          </h2>
+          <a style={editCard}>
+            <button
+              onClick={handleShow}
+              type="button"
+              className="btn btn-default btn-sm"
+            >
+              Edit
+            </button>
+          </a>
+          {renderTasks(allTasks)}
+          <Button
+            variant="secondary"
+            onClick={handleShowTask}
+            type="button"
+            style={{
+              // position: "absolute",
+              margin: "5px",
+              textAlign: "left",
+              minWidth: "100px",
+              height: "35px",
+              width: "120px"
+              // bottom: "0"
+            }}
+          >
+            + Add Task
+          </Button>
 
-        <Modal show={showTaskModal} onHide={handleCloseTask}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Task</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form onSubmit={handleSubmit}>
-              <Form.Group controlId="formCardTitle">
-                <Form.Control
-                  as="textarea"
-                  rows="3"
-                  type="cardTitle"
-                  placeholder={"Add Task"}
-                  onChange={e => handleChangeTask(e.target.value)}
-                />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseTask}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleSubmitTask}>
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Modal>
-        {/* {------------------------------------------------------------------------------------------------------------------------------} */}
-        <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Card Title</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <form onSubmit={handleSubmit}>
-              <Form.Group controlId="formCardTitle">
-                <Form.Control
-                  // autofocus="true"
-                  type="cardTitle"
-                  defaultValue={cardTitle}
-                  onChange={e => handleChange(e.target.value)}
-                  // ref={textInput}
-                />
-              </Form.Group>
-            </form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleSubmit}>
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      </div>
-    )
-  );
+          <Modal show={showTaskModal} onHide={handleCloseTask}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add Task</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="formCardTitle">
+                  <Form.Control
+                    as="textarea"
+                    rows="3"
+                    type="cardTitle"
+                    placeholder={"Add Task"}
+                    onChange={e => handleChangeTask(e.target.value)}
+                  />
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseTask}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleSubmitTask}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {/* {------------------------------------------------------------------------------------------------------------------------------} */}
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Edit Card Title</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <form onSubmit={handleSubmit}>
+                <Form.Group controlId="formCardTitle">
+                  <Form.Control
+                    // autofocus="true"
+                    type="cardTitle"
+                    defaultValue={cardTitle}
+                    onChange={e => handleChange(e.target.value)}
+                    // ref={textInput}
+                  />
+                </Form.Group>
+              </form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleSubmit}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
+      )
+    );
+  }
 }

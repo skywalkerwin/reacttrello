@@ -19,6 +19,7 @@ function getStyle(backgroundColor) {
     height: "94.5%",
     // width: "auto",
     // maxWidth: "auto",
+    minWidth: "100vw",
     padding: "5px",
     border: "5px solid orange",
     // overflowX: "auto",
