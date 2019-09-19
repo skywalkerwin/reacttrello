@@ -109,7 +109,11 @@ export default function Cards(props) {
       // console.log(didDrop);
       setHasDropped(true);
       setHasDroppedOnChild(didDrop);
-      return { droppedOn: "card", title: props.card.title, cardID: cardID };
+      return {
+        droppedOn: "card",
+        taskID: Number(-1),
+        cardID: Number(card.cardID)
+      };
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -132,7 +136,11 @@ export default function Cards(props) {
       // console.log(didDrop);
       setHasDroppedTop(true);
       setHasDroppedOnChildTop(didDrop);
-      return { droppedOn: "cardTop", title: props.card.title, cardID: cardID };
+      return {
+        droppedOn: "cardTop",
+        taskID: Number(0),
+        cardID: Number(card.cardID)
+      };
     },
     collect: monitor => ({
       isOverTop: monitor.isOver(),

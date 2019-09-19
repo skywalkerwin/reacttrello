@@ -97,16 +97,24 @@ export default function Tasks(props) {
           return;
         } else if (dropTarget == "cardTop") {
           console.log("cardTop");
-          return;
+          if (task.cardID == dropRes.cardID) {
+            if (task.taskID != dropRes.taskID) {
+              console.log("ReOrder on same Card");
+              moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+            }
+          }
         } else if (dropTarget == "card") {
           console.log("card");
-          return;
+          if (task.cardID == dropRes.cardID) {
+            if (task.taskID != dropRes.taskID) {
+              console.log("ReOrder on same Card");
+              moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+            }
+          }
         } else if (dropTarget == "task") {
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
               console.log("ReOrder on same Card");
-              // console.log(task.taskID);
-              // console.log(dropRes.taskID);
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
             }
           }
