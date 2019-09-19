@@ -45,7 +45,8 @@ export default function Board(props) {
         return;
       }
       setHasDropped(true);
-      setHasDroppedOnChild(didDrop);
+      // setHasDroppedOnChild(didDrop);
+      return { droppedOn: "board" };
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
@@ -54,33 +55,46 @@ export default function Board(props) {
     })
   });
 
+  const [hasDroppedTrash, setHasDroppedTrash] = useState(false);
+  // const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
+  const [{ isOverTrash, isOverCurrentTrash, objTrash }, dropTrash] = useDrop({
+    accept: [ItemTypes.CARD, ItemTypes.TASK],
+    drop(item, monitor) {
+      const didDrop = monitor.didDrop();
+      if (didDrop) {
+        // console.log("did drop");
+        return;
+      }
+      setHasDroppedTrash(true);
+      // setHasDroppedOnChild(didDrop);
+      return { droppedOn: "trash" };
+    },
+    collect: monitor => ({
+      isOverTrash: monitor.isOver(),
+      isOverCurrentTrash: monitor.isOver({ shallow: true }),
+      objTrash: monitor.getItemType()
+    })
+  });
+
   function renderCards(totalCards) {
     var cardList = [];
     if (totalCards !== undefined) {
-      // props.cards.forEach(c => console.log(c));
-      totalCards.forEach(c =>
-        cardList.push(
-          <Cards
-            card={c}
-            // nextCardID={props.nextCardID}
-            // nextTaskID={props.nextTaskID}
-            // numCards={props.numCards}
-          />
-        )
-      );
+      totalCards.forEach(c => cardList.push(<Cards card={c} />));
     }
     return cardList;
   }
 
   let backgroundColor = "rgba(255,255,150,.5)";
-  if (isOverCurrent || isOver) {
-    if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
+  // if (isOverCurrent || isOver) {
+  //   if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
+  // }
+  let backgroundColorTrash = "rgba(255,0,0,.5)";
+  if (isOverCurrentTrash || isOverTrash) {
+    if (objTrash == ItemTypes.CARD || objTrash == ItemTypes.TASK)
+      backgroundColorTrash = "red";
   }
 
   const [allCards, setAllCards] = useState(props.cards);
-  // console.log("ALL CARDS");
-  // console.log(allCards);
-  // console.log(props.cards);
   const [show, setShow] = useState(false);
   const [tempTitle, setTempTitle] = useState("");
   const [cardTitle, setCardTitle] = useState("");
@@ -104,8 +118,6 @@ export default function Board(props) {
       data: formdata
     })
       .then(res => {
-        console.log("IN NEW CARD");
-        console.log(res);
         const extraCard = {
           boardID: res.data.boardID,
           cardID: res.data.cardID,
@@ -172,19 +184,20 @@ export default function Board(props) {
           </Modal.Footer>
         </Modal>
         <div
+          ref={dropTrash}
           style={{
             position: "absolute",
             display: "flex",
             justifyContent: "left",
-            height: "7vh",
+            height: "8vh",
             margin: "0px",
             border: "4px dashed black",
             bottom: "0%",
             width: "100%",
-            backgroundColor: "rgba(255,0,0,.5)"
+            backgroundColor: backgroundColorTrash
           }}
         >
-          <h3
+          <h2
             style={{
               position: "relative",
               display: "flex",
@@ -194,7 +207,7 @@ export default function Board(props) {
             }}
           >
             🗑️ TRASH CAN - Drag here to Delete
-          </h3>
+          </h2>
         </div>
       </div>
     </DndProvider>

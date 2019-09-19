@@ -45,11 +45,48 @@ const editCard = {
 };
 
 export default function Cards(props) {
-  // let textInput = React.createRef();
-  // console.log(props.card);
   const cardID = props.card.cardID;
+  const [allTasks, setAllTasks] = useState(props.card.tasks);
+  const [show, setShow] = useState(false);
+  const [showTaskModal, setShowTaskModal] = useState(false);
+  const [tempTitle, setTempTitle] = useState(props.card.title);
+  const [cardTitle, setCardTitle] = useState(props.card.title);
+  const [tempTask, setTempTask] = useState("");
+  const [deleted, setDeleted] = useState(false);
+
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
+    begin(monitor) {},
+    end(item, monitor) {
+      console.log("DROPPED");
+      const dropRes = monitor.getDropResult();
+      if (dropRes != null) {
+        console.log(dropRes);
+        const dropTarget = dropRes.droppedOn;
+        if (dropTarget == "trash") {
+          console.log("Card dropped on trash");
+          var formdata = new FormData();
+          formdata.set("cardID", cardID);
+          axios({
+            method: "post",
+            url: "http://127.0.0.1:5000/deleteCard",
+            data: formdata
+          })
+            .then(res => {
+              console.log(res);
+              setDeleted(true);
+            })
+            .catch(err => console.log(err));
+          return null;
+        } else if (dropTarget == "board") {
+          console.log("board");
+          return;
+        } else if (dropTarget == "card") {
+          console.log("card");
+          return;
+        }
+      }
+    },
     collect: monitor => ({
       isDragging: !!monitor.isDragging(),
       getitem: monitor.getItem(),
@@ -58,8 +95,8 @@ export default function Cards(props) {
   });
   const [hasDropped, setHasDropped] = useState(false);
   const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
-  const [{ isOver, isOverCurrent, xy, res }, drop] = useDrop({
-    accept: ItemTypes.TASK,
+  const [{ isOver, isOverCurrent, obj, xy, res }, drop] = useDrop({
+    accept: [ItemTypes.CARD, ItemTypes.TASK],
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
@@ -67,48 +104,35 @@ export default function Cards(props) {
       }
       setHasDropped(true);
       setHasDroppedOnChild(didDrop);
-      // console.log("Card's Tasks");
-      // console.log(testBoard.tasks.filter(t => t.cid == cid));
-      return { cardID: cardID };
+      return { droppedOn: "card", cardID: cardID };
     },
     collect: monitor => ({
       isOver: monitor.isOver(),
       isOverCurrent: monitor.isOver({ shallow: true }),
       xy: monitor.getSourceClientOffset(),
-      res: monitor.getDropResult()
+      res: monitor.getDropResult(),
+      obj: monitor.getItemType()
     })
   });
   let backgroundColor = "rgba(200,200,255,1)";
   if (isOverCurrent || isOver) {
-    backgroundColor = "lightgreen";
+    if (obj == ItemTypes.TASK) {
+      backgroundColor = "lightgreen";
+    } else if (obj == ItemTypes.CARD) {
+      backgroundColor = "violet";
+    }
   }
   const opacity = isDragging ? 0 : 1;
 
   function renderTasks(tasks) {
     var taskList = [];
-    console.log("IN RENDER TASKS");
-    console.log(tasks);
-    console.log(props.card);
     if (props.card !== undefined && tasks !== undefined) {
       Array.from(tasks).forEach(t => {
-        taskList.push(
-          <Tasks
-            task={t}
-            nextCardID={props.nextCardID}
-            nextTaskID={props.nextTaskID}
-            numCards={props.numCards}
-          />
-        );
+        taskList.push(<Tasks task={t} />);
       });
     }
     return taskList;
   }
-  const [allTasks, setAllTasks] = useState(props.card.tasks);
-  const [show, setShow] = useState(false);
-  const [showTaskModal, setShowTaskModal] = useState(false);
-  const [tempTitle, setTempTitle] = useState(props.card.title);
-  const [cardTitle, setCardTitle] = useState(props.card.title);
-  const [tempTask, setTempTask] = useState("");
 
   const handleClose = () => setShow(false);
   const handleCloseTask = () => setShowTaskModal(false);
@@ -150,8 +174,8 @@ export default function Cards(props) {
       data: formdata
     })
       .then(res => {
-        console.log("IN TASK RESULT");
-        console.log(res);
+        // console.log("IN TASK RESULT");
+        // console.log(res);
         const extraTask = {
           boardID: res.data.boardID,
           body: tempTask,
