@@ -58,6 +58,25 @@ export default function Cards(props) {
   const [numTasks, setNumTasks] = useState(card.numTasks);
   const [deleted, setDeleted] = useState(false);
 
+  // const getTasks = () => {
+  //   const cid = cardID;
+  //   console.log("ATTEMPTING UPDATE CALL");
+  //   var formdata = new FormData();
+  //   formdata.set("cardID", cardID);
+  //   axios({
+  //     method: "post",
+  //     url: "http://127.0.0.1:5000/getTasks",
+  //     data: formdata
+  //   })
+  //     .then(res => {
+  //       console.log("UPDATED TASKS");
+  //       console.log(res.data);
+  //       setAllTasks(res.data);
+  //     })
+  //     .catch(err => console.log(err));
+  // };
+  // const [childCall, setChildCall] = useState(getTasks);
+
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
     begin(monitor) {},
@@ -164,7 +183,7 @@ export default function Cards(props) {
     var taskList = [];
     if (props.card !== undefined && tasks !== undefined) {
       Array.from(tasks).forEach(t => {
-        taskList.push(<Tasks task={t} />);
+        taskList.push(<Tasks task={t} updateCard={props.updateCard} />);
       });
     }
     return taskList;

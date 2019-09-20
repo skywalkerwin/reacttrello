@@ -83,7 +83,9 @@ export default function Board(props) {
   function renderCards(totalCards) {
     var cardList = [];
     if (totalCards !== undefined) {
-      totalCards.forEach(c => cardList.push(<Cards card={c} />));
+      totalCards.forEach(c =>
+        cardList.push(<Cards card={c} updateCard={props.updateCard} />)
+      );
     }
     return cardList;
   }

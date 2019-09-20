@@ -12,15 +12,42 @@ import React, { Component } from "react";
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    this.updateCard = this.updateCard.bind(this);
     this.state = {
       cards: [],
       boardID: -1,
       numCards: 0,
-      nextCardID: 1,
-      nextTaskID: 1
+      numTasks: 0
     };
   }
-
+  updateCard(cid) {
+    console.log("ATTEMPTING UPDATE CALL");
+    var formdata = new FormData();
+    formdata.set("cardID", cid);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/getTasks",
+      data: formdata
+    })
+      .then(res => {
+        console.log("UPDATED TASKS");
+        const oldCards = this.state.cards.filter(c => c.cardID != cid);
+        const card = this.state.cards.filter(c => c.cardID == cid);
+        const newCard = {
+          boardID: card.boardID,
+          cardID: card.cardID,
+          created: card.created,
+          numTasks: card.numTasks,
+          title: card.title,
+          tasks: res.data
+        };
+        this.setState({
+          cards: [...oldCards, newCard]
+        });
+        console.log(res.data);
+      })
+      .catch(err => console.log(err));
+  }
   componentDidMount() {
     axios.get("http://127.0.0.1:5000/boardData").then(res => {
       // console.log(res);
@@ -29,28 +56,27 @@ export default class App extends React.Component {
       this.setState({
         cards: res.data["cards"],
         boardID: res.data["boardID"],
-        nextCardID: res.data["nextCardID"],
-        nextTaskID: res.data["nextTaskID"],
-        numCards: res.data["numCards"]
+        numCards: res.data["numCards"],
+        numTasks: res.data["numTasks"]
       });
     });
   }
-  // componentDidUpdate(prevProps) {
-  //   console.log("updated");
-  //   // if(prevProps !== )
-  //   axios.get("http://127.0.0.1:5000/boardData").then(res => {
-  //     // console.log(res);
-  //     // console.log(res.data);
-  //     //   console.log(res.data.cards);
-  //     this.setState({
-  //       cards: res.data["cards"],
-  //       boardID: res.data["boardID"],
-  //       nextCardID: res.data["nextCardID"],
-  //       nextTaskID: res.data["nextTaskID"],
-  //       numCards: res.data["numCards"]
-  //     });
-  //   });
-  // }
+  componentDidUpdate(prevProps) {
+    console.log("updated");
+    if (prevProps !== this.props)
+      axios.get("http://127.0.0.1:5000/boardData").then(res => {
+        // console.log(res);
+        // console.log(res.data);
+        //   console.log(res.data.cards);
+        this.setState({
+          cards: res.data["cards"],
+          boardID: res.data["boardID"],
+          nextCardID: res.data["nextCardID"],
+          nextTaskID: res.data["nextTaskID"],
+          numCards: res.data["numCards"]
+        });
+      });
+  }
   render() {
     return (
       <DndProvider backend={HTML5Backend}>
@@ -58,9 +84,9 @@ export default class App extends React.Component {
           <Board
             cards={this.state.cards}
             boardID={this.state.boardID}
-            nextCardID={this.state.nextCardID}
-            nextTaskID={this.state.nextTaskID}
             numCards={this.state.numCards}
+            numTasks={this.state.numTasks}
+            updateCard={this.updateCard}
           />
         )}
       </DndProvider>

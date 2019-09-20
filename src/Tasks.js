@@ -41,6 +41,8 @@ const taskContent = {
   width: "88%"
 };
 export default function Tasks(props) {
+  // console.log("props");
+  // console.log(props);
   const task = props.task;
   const taskID = task.taskID;
   const [show, setShow] = useState(false);
@@ -101,6 +103,8 @@ export default function Tasks(props) {
             if (task.taskID != dropRes.taskID) {
               console.log("ReOrder on same Card");
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+              setTaskBody(task.body);
+              props.updateCard(dropRes.cardID);
             }
           }
         } else if (dropTarget == "card") {
@@ -109,6 +113,8 @@ export default function Tasks(props) {
             if (task.taskID != dropRes.taskID) {
               console.log("ReOrder on same Card");
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+              setTaskBody(task.body);
+              props.updateCard(dropRes.cardID);
             }
           }
         } else if (dropTarget == "task") {
@@ -116,21 +122,13 @@ export default function Tasks(props) {
             if (task.taskID != dropRes.taskID) {
               console.log("ReOrder on same Card");
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+              setTaskBody(task.body);
+              props.updateCard(dropRes.cardID);
             }
           }
           if (task.cardID != dropRes.cardID) {
             console.log("Moved to different Card");
-            // deleteTask(taskID);
           }
-          // console.log("task");
-          // const moveTask = {
-          //   boardID: task.boardID,
-          //   body: task.body,
-          //   cardID: task.cardID,
-          //   created: task.created,
-          //   taskID: task.taskID,
-          //   taskOrder: task.taskOrder
-          // };
           return;
         }
       }
@@ -206,10 +204,7 @@ export default function Tasks(props) {
   const handleShow = () => {
     setShow(true);
   };
-  function titleEdit() {
-    console.log("CLICK");
-    handleShow();
-  }
+
   if (deleted == true) {
     return null;
   } else {
