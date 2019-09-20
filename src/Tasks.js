@@ -49,7 +49,29 @@ export default function Tasks(props) {
   const [tempBody, setTempBody] = useState(props.task.body);
   const [taskBody, setTaskBody] = useState(props.task.body);
   const [deleted, setDeleted] = useState(false);
+  //modal functions
   const handleClose = () => setShow(false);
+  function handleChange(e) {
+    setTempBody(e);
+  }
+  const handleSubmit = () => {
+    setTaskBody(tempBody);
+    setShow(false);
+    var formdata = new FormData();
+    formdata.set("body", tempBody);
+    formdata.set("taskID", taskID);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/updateTask",
+      data: formdata
+    })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  };
+  const handleShow = () => {
+    setShow(true);
+  };
+  //api function calls
   function deleteTask(tid) {
     var formdata = new FormData();
     formdata.set("taskID", tid);
@@ -81,47 +103,49 @@ export default function Tasks(props) {
       })
       .catch(err => console.log(err));
   }
-  const [{ isDragging, xy }, drag] = useDrag({
-    item: { type: ItemTypes.TASK },
+  //drag and drop function hooks
+  const [{ isDragging }, drag] = useDrag({
+    // item: { type: ItemTypes.TASK },
+    item: {
+      type: "task",
+      id: taskID,
+      body: task.body
+    },
     begin(monitor) {},
     end(item, monitor) {
-      console.log("TASK DROPPED");
+      console.log("TASK DRAGGED => DROPPED");
       const dropRes = monitor.getDropResult();
       if (dropRes != null) {
         console.log(dropRes);
         const dropTarget = dropRes.droppedOn;
         // console.log(dropTarget);
         if (dropTarget == "trash") {
-          console.log("Task dropped on trash");
+          console.log("Task dragged on trash");
           deleteTask(taskID);
           return null;
         } else if (dropTarget == "board") {
           console.log("board");
           return;
         } else if (dropTarget == "cardTop") {
-          console.log("cardTop");
+          console.log("dragged on cardTop");
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
-              // console.log("ReOrder on same Card");
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
               setTaskBody(task.body);
-              // props.updateCard(dropRes.cardID);
             }
           }
         } else if (dropTarget == "card") {
-          console.log("card");
+          console.log("dragged on card");
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
-              // console.log("ReOrder on same Card");
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
               setTaskBody(task.body);
-              // props.updateCard(dropRes.cardID);
             }
           }
         } else if (dropTarget == "task") {
+          console.log("dragged on task");
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
-              // console.log("ReOrder on same Card");
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
               setTaskBody(task.body);
               props.updateCard(dropRes.cardID);
@@ -135,8 +159,7 @@ export default function Tasks(props) {
       }
     },
     collect: monitor => ({
-      isDragging: !!monitor.isDragging(),
-      xy: monitor.getClientOffset()
+      isDragging: !!monitor.isDragging()
     })
   });
 
@@ -146,11 +169,13 @@ export default function Tasks(props) {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
-        // console.log("DROPPED ON TASK");
+        console.log("DROPPED ON TASK");
         return;
       }
+      console.log("DROPPED ON TASK");
+      console.log(monitor.getItem());
       setHasDropped(true);
-      console.log(monitor.isOver());
+      // console.log(monitor.isOver());
       return {
         droppedOn: "task",
         taskID: Number(taskID),
@@ -164,45 +189,14 @@ export default function Tasks(props) {
       obj: monitor.getItemType()
     })
   });
-  // console.log("in TASK");
-  // if (isOver || isOverCurrent) {
-  //   console.log("in TASK");
-  //   console.log(isOver);
-  //   console.log(isOverCurrent);
-  // }
-  // console.log(isOver);
-  // console.log(isOverCurrent);
+
   let backgroundColor = "rgba(255,255,255,.9)";
   if (isOverCurrent || isOver) {
     if (obj == ItemTypes.TASK) {
       backgroundColor = "yellow";
     }
-    //  else if (obj == ItemTypes.CARD) {
-    //   backgroundColor = "violet";
-    // }
   }
   const opacity = isDragging ? 0.2 : 1;
-
-  function handleChange(e) {
-    setTempBody(e);
-  }
-  const handleSubmit = () => {
-    setTaskBody(tempBody);
-    setShow(false);
-    var formdata = new FormData();
-    formdata.set("body", tempBody);
-    formdata.set("taskID", taskID);
-    axios({
-      method: "post",
-      url: "http://127.0.0.1:5000/updateTask",
-      data: formdata
-    })
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
-  };
-  const handleShow = () => {
-    setShow(true);
-  };
 
   if (deleted == true) {
     return null;

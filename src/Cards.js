@@ -99,8 +99,13 @@ export default function Cards(props) {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
+        console.log("DID DROP - card");
+        console.log(monitor.getItem());
+        console.log(monitor.getDropResult());
         return;
       }
+      console.log("DROPPED ON CARD");
+      console.log(monitor.getItem());
       setHasDropped(true);
       return {
         droppedOn: "card",
@@ -123,9 +128,12 @@ export default function Cards(props) {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
+        console.log("DID DROP - top");
         return;
       }
       // console.log(didDrop);
+      console.log("DROPPED ON CARDTOP");
+      console.log(monitor.getItem());
       setHasDroppedTop(true);
       return {
         droppedOn: "cardTop",
@@ -267,7 +275,7 @@ export default function Cards(props) {
               Edit
             </button>
           </a>
-          {checkUpdated()}
+          {/* {checkUpdated()} */}
           {renderTasks(allTasks)}
           <Button
             variant="secondary"
