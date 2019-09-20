@@ -29,18 +29,9 @@ function getStyle(backgroundColor) {
     backgroundColor
   };
 }
-// const boardStyle = {
-//   display: "flex",
-//   flexDirection: "row",
-//   justifyContent: "center",
-//   height: "25rem",
-//   padding: "5px",
-//   border: "1px solid orange"
-// };
 
 export default function Board(props) {
   const [hasDropped, setHasDropped] = useState(false);
-  const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
   const [{ isOver, isOverCurrent, obj }, drop] = useDrop({
     accept: [ItemTypes.CARD, ItemTypes.TASK],
     drop(item, monitor) {
@@ -49,7 +40,6 @@ export default function Board(props) {
         return;
       }
       setHasDropped(true);
-      // setHasDroppedOnChild(didDrop);
       return { droppedOn: "board" };
     },
     collect: monitor => ({
@@ -60,17 +50,14 @@ export default function Board(props) {
   });
 
   const [hasDroppedTrash, setHasDroppedTrash] = useState(false);
-  // const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
   const [{ isOverTrash, isOverCurrentTrash, objTrash }, dropTrash] = useDrop({
     accept: [ItemTypes.CARD, ItemTypes.TASK],
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
-        // console.log("did drop");
         return;
       }
       setHasDroppedTrash(true);
-      // setHasDroppedOnChild(didDrop);
       return { droppedOn: "trash" };
     },
     collect: monitor => ({
@@ -84,16 +71,20 @@ export default function Board(props) {
     var cardList = [];
     if (totalCards !== undefined) {
       totalCards.forEach(c =>
-        cardList.push(<Cards card={c} updateCard={props.updateCard} />)
+        cardList.push(
+          <Cards
+            card={c}
+            updateCard={props.updateCard}
+            updatedCardID={props.updatedCardID}
+            resetCheck={props.resetCheck}
+          />
+        )
       );
     }
     return cardList;
   }
 
   let backgroundColor = "rgba(255,255,150,.5)";
-  // if (isOverCurrent || isOver) {
-  //   if (obj == ItemTypes.CARD) backgroundColor = "lightgreen";
-  // }
   let backgroundColorTrash = "rgba(255,0,0,.5)";
   if (isOverCurrentTrash || isOverTrash) {
     if (objTrash == ItemTypes.CARD || objTrash == ItemTypes.TASK)

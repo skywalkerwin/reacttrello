@@ -39,10 +39,6 @@ const buttonStyle = {
 
 const editCard = {
   position: "absolute",
-  // left: "1px",
-  // height: "20px",
-  // bottom: "20%",
-  // left: "88%"
   margin: "6px"
 };
 
@@ -57,25 +53,6 @@ export default function Cards(props) {
   const [tempTask, setTempTask] = useState("");
   const [numTasks, setNumTasks] = useState(card.numTasks);
   const [deleted, setDeleted] = useState(false);
-
-  // const getTasks = () => {
-  //   const cid = cardID;
-  //   console.log("ATTEMPTING UPDATE CALL");
-  //   var formdata = new FormData();
-  //   formdata.set("cardID", cardID);
-  //   axios({
-  //     method: "post",
-  //     url: "http://127.0.0.1:5000/getTasks",
-  //     data: formdata
-  //   })
-  //     .then(res => {
-  //       console.log("UPDATED TASKS");
-  //       console.log(res.data);
-  //       setAllTasks(res.data);
-  //     })
-  //     .catch(err => console.log(err));
-  // };
-  // const [childCall, setChildCall] = useState(getTasks);
 
   const [{ isDragging, getitem, didDrop }, drag] = useDrag({
     item: { type: ItemTypes.CARD },
@@ -117,7 +94,6 @@ export default function Cards(props) {
     })
   });
   const [hasDropped, setHasDropped] = useState(false);
-  const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
   const [{ isOver, isOverCurrent, obj, xy, res }, drop] = useDrop({
     accept: [ItemTypes.CARD, ItemTypes.TASK],
     drop(item, monitor) {
@@ -125,9 +101,7 @@ export default function Cards(props) {
       if (didDrop) {
         return;
       }
-      // console.log(didDrop);
       setHasDropped(true);
-      setHasDroppedOnChild(didDrop);
       return {
         droppedOn: "card",
         taskID: Number(-1),
@@ -144,7 +118,6 @@ export default function Cards(props) {
   });
 
   const [hasDroppedTop, setHasDroppedTop] = useState(false);
-  const [hasDroppedOnChildTop, setHasDroppedOnChildTop] = useState(false);
   const [{ isOverTop, isOverCurrentTop, objTop, resTop }, dropTop] = useDrop({
     accept: [ItemTypes.CARD, ItemTypes.TASK],
     drop(item, monitor) {
@@ -154,7 +127,6 @@ export default function Cards(props) {
       }
       // console.log(didDrop);
       setHasDroppedTop(true);
-      setHasDroppedOnChildTop(didDrop);
       return {
         droppedOn: "cardTop",
         taskID: Number(0),
@@ -214,24 +186,19 @@ export default function Cards(props) {
   const handleSubmitTask = () => {
     const boardID = card.boardID;
     const cardID = card.cardID;
-    // const taskID = props.nextTaskID;
     const created = new Date().toUTCString();
-    // setNumTasks(numTasks + 1);
-    // console.log("num_tasks");
-    // console.log(numTasks);
+
     setShowTaskModal(false);
     var formdata = new FormData();
     formdata.set("boardID", boardID);
     formdata.set("body", tempTask);
     formdata.set("cardID", cardID);
-    // formdata.set("taskOrder", numTasks);
     axios({
       method: "post",
       url: "http://127.0.0.1:5000/addTask",
       data: formdata
     })
       .then(res => {
-        // console.log("IN TASK RESULT");
         console.log(res);
         const extraTask = {
           boardID: res.data.boardID,
@@ -260,6 +227,16 @@ export default function Cards(props) {
   const handleShowTask = () => {
     setShowTaskModal(true);
   };
+
+  function checkUpdated() {
+    if (props.updatedCardID == cardID) {
+      console.log("in card");
+      console.log(props.updatedCardID);
+      props.resetCheck();
+      // setAllTasks(props.card.tasks);
+    }
+    return null;
+  }
   if (deleted == true) {
     return null;
   } else {
@@ -279,7 +256,7 @@ export default function Cards(props) {
             }}
           >
             {cardTitle}
-            numTasks{card.numTasks}
+            {/* numTasks{card.numTasks} */}
           </h2>
           <a style={editCard}>
             <button
@@ -290,6 +267,7 @@ export default function Cards(props) {
               Edit
             </button>
           </a>
+          {checkUpdated()}
           {renderTasks(allTasks)}
           <Button
             variant="secondary"

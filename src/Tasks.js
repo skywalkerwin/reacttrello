@@ -77,6 +77,7 @@ export default function Tasks(props) {
       .then(res => {
         console.log(res);
         // setDeleted(true);
+        props.updateCard(cid);
       })
       .catch(err => console.log(err));
   }
@@ -101,26 +102,26 @@ export default function Tasks(props) {
           console.log("cardTop");
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
-              console.log("ReOrder on same Card");
+              // console.log("ReOrder on same Card");
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
               setTaskBody(task.body);
-              props.updateCard(dropRes.cardID);
+              // props.updateCard(dropRes.cardID);
             }
           }
         } else if (dropTarget == "card") {
           console.log("card");
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
-              console.log("ReOrder on same Card");
+              // console.log("ReOrder on same Card");
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
               setTaskBody(task.body);
-              props.updateCard(dropRes.cardID);
+              // props.updateCard(dropRes.cardID);
             }
           }
         } else if (dropTarget == "task") {
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
-              console.log("ReOrder on same Card");
+              // console.log("ReOrder on same Card");
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
               setTaskBody(task.body);
               props.updateCard(dropRes.cardID);
@@ -140,7 +141,6 @@ export default function Tasks(props) {
   });
 
   const [hasDropped, setHasDropped] = useState(false);
-  const [hasDroppedOnChild, setHasDroppedOnChild] = useState(false);
   const [{ isOver, isOverCurrent, obj, res }, drop] = useDrop({
     accept: [ItemTypes.TASK],
     drop(item, monitor) {
@@ -150,7 +150,6 @@ export default function Tasks(props) {
         return;
       }
       setHasDropped(true);
-      setHasDroppedOnChild(didDrop);
       console.log(monitor.isOver());
       return {
         droppedOn: "task",
