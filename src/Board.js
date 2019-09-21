@@ -55,6 +55,7 @@ export default function Board(props) {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
+        console.log("DID DROP BOARD-----");
         return;
       }
       setHasDroppedTrash(true);

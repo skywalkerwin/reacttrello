@@ -86,11 +86,11 @@ export default function Tasks(props) {
       })
       .catch(err => console.log(err));
   }
-  function moveTask(tid, droppedid, cid) {
+  function moveTask(draggedID, droppedID, cardID) {
     var formdata = new FormData();
-    formdata.set("taskID", tid);
-    formdata.set("droppedID", Number(droppedid));
-    formdata.set("cardID", Number(cid));
+    formdata.set("taskID", draggedID);
+    formdata.set("droppedID", Number(droppedID));
+    formdata.set("cardID", Number(cardID));
     axios({
       method: "post",
       url: "http://127.0.0.1:5000/moveTask",
@@ -99,7 +99,7 @@ export default function Tasks(props) {
       .then(res => {
         console.log(res);
         // setDeleted(true);
-        props.updateCard(cid);
+        // props.updateCard(cid);
       })
       .catch(err => console.log(err));
   }
@@ -108,47 +108,51 @@ export default function Tasks(props) {
     // item: { type: ItemTypes.TASK },
     item: {
       type: "task",
-      id: taskID,
-      body: task.body
+      boardID: task.boardID,
+      body: task.body,
+      cardID: task.cardID,
+      created: task.created,
+      taskID: task.taskID,
+      taskOrder: task.taskOrder
     },
     begin(monitor) {},
     end(item, monitor) {
-      console.log("TASK DRAGGED => DROPPED");
+      // console.log("TASK DRAGGED => DROPPED");
       const dropRes = monitor.getDropResult();
       if (dropRes != null) {
         console.log(dropRes);
         const dropTarget = dropRes.droppedOn;
-        // console.log(dropTarget);
         if (dropTarget == "trash") {
-          console.log("Task dragged on trash");
+          // console.log("Task dragged on trash");
           deleteTask(taskID);
           return null;
         } else if (dropTarget == "board") {
-          console.log("board");
+          // console.log("board");
           return;
         } else if (dropTarget == "cardTop") {
-          console.log("dragged on cardTop");
+          // console.log("dragged on cardTop");
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-              setTaskBody(task.body);
+              // setTaskBody(task.body);
             }
           }
         } else if (dropTarget == "card") {
           console.log("dragged on card");
+          console.log("body = ", task.body);
+          console.log(dropRes.taskID);
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-              setTaskBody(task.body);
+              // setTaskBody(task.body);
             }
           }
         } else if (dropTarget == "task") {
-          console.log("dragged on task");
+          // console.log("dragged on task");
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
               moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-              setTaskBody(task.body);
-              props.updateCard(dropRes.cardID);
+              // setTaskBody(task.body);
             }
           }
           if (task.cardID != dropRes.cardID) {
@@ -169,17 +173,20 @@ export default function Tasks(props) {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
-        console.log("DROPPED ON TASK");
+        console.log("did drop task");
         return;
       }
-      console.log("DROPPED ON TASK");
-      console.log(monitor.getItem());
+      // console.log("DROPPED ON TASK");
+      // console.log(monitor.getItem());
       setHasDropped(true);
-      // console.log(monitor.isOver());
       return {
         droppedOn: "task",
-        taskID: Number(taskID),
-        cardID: Number(task.cardID)
+        boardID: task.boardID,
+        body: task.body,
+        cardID: task.cardID,
+        created: task.created,
+        taskID: task.taskID,
+        taskOrder: task.taskOrder
       };
     },
     collect: monitor => ({
@@ -203,48 +210,50 @@ export default function Tasks(props) {
   } else {
     return drag(
       drop(
-        <div style={{ ...taskStyle, opacity, backgroundColor }}>
-          <p style={editTask}>
-            <button
-              // style={buttonStyle}
-              type="button"
-              className="btn btn-default btn-sm"
-              onClick={handleShow}
-            >
-              Edit
-            </button>
-            <Modal show={show} onHide={handleClose}>
-              <Modal.Header closeButton>
-                <Modal.Title>Edit Task Body</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Form onSubmit={handleSubmit}>
-                  <Form.Group controlId="formCardTitle">
-                    <Form.Control
-                      as="textarea"
-                      rows="3"
-                      defaultValue={taskBody}
-                      type="cardTitle"
-                      onChange={e => handleChange(e.target.value)}
-                    />
-                  </Form.Group>
-                </Form>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={handleSubmit}>
-                  Save Changes
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </p>
-          <p style={taskContent}>
-            {taskBody}
-            ORDER
-            {task.taskOrder}
-          </p>
+        <div>
+          <div style={{ ...taskStyle, opacity, backgroundColor }}>
+            <p style={editTask}>
+              <button
+                // style={buttonStyle}
+                type="button"
+                className="btn btn-default btn-sm"
+                onClick={handleShow}
+              >
+                Edit
+              </button>
+              <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Edit Task Body</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form onSubmit={handleSubmit}>
+                    <Form.Group controlId="formCardTitle">
+                      <Form.Control
+                        as="textarea"
+                        rows="3"
+                        defaultValue={taskBody}
+                        type="cardTitle"
+                        onChange={e => handleChange(e.target.value)}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleClose}>
+                    Close
+                  </Button>
+                  <Button variant="primary" onClick={handleSubmit}>
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </p>
+            <p style={taskContent}>
+              {taskBody}
+              ORDER
+              {task.taskOrder}
+            </p>
+          </div>
         </div>
       )
     );

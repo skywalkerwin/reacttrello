@@ -24,16 +24,17 @@ export default class App extends React.Component {
   }
 
   updateCard(cid) {
-    console.log("updatedBoard API APP CALL");
-    axios.get("http://127.0.0.1:5000/boardData").then(res => {
-      this.setState({
-        cards: res.data["cards"],
-        boardID: res.data["boardID"],
-        numCards: res.data["numCards"],
-        numTasks: res.data["numTasks"],
-        updated: cid
-      });
-      console.log("UPDATED");
+    console.log("APP UPDATING CARDS TASKS");
+    var formdata = new FormData();
+    formdata.set("cardID", cid);
+    return axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/getTasks",
+      data: formdata
+    }).then(res => {
+      console.log(res);
+      console.log(res.data);
+      return res.data;
     });
   }
 

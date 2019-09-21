@@ -93,19 +93,62 @@ export default function Cards(props) {
       didDrop: monitor.didDrop()
     })
   });
+  function orderTasks(drg, drp) {
+    console.log("in ORDERTASKS Function");
+    const draggedTask = {
+      boardID: drg.boardID,
+      body: drg.body,
+      cardID: drg.cardID,
+      created: drg.created,
+      taskID: drg.taskID,
+      taskOrder: drg.taskOrder
+    };
+    console.log(drg);
+    console.log(drp);
+    if (drp.droppedOn == "cardTop") {
+      const retTasks = [
+        draggedTask,
+        ...card.tasks.filter(t => t.taskID != draggedTask.taskID)
+      ];
+      return retTasks;
+    } else if (drp.droppedOn == "card") {
+      console.log("TEST");
+      const retTasks = [
+        card.tasks.filter(t => t.taskID != draggedTask.taskID),
+        draggedTask
+      ];
+      return retTasks;
+    } else {
+      return;
+    }
+  }
   const [hasDropped, setHasDropped] = useState(false);
   const [{ isOver, isOverCurrent, obj, xy, res }, drop] = useDrop({
     accept: [ItemTypes.CARD, ItemTypes.TASK],
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
-        console.log("DID DROP - card");
-        console.log(monitor.getItem());
-        console.log(monitor.getDropResult());
+        console.log("in didDrop card");
+        const dropped = monitor.getDropResult();
+        const newTasks = orderTasks(item, dropped);
+        // setAllTasks(newTasks);
         return;
       }
-      console.log("DROPPED ON CARD");
-      console.log(monitor.getItem());
+      const oldOrder = item.taskOrder;
+      const draggedTask = {
+        boardID: item.boardID,
+        body: item.body,
+        cardID: item.cardID,
+        created: item.created,
+        taskID: item.taskID,
+        taskOrder: card.numTasks
+      };
+      const retTasks = [
+        ...card.tasks.filter(t => t.taskID != draggedTask.taskID),
+        draggedTask
+      ];
+      console.log(retTasks);
+      // setAllTasks(retTasks);
       setHasDropped(true);
       return {
         droppedOn: "card",
