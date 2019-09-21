@@ -192,6 +192,33 @@ export default function Cards(props) {
     })
   });
 
+  const [hasDroppedBot, setHasDroppedBot] = useState(false);
+  const [{ isOverBot, isOverCurrentBot, objBot, resBot }, dropBot] = useDrop({
+    accept: [ItemTypes.CARD, ItemTypes.TASK],
+    drop(item, monitor) {
+      const didDrop = monitor.didDrop();
+      if (didDrop) {
+        console.log("DID DROP - Bot");
+        return;
+      }
+      // console.log(didDrop);
+      console.log("DROPPED ON CARDBot");
+      console.log(monitor.getItem());
+      setHasDroppedTop(true);
+      return {
+        droppedOn: "cardBot",
+        taskID: Number(0),
+        cardID: Number(card.cardID)
+      };
+    },
+    collect: monitor => ({
+      isOverBot: monitor.isOver(),
+      isOverCurrentBot: monitor.isOver({ shallow: true }),
+      resBot: monitor.getDropResult(),
+      objBot: monitor.getItemType()
+    })
+  });
+
   let backgroundColor = "rgba(200,200,255,1)";
   if (isOverCurrent || isOverCurrentTop) {
     if (obj == ItemTypes.TASK) {
@@ -320,25 +347,26 @@ export default function Cards(props) {
           </a>
           {/* {checkUpdated()} */}
           {renderTasks(allTasks)}
-          <Button
-            variant="secondary"
-            onClick={handleShowTask}
-            type="button"
-            style={{
-              // position: "absolute",
-              borderRadius: "5px",
-              marginTop: "5px",
-              marginBottom: "5px",
-              marginLeft: "8px",
-              textAlign: "left",
-              minWidth: "100px",
-              height: "35px",
-              width: "110px"
-            }}
-          >
-            + Add Task
-          </Button>
-
+          <div ref={dropBot}>
+            <Button
+              variant="secondary"
+              onClick={handleShowTask}
+              type="button"
+              style={{
+                // position: "absolute",
+                borderRadius: "5px",
+                marginTop: "5px",
+                marginBottom: "5px",
+                marginLeft: "8px",
+                textAlign: "left",
+                minWidth: "100px",
+                height: "35px",
+                width: "110px"
+              }}
+            >
+              + Add Task
+            </Button>
+          </div>
           <Modal show={showTaskModal} onHide={handleCloseTask}>
             <Modal.Header closeButton>
               <Modal.Title>Add Task</Modal.Title>
