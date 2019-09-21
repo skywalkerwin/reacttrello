@@ -44,7 +44,7 @@ const editCard = {
 
 export default function Cards(props) {
   const card = props.card;
-  const cardID = props.card.cardID;
+  // const cardID = props.card.cardID;
   const [allTasks, setAllTasks] = useState(props.card.tasks);
   const [show, setShow] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -66,7 +66,7 @@ export default function Cards(props) {
         if (dropTarget == "trash") {
           console.log("Card dropped on trash");
           var formdata = new FormData();
-          formdata.set("cardID", cardID);
+          formdata.set("cardID", card.cardID);
           axios({
             method: "post",
             url: "http://127.0.0.1:5000/deleteCard",
@@ -93,6 +93,23 @@ export default function Cards(props) {
       didDrop: monitor.didDrop()
     })
   });
+  function moveTask(draggedID, droppedID, cid) {
+    var formdata = new FormData();
+    formdata.set("taskID", draggedID);
+    formdata.set("droppedID", Number(droppedID));
+    formdata.set("cardID", Number(cid));
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/moveTask",
+      data: formdata
+    })
+      .then(res => {
+        console.log(res);
+        // setDeleted(true);
+        // props.updateCard(cid);
+      })
+      .catch(err => console.log(err));
+  }
   function orderTasks(drg, drp) {
     console.log("in ORDERTASKS Function");
     const draggedTask = {
@@ -103,20 +120,24 @@ export default function Cards(props) {
       taskID: drg.taskID,
       taskOrder: drg.taskOrder
     };
-    console.log(drg);
-    console.log(drp);
+    console.log("dragged: ", drg);
+    console.log("dropped: ", drp);
+    moveTask(drg.taskID, drp.taskID, drp.cardID);
     if (drp.droppedOn == "cardTop") {
       const retTasks = [
         draggedTask,
         ...card.tasks.filter(t => t.taskID != draggedTask.taskID)
       ];
+      console.log("top function");
+      console.log(retTasks);
       return retTasks;
-    } else if (drp.droppedOn == "card") {
-      console.log("TEST");
+    } else if (drp.droppedOn == "cardBot") {
       const retTasks = [
-        card.tasks.filter(t => t.taskID != draggedTask.taskID),
+        ...card.tasks.filter(t => t.taskID != draggedTask.taskID),
         draggedTask
       ];
+      console.log("bot function");
+      console.log(retTasks);
       return retTasks;
     } else {
       return;
@@ -128,10 +149,10 @@ export default function Cards(props) {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
-        console.log("in didDrop card");
+        // console.log("in didDrop card");
         const dropped = monitor.getDropResult();
         const newTasks = orderTasks(item, dropped);
-        // setAllTasks(newTasks);
+        setAllTasks(newTasks);
         return;
       }
       const oldOrder = item.taskOrder;
@@ -175,7 +196,7 @@ export default function Cards(props) {
         return;
       }
       // console.log(didDrop);
-      console.log("DROPPED ON CARDTOP");
+      // console.log("DROPPED ON CARDTOP");
       console.log(monitor.getItem());
       setHasDroppedTop(true);
       return {
@@ -202,12 +223,12 @@ export default function Cards(props) {
         return;
       }
       // console.log(didDrop);
-      console.log("DROPPED ON CARDBot");
+      // console.log("DROPPED ON CARDBot");
       console.log(monitor.getItem());
       setHasDroppedTop(true);
       return {
         droppedOn: "cardBot",
-        taskID: Number(0),
+        taskID: Number(-1),
         cardID: Number(card.cardID)
       };
     },
@@ -220,7 +241,7 @@ export default function Cards(props) {
   });
 
   let backgroundColor = "rgba(200,200,255,1)";
-  if (isOverCurrent || isOverCurrentTop) {
+  if (isOverCurrentBot || isOverCurrentTop) {
     if (obj == ItemTypes.TASK) {
       backgroundColor = "lightgreen";
     } else if (obj == ItemTypes.CARD) {
@@ -252,7 +273,7 @@ export default function Cards(props) {
     setShow(false);
     var formdata = new FormData();
     formdata.set("title", tempTitle);
-    formdata.set("cardID", cardID);
+    formdata.set("cardID", card.cardID);
     axios({
       method: "post",
       url: "http://127.0.0.1:5000/updateCard",
@@ -262,15 +283,15 @@ export default function Cards(props) {
       .catch(err => console.log(err));
   };
   const handleSubmitTask = () => {
-    const boardID = card.boardID;
-    const cardID = card.cardID;
+    // const boardID = card.boardID;
+    // const cardID = card.cardID;
     const created = new Date().toUTCString();
 
     setShowTaskModal(false);
     var formdata = new FormData();
-    formdata.set("boardID", boardID);
+    formdata.set("boardID", card.boardID);
     formdata.set("body", tempTask);
-    formdata.set("cardID", cardID);
+    formdata.set("cardID", card.cardID);
     axios({
       method: "post",
       url: "http://127.0.0.1:5000/addTask",
@@ -307,7 +328,7 @@ export default function Cards(props) {
   };
 
   function checkUpdated() {
-    if (props.updatedCardID == cardID) {
+    if (props.updatedCardID == card.cardID) {
       console.log("in card");
       console.log(props.updatedCardID);
       props.resetCheck();
@@ -346,6 +367,7 @@ export default function Cards(props) {
             </button>
           </a>
           {/* {checkUpdated()} */}
+          {/* {console.log("cards", card.tasks)} */}
           {renderTasks(allTasks)}
           <div ref={dropBot}>
             <Button

@@ -120,45 +120,56 @@ export default function Tasks(props) {
       // console.log("TASK DRAGGED => DROPPED");
       const dropRes = monitor.getDropResult();
       if (dropRes != null) {
-        console.log(dropRes);
+        console.log("drop result: ", dropRes);
         const dropTarget = dropRes.droppedOn;
         if (dropTarget == "trash") {
           // console.log("Task dragged on trash");
           deleteTask(taskID);
           return null;
-        } else if (dropTarget == "board") {
-          // console.log("board");
-          return;
-        } else if (dropTarget == "cardTop") {
-          // console.log("dragged on cardTop");
-          if (task.cardID == dropRes.cardID) {
-            if (task.taskID != dropRes.taskID) {
-              moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-              // setTaskBody(task.body);
-            }
-          }
-        } else if (dropTarget == "card") {
-          console.log("dragged on card");
-          console.log("body = ", task.body);
-          console.log(dropRes.taskID);
-          if (task.cardID == dropRes.cardID) {
-            if (task.taskID != dropRes.taskID) {
-              moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-              // setTaskBody(task.body);
-            }
-          }
-        } else if (dropTarget == "task") {
-          // console.log("dragged on task");
-          if (task.cardID == dropRes.cardID) {
-            if (task.taskID != dropRes.taskID) {
-              moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-              // setTaskBody(task.body);
-            }
-          }
-          if (task.cardID != dropRes.cardID) {
-            console.log("Moved to different Card");
-          }
-          return;
+          // } else if (dropTarget == "board") {
+          //   // console.log("board");
+          //   return;
+          // } else if (dropTarget == "cardTop") {
+          //   // console.log("dragged on cardTop");
+          //   console.log("DRAG body", task.body);
+          //   if (task.cardID == dropRes.cardID) {
+          //     if (task.taskID != dropRes.taskID) {
+          //       moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+          //       // setTaskBody(task.body);
+          //     }
+          //   }
+          // } else if (dropTarget == "cardBot") {
+          //   console.log("DRAG body", task.body);
+          //   // console.log("dragged on cardBot");
+          //   // console.log("body = ", task.body);
+          //   if (task.cardID == dropRes.cardID) {
+          //     if (task.taskID != dropRes.taskID) {
+          //       moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+          //       // setTaskBody(task.body);
+          //     }
+          //   }
+          // } else if (dropTarget == "card") {
+          //   // console.log("dragged on card");
+          //   // console.log("body = ", task.body);
+          //   console.log(dropRes.taskID);
+          //   if (task.cardID == dropRes.cardID) {
+          //     if (task.taskID != dropRes.taskID) {
+          //       moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+          //       // setTaskBody(task.body);
+          //     }
+          //   }
+          // } else if (dropTarget == "task") {
+          //   // console.log("dragged on task");
+          //   if (task.cardID == dropRes.cardID) {
+          //     if (task.taskID != dropRes.taskID) {
+          //       moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+          //       // setTaskBody(task.body);
+          //     }
+          //   }
+          //   if (task.cardID != dropRes.cardID) {
+          //     console.log("Moved to different Card");
+          //   }
+          //   return;
         }
       }
     },
@@ -249,9 +260,9 @@ export default function Tasks(props) {
               </Modal>
             </p>
             <p style={taskContent}>
-              {taskBody}
-              ORDER
-              {task.taskOrder}
+              <h3>{taskBody}</h3>
+              <p>taskID:{taskID}</p>
+              <p>order: {task.taskOrder}</p>
             </p>
           </div>
         </div>
