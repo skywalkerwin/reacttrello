@@ -86,23 +86,23 @@ export default function Tasks(props) {
       })
       .catch(err => console.log(err));
   }
-  function moveTask(draggedID, droppedID, cardID) {
-    var formdata = new FormData();
-    formdata.set("taskID", draggedID);
-    formdata.set("droppedID", Number(droppedID));
-    formdata.set("cardID", Number(cardID));
-    axios({
-      method: "post",
-      url: "http://127.0.0.1:5000/moveTask",
-      data: formdata
-    })
-      .then(res => {
-        console.log(res);
-        // setDeleted(true);
-        // props.updateCard(cid);
-      })
-      .catch(err => console.log(err));
-  }
+  // function moveTask(draggedID, droppedID, cardID) {
+  //   var formdata = new FormData();
+  //   formdata.set("taskID", draggedID);
+  //   formdata.set("droppedID", Number(droppedID));
+  //   formdata.set("cardID", Number(cardID));
+  //   axios({
+  //     method: "post",
+  //     url: "http://127.0.0.1:5000/moveTask",
+  //     data: formdata
+  //   })
+  //     .then(res => {
+  //       console.log(res);
+  //       // setDeleted(true);
+  //       // props.updateCard(cid);
+  //     })
+  //     .catch(err => console.log(err));
+  // }
   //drag and drop function hooks
   const [{ isDragging }, drag] = useDrag({
     // item: { type: ItemTypes.TASK },
@@ -126,50 +126,61 @@ export default function Tasks(props) {
           // console.log("Task dragged on trash");
           deleteTask(taskID);
           return null;
-          // } else if (dropTarget == "board") {
-          //   // console.log("board");
-          //   return;
-          // } else if (dropTarget == "cardTop") {
-          //   // console.log("dragged on cardTop");
-          //   console.log("DRAG body", task.body);
-          //   if (task.cardID == dropRes.cardID) {
-          //     if (task.taskID != dropRes.taskID) {
-          //       moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-          //       // setTaskBody(task.body);
-          //     }
-          //   }
-          // } else if (dropTarget == "cardBot") {
-          //   console.log("DRAG body", task.body);
-          //   // console.log("dragged on cardBot");
-          //   // console.log("body = ", task.body);
-          //   if (task.cardID == dropRes.cardID) {
-          //     if (task.taskID != dropRes.taskID) {
-          //       moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-          //       // setTaskBody(task.body);
-          //     }
-          //   }
-          // } else if (dropTarget == "card") {
-          //   // console.log("dragged on card");
-          //   // console.log("body = ", task.body);
-          //   console.log(dropRes.taskID);
-          //   if (task.cardID == dropRes.cardID) {
-          //     if (task.taskID != dropRes.taskID) {
-          //       moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-          //       // setTaskBody(task.body);
-          //     }
-          //   }
-          // } else if (dropTarget == "task") {
-          //   // console.log("dragged on task");
-          //   if (task.cardID == dropRes.cardID) {
-          //     if (task.taskID != dropRes.taskID) {
-          //       moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
-          //       // setTaskBody(task.body);
-          //     }
-          //   }
-          //   if (task.cardID != dropRes.cardID) {
-          //     console.log("Moved to different Card");
-          //   }
-          //   return;
+        } else if (dropTarget == "board") {
+          // console.log("board");
+          return;
+        } else if (dropTarget == "cardTop") {
+          console.log("dragged on cardBot");
+          console.log("task body = ", task.body);
+          console.log("drop body = ", dropRes.body);
+          console.log("taskID= ", task.taskID);
+          console.log("dropID= ", dropRes.taskID);
+          if (task.cardID == dropRes.cardID) {
+            if (task.taskID != dropRes.taskID) {
+              // moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+              // setTaskBody(task.body);
+            }
+          }
+        } else if (dropTarget == "cardBot") {
+          console.log("dragged on cardBot");
+          console.log("task body = ", task.body);
+          console.log("drop body = ", dropRes.body);
+          console.log("taskID= ", task.taskID);
+          console.log("dropID= ", dropRes.taskID);
+          if (task.cardID == dropRes.cardID) {
+            // if (task.taskID != dropRes.taskID) {
+            //   moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+            //   // setTaskBody(task.body);
+            // }
+          }
+        } else if (dropTarget == "card") {
+          console.log("dragged on card");
+          console.log("task body = ", task.body);
+          console.log("drop body = ", dropRes.body);
+          console.log("taskID= ", task.taskID);
+          console.log("dropID= ", dropRes.taskID);
+          if (task.cardID == dropRes.cardID) {
+            // if (task.taskID != dropRes.taskID) {
+            //   moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+            //   // setTaskBody(task.body);
+            // }
+          }
+        } else if (dropTarget == "task") {
+          console.log("dragged on task");
+          console.log("task body = ", task.body);
+          console.log("drop body = ", dropRes.body);
+          console.log("taskID= ", task.taskID);
+          console.log("dropID= ", dropRes.taskID);
+          if (task.cardID == dropRes.cardID) {
+            // if (task.taskID != dropRes.taskID) {
+            //   moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
+            //   // setTaskBody(task.body);
+            // }
+          }
+          if (task.cardID != dropRes.cardID) {
+            console.log("Moved to different Card");
+          }
+          return;
         }
       }
     },
@@ -187,7 +198,7 @@ export default function Tasks(props) {
         console.log("did drop task");
         return;
       }
-      // console.log("DROPPED ON TASK");
+      console.log("DROPPED ON TASK");
       // console.log(monitor.getItem());
       setHasDropped(true);
       return {

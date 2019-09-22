@@ -104,7 +104,7 @@ export default function Cards(props) {
       data: formdata
     })
       .then(res => {
-        console.log(res);
+        // console.log(res);
         // setDeleted(true);
         // props.updateCard(cid);
       })
@@ -126,21 +126,68 @@ export default function Cards(props) {
     if (drp.droppedOn == "cardTop") {
       const retTasks = [
         draggedTask,
-        ...card.tasks.filter(t => t.taskID != draggedTask.taskID)
+        ...allTasks.filter(t => t.taskID != draggedTask.taskID)
       ];
-      console.log("top function");
-      console.log(retTasks);
       return retTasks;
     } else if (drp.droppedOn == "cardBot") {
       const retTasks = [
-        ...card.tasks.filter(t => t.taskID != draggedTask.taskID),
+        ...allTasks.filter(t => t.taskID != draggedTask.taskID),
         draggedTask
       ];
-      console.log("bot function");
-      console.log(retTasks);
       return retTasks;
-    } else {
-      return;
+    } else if (drg.taskOrder < drp.taskOrder) {
+      // var firstTasks = allTasks.filter(t => t.taskOrder < drg.taskOrder);
+      var firstTasks = [];
+      allTasks.forEach(t => {
+        console.log("task: ", t);
+        console.log("order:", t.taskOrder);
+        if (t.taskOrder == drp.taskOrder) {
+          console.log("case 1", t.body);
+          const drpTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder - 1
+          };
+          const drgTask = {
+            boardID: drg.boardID,
+            body: drg.body,
+            cardID: drg.cardID,
+            created: drg.created,
+            taskID: drg.taskID,
+            taskOrder: drp.taskOrder
+          };
+          console.log("drp:", drpTask);
+          console.log("drg:", drgTask);
+          firstTasks.push(drpTask);
+          firstTasks.push(drgTask);
+        } else if (
+          t.taskOrder != drg.taskOrder &&
+          t.taskOrder > drg.taskOrder &&
+          t.taskOrder < drp.taskOrder
+        ) {
+          console.log("case 2", t.body);
+          const tempTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder - 1
+          };
+          console.log("2task: ", tempTask);
+          firstTasks.push(tempTask);
+        } else if (t.taskOrder > drp.taskOrder || t.taskOrder < drg.taskOrder) {
+          console.log("case 3", t.body);
+          console.log("3task:", t);
+          firstTasks.push(t);
+        }
+      });
+      console.log("ret tasks: ", firstTasks);
+      const retTasks = firstTasks;
+      return retTasks;
     }
   }
   const [hasDropped, setHasDropped] = useState(false);
@@ -152,6 +199,7 @@ export default function Cards(props) {
         // console.log("in didDrop card");
         const dropped = monitor.getDropResult();
         const newTasks = orderTasks(item, dropped);
+        setAllTasks([]);
         setAllTasks(newTasks);
         return;
       }
@@ -307,18 +355,24 @@ export default function Cards(props) {
           taskID: res.data.taskID,
           taskOrder: res.data.numTasks
         };
-        console.log(extraTask);
+        console.log("added task:", extraTask);
         while (extraTask == undefined) {
           console.log("wait");
         }
         console.log(extraTask.taskOrder);
+        setAllTasks([]);
         if (allTasks !== undefined) {
           setAllTasks([...Array.from(allTasks), extraTask]);
         } else {
           setAllTasks(extraTask);
         }
+        // setAllTasks([]);
+        // setAllTasks([...Array.from(allTasks), extraTask]);
       })
       .catch(err => console.log(err));
+    {
+      renderTasks(allTasks);
+    }
   };
   const handleShow = () => {
     setShow(true);
