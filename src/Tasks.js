@@ -8,11 +8,11 @@ const taskStyle = {
   // position: "absolute",
   overflow: "hidden",
   display: "flex",
-  padding: "3px",
+  padding: "2px",
   // width: "300px",
   border: "4px solid green",
-  margin: "5px",
-  borderRadius: "10px"
+  margin: "3px",
+  borderRadius: "6px"
 };
 const editTask = {
   display: "flex",
@@ -46,8 +46,8 @@ export default function Tasks(props) {
   const task = props.task;
   const taskID = task.taskID;
   const [show, setShow] = useState(false);
-  const [tempBody, setTempBody] = useState(props.task.body);
-  const [taskBody, setTaskBody] = useState(props.task.body);
+  const [tempBody, setTempBody] = useState(task.body);
+  const [taskBody, setTaskBody] = useState(task.body);
   const [deleted, setDeleted] = useState(false);
   //modal functions
   const handleClose = () => setShow(false);
@@ -125,15 +125,15 @@ export default function Tasks(props) {
         if (dropTarget == "trash") {
           // console.log("Task dragged on trash");
           deleteTask(taskID);
-          return null;
+          // return null;
         } else if (dropTarget == "board") {
           // console.log("board");
           return;
         } else if (dropTarget == "cardTop") {
-          console.log("dragged on cardBot");
-          console.log("task body = ", task.body);
-          console.log("drop body = ", dropRes.body);
-          console.log("taskID= ", task.taskID);
+          // console.log("dragged on cardBot");
+          // console.log("task body = ", task.body);
+          // console.log("drop body = ", dropRes.body);
+          // console.log("taskID= ", task.taskID);
           console.log("dropID= ", dropRes.taskID);
           if (task.cardID == dropRes.cardID) {
             if (task.taskID != dropRes.taskID) {
@@ -142,11 +142,11 @@ export default function Tasks(props) {
             }
           }
         } else if (dropTarget == "cardBot") {
-          console.log("dragged on cardBot");
-          console.log("task body = ", task.body);
-          console.log("drop body = ", dropRes.body);
-          console.log("taskID= ", task.taskID);
-          console.log("dropID= ", dropRes.taskID);
+          // console.log("dragged on cardBot");
+          // console.log("task body = ", task.body);
+          // console.log("drop body = ", dropRes.body);
+          // console.log("taskID= ", task.taskID);
+          // console.log("dropID= ", dropRes.taskID);
           if (task.cardID == dropRes.cardID) {
             // if (task.taskID != dropRes.taskID) {
             //   moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
@@ -154,11 +154,11 @@ export default function Tasks(props) {
             // }
           }
         } else if (dropTarget == "card") {
-          console.log("dragged on card");
-          console.log("task body = ", task.body);
-          console.log("drop body = ", dropRes.body);
-          console.log("taskID= ", task.taskID);
-          console.log("dropID= ", dropRes.taskID);
+          // console.log("dragged on card");
+          // console.log("task body = ", task.body);
+          // console.log("drop body = ", dropRes.body);
+          // console.log("taskID= ", task.taskID);
+          // console.log("dropID= ", dropRes.taskID);
           if (task.cardID == dropRes.cardID) {
             // if (task.taskID != dropRes.taskID) {
             //   moveTask(task.taskID, dropRes.taskID, dropRes.cardID);
@@ -166,11 +166,11 @@ export default function Tasks(props) {
             // }
           }
         } else if (dropTarget == "task") {
-          console.log("dragged on task");
-          console.log("task body = ", task.body);
-          console.log("drop body = ", dropRes.body);
-          console.log("taskID= ", task.taskID);
-          console.log("dropID= ", dropRes.taskID);
+          // console.log("dragged on task");
+          // console.log("task body = ", task.body);
+          // console.log("drop body = ", dropRes.body);
+          // console.log("taskID= ", task.taskID);
+          // console.log("dropID= ", dropRes.taskID);
           if (task.cardID == dropRes.cardID) {
             // if (task.taskID != dropRes.taskID) {
             //   moveTask(task.taskID, dropRes.taskID, dropRes.cardID);

@@ -1,4 +1,4 @@
-import React, { useState, Component } from "react";
+import React, { useState, Component, useEffect } from "react";
 import { ItemTypes } from "./Constants";
 import { useDrag, useDrop } from "react-dnd";
 import Tasks from "./Tasks";
@@ -23,7 +23,7 @@ const cardStyle = {
   border: "4px solid blue",
   margin: "6px",
   marginTop: "12px",
-  borderRadius: "15px",
+  borderRadius: "8px",
   width: "320px",
   overflow: "hidden",
   overflowY: "auto"
@@ -112,6 +112,7 @@ export default function Cards(props) {
   }
   function orderTasks(drg, drp) {
     console.log("in ORDERTASKS Function");
+    var oldTasks = JSON.parse(JSON.stringify(allTasks));
     const draggedTask = {
       boardID: drg.boardID,
       body: drg.body,
@@ -123,26 +124,92 @@ export default function Cards(props) {
     console.log("dragged: ", drg);
     console.log("dropped: ", drp);
     moveTask(drg.taskID, drp.taskID, drp.cardID);
+    // const restTasks = allTasks;
     if (drp.droppedOn == "cardTop") {
-      const retTasks = [
-        draggedTask,
-        ...allTasks.filter(t => t.taskID != draggedTask.taskID)
-      ];
-      return retTasks;
+      const firstTask = {
+        boardID: drg.boardID,
+        body: drg.body,
+        cardID: drg.cardID,
+        created: drg.created,
+        taskID: drg.taskID,
+        taskOrder: 1
+      };
+      var retTasks = [];
+      retTasks.push(firstTask);
+      // setAllTasks([]);
+      // setAllTasks([...allTasks, firstTask]);
+      oldTasks.forEach(t => {
+        if (t.taskOrder < draggedTask.taskOrder) {
+          const tempTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder + 1
+          };
+          // setAllTasks([...allTasks, tempTask]);
+          retTasks.push(tempTask);
+        } else if (t.taskID != firstTask.taskID) {
+          const tempTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder
+          };
+          retTasks.push(tempTask);
+          // setAllTasks([...allTasks, tempTask]);
+        }
+      });
+      const newTasks = retTasks;
+      return newTasks;
     } else if (drp.droppedOn == "cardBot") {
-      const retTasks = [
-        ...allTasks.filter(t => t.taskID != draggedTask.taskID),
-        draggedTask
-      ];
+      const lastTask = {
+        boardID: drg.boardID,
+        body: drg.body,
+        cardID: drg.cardID,
+        created: drg.created,
+        taskID: drg.taskID,
+        taskOrder: allTasks.length
+      };
+      var retTasks = [];
+      // setAllTasks([]);
+      oldTasks.forEach(t => {
+        if (t.taskOrder > draggedTask.taskOrder) {
+          const tempTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder - 1
+          };
+          retTasks.push(tempTask);
+          // setAllTasks([...allTasks, tempTask]);
+        } else if (t.taskID != lastTask.taskID) {
+          const tempTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder
+          };
+          retTasks.push(tempTask);
+          // setAllTasks([...allTasks, tempTask]);
+        }
+      });
+      retTasks.push(lastTask);
+      // setAllTasks([...allTasks, lastTask]);
+      const newTasks = retTasks;
       return retTasks;
     } else if (drg.taskOrder < drp.taskOrder) {
-      // var firstTasks = allTasks.filter(t => t.taskOrder < drg.taskOrder);
       var firstTasks = [];
-      allTasks.forEach(t => {
-        console.log("task: ", t);
-        console.log("order:", t.taskOrder);
+      // setAllTasks([]);
+      oldTasks.forEach(t => {
         if (t.taskOrder == drp.taskOrder) {
-          console.log("case 1", t.body);
           const drpTask = {
             boardID: t.boardID,
             body: t.body,
@@ -159,16 +226,15 @@ export default function Cards(props) {
             taskID: drg.taskID,
             taskOrder: drp.taskOrder
           };
-          console.log("drp:", drpTask);
-          console.log("drg:", drgTask);
           firstTasks.push(drpTask);
           firstTasks.push(drgTask);
+          // setAllTasks([...allTasks, drpTask]);
+          // setAllTasks([...allTasks, drgTask]);
         } else if (
           t.taskOrder != drg.taskOrder &&
           t.taskOrder > drg.taskOrder &&
           t.taskOrder < drp.taskOrder
         ) {
-          console.log("case 2", t.body);
           const tempTask = {
             boardID: t.boardID,
             body: t.body,
@@ -177,15 +243,74 @@ export default function Cards(props) {
             taskID: t.taskID,
             taskOrder: t.taskOrder - 1
           };
-          console.log("2task: ", tempTask);
           firstTasks.push(tempTask);
+          // setAllTasks([...allTasks, tempTask]);
         } else if (t.taskOrder > drp.taskOrder || t.taskOrder < drg.taskOrder) {
-          console.log("case 3", t.body);
-          console.log("3task:", t);
           firstTasks.push(t);
+          // setAllTasks([...allTasks, t]);
         }
       });
-      console.log("ret tasks: ", firstTasks);
+      // console.log("ret tasks: ", firstTasks);
+      const retTasks = firstTasks;
+      return retTasks;
+    } else if (drg.taskOrder > drp.taskOrder) {
+      var firstTasks = [];
+      // setAllTasks([]);
+      oldTasks.forEach(t => {
+        if (t.taskOrder < drp.taskOrder) {
+          const tempTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder
+          };
+          firstTasks.push(tempTask);
+          // setAllTasks([...allTasks, tempTask]);
+        }
+        if (t.taskOrder == drp.taskOrder) {
+          const drpTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder
+          };
+          const drgTask = {
+            boardID: drg.boardID,
+            body: drg.body,
+            cardID: drg.cardID,
+            created: drg.created,
+            taskID: drg.taskID,
+            taskOrder: drpTask.taskOrder + 1
+          };
+          firstTasks.push(drpTask);
+          firstTasks.push(drgTask);
+          // setAllTasks([...allTasks, drpTask]);
+          // setAllTasks([...allTasks, drgTask]);
+        } else if (
+          t.taskOrder != drg.taskOrder &&
+          t.taskOrder < drg.taskOrder &&
+          t.taskOrder > drp.taskOrder
+        ) {
+          const tempTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder - 1
+          };
+          firstTasks.push(tempTask);
+          // setAllTasks([...allTasks, tempTask]);
+        } else if (t.taskOrder > drg.taskOrder) {
+          firstTasks.push(t);
+          // setAllTasks([...allTasks, tempTask]);
+        }
+      });
+      // console.log("ret tasks: ", firstTasks);
       const retTasks = firstTasks;
       return retTasks;
     }
@@ -199,6 +324,8 @@ export default function Cards(props) {
         // console.log("in didDrop card");
         const dropped = monitor.getDropResult();
         const newTasks = orderTasks(item, dropped);
+        // orderTasks(item, dropped);
+        // setAllTasks(allTasks);
         setAllTasks([]);
         setAllTasks(newTasks);
         return;
@@ -390,6 +517,10 @@ export default function Cards(props) {
     }
     return null;
   }
+  // useEffect(() => {
+  //   console.log("IN EFFECT");
+  //   console.log(allTasks);
+  // });
   if (deleted == true) {
     return null;
   } else {
@@ -431,9 +562,9 @@ export default function Cards(props) {
               style={{
                 // position: "absolute",
                 borderRadius: "5px",
-                marginTop: "5px",
-                marginBottom: "5px",
-                marginLeft: "8px",
+                marginTop: "8px",
+                marginBottom: "8px",
+                marginLeft: "4px",
                 textAlign: "left",
                 minWidth: "100px",
                 height: "35px",

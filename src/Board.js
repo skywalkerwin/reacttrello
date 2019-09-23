@@ -21,10 +21,10 @@ function getStyle(backgroundColor) {
     // width: "auto",
     // maxWidth: "auto",
     minWidth: "100vw",
-    padding: "5px",
-    border: "5px solid orange",
-    borderTopLeftRadius: "25px",
-    borderTopRightRadius: "25px",
+    // padding: "5px",
+    border: "4px solid grey",
+    borderTopLeftRadius: "10px",
+    borderTopRightRadius: "10px",
     overflow: "hidden",
     backgroundColor
   };
@@ -37,8 +37,13 @@ export default function Board(props) {
     drop(item, monitor) {
       const didDrop = monitor.didDrop();
       if (didDrop) {
+        console.log("DROPPED ON BOARD");
+        console.log(item);
+        console.log("dropped on...");
+        console.log(monitor.getDropResult());
         return;
       }
+      console.log("DROPPED ON BOARD");
       setHasDropped(true);
       return { droppedOn: "board" };
     },
@@ -48,7 +53,51 @@ export default function Board(props) {
       obj: monitor.getItemType()
     })
   });
-
+  function trashedTask(drg) {
+    const delTask = {
+      boardID: drg.boardID,
+      body: drg.body,
+      cardID: drg.cardID,
+      created: drg.created,
+      taskID: drg.taskID,
+      taskOrder: drg.taskOrder
+    };
+    var newCards = [];
+    allCards.forEach(c => {
+      if (c.cardID == delTask.cardID) {
+        var tempCard = c;
+        const ttasks = c.tasks;
+        // tempCard.task = c.tasks;
+        // console.log("ctasks:", c.tasks);
+        // console.log("ttasks:", ttasks);
+        tempCard.tasks = [];
+        // ttasks.forEach(t => console.log(t));
+        ttasks.forEach(t => {
+          console.log("task:", t);
+          if (t.taskOrder > delTask.taskOrder) {
+            const tempTask = {
+              boardID: t.boardID,
+              body: t.body,
+              cardID: t.cardID,
+              created: t.created,
+              taskID: t.taskID,
+              taskOrder: t.taskOrder - 1
+            };
+            tempCard.tasks.push(tempTask);
+          } else if (t.taskID != delTask.taskID) {
+            tempCard.tasks.push(t);
+          }
+        });
+        // console.log("tempCard:", tempCard);
+        newCards.push(tempCard);
+      } else {
+        newCards.push(c);
+      }
+    });
+    const retCards = newCards;
+    console.log("retCards:", retCards);
+    return retCards;
+  }
   const [hasDroppedTrash, setHasDroppedTrash] = useState(false);
   const [{ isOverTrash, isOverCurrentTrash, objTrash }, dropTrash] = useDrop({
     accept: [ItemTypes.CARD, ItemTypes.TASK],
@@ -58,6 +107,10 @@ export default function Board(props) {
         console.log("DID DROP BOARD-----");
         return;
       }
+      console.log("deleted item:", item);
+      const newCards = trashedTask(item);
+      setAllCards([]);
+      setAllCards(newCards);
       setHasDroppedTrash(true);
       return { droppedOn: "trash" };
     },
@@ -85,7 +138,8 @@ export default function Board(props) {
     return cardList;
   }
 
-  let backgroundColor = "rgba(255,255,150,.5)";
+  // let backgroundColor = "rgba(255,255,150,.5)";
+  let backgroundColor = "rgba(0,100,255,.5)";
   let backgroundColorTrash = "rgba(255,0,0,.5)";
   if (isOverCurrentTrash || isOverTrash) {
     if (objTrash == ItemTypes.CARD || objTrash == ItemTypes.TASK)
@@ -135,7 +189,14 @@ export default function Board(props) {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <h1 style={{ display: "flex", justifyContent: "center", height: "4vh" }}>
+      <h1
+        style={{
+          backgroundColor: "lightgray",
+          display: "flex",
+          justifyContent: "center",
+          height: "6vh"
+        }}
+      >
         KanBan | Drag-n-Drop | Flask backend API / React frontend UI
       </h1>
       <div ref={drop} style={getStyle(backgroundColor)}>
