@@ -1,0 +1,4 @@
+const ADD_TASK = "ADD_TASK";
+const EDIT_TASK = "EDIT_TASK";
+const MOVE_TASK = "MOVE_TASK";
+const DELETE_TASK = "DELETE_TASK";
