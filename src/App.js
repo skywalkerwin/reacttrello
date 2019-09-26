@@ -91,7 +91,6 @@ export default class App extends React.Component {
             resetCheck={this.resetCheck}
           />
         )} */}
-        {/* <BoardDropTarget></BoardDropTarget> */}
         <Boarddnd cards={this.state.cards}></Boarddnd>
       </DndProvider>
     );

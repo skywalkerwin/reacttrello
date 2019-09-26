@@ -52,7 +52,22 @@ class Boarddnd extends Component {
         <h1 className="header">
           KanBan | Drag-n-Drop | Flask backend API / React frontend UI
         </h1>
-        <div className="board">{this.drawCards(this.props.cards)}</div>
+        <div className="board">
+          {this.drawCards(this.props.cards)}
+          <Button
+            //   onClick={handleShow}
+            className="addCard"
+            variant="secondary"
+          >
+            + Add List
+          </Button>
+        </div>
+        <div className="trash">
+          <h2 className="trashText">
+            🗑️ TRASH CAN - Drag here to Delete - ... Persistent Data
+            (postgreSQL) - authorization/multi-users/multi-boards coming soon?
+          </h2>
+        </div>
       </div>
     );
   }

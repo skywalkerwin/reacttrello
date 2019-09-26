@@ -31,3 +31,20 @@
   justify-content: center;
   margin: 4px;
 }
+
+.cardEdit {
+  position: absolute;
+  margin: 6px;
+}
+
+.cardAddTask {
+  /* // position: absolute, */
+  border-radius: 5px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: 4px;
+  text-align: center;
+  min-width: 100px;
+  height: 35px;
+  width: 110px;
+}

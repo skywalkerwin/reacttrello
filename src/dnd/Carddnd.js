@@ -26,15 +26,82 @@ class Carddnd extends Component {
   }
   render() {
     return (
-      <div
-        // style={{ backgroundColor: "rgba(200, 200, 255, 1)" }}
-        className="cardBody"
-      >
-        {/* {this.props.card} */}
+      <div className="cardBody">
         <h2 className="cardTitle">{this.props.card.title}</h2>
+        <a className="cardEdit">
+          <button
+            // onClick={handleShow}
+            type="button"
+            className="btn btn-default btn-sm"
+          >
+            Edit
+          </button>
+        </a>
         {this.drawTasks(this.props.card.tasks)}
-        {/* {console.log(this.props.card)}
-        {console.log(this.props.card.tasks)} */}
+        <div>
+          <Button
+            className="cardAddTask"
+            variant="secondary"
+            // onClick={handleShowTask}
+            type="button"
+          >
+            + Add Task
+          </Button>
+        </div>
+
+        {/* <Modal show={showTaskModal} onHide={handleCloseTask}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add Task</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="formCardTitle">
+                  <Form.Control
+                    as="textarea"
+                    rows="3"
+                    type="cardTitle"
+                    placeholder={"Add Task"}
+                    onChange={e => handleChangeTask(e.target.value)}
+                  />
+                </Form.Group>
+              </Form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleCloseTask}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleSubmitTask}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal> */}
+        {/* {------------------------------------------------------------------------------------------------------------------------------} */}
+        {/* <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Edit Card Title</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <form onSubmit={handleSubmit}>
+                <Form.Group controlId="formCardTitle">
+                  <Form.Control
+                    // autofocus="true"
+                    type="cardTitle"
+                    defaultValue={cardTitle}
+                    onChange={e => handleChange(e.target.value)}
+                    // ref={textInput}
+                  />
+                </Form.Group>
+              </form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleSubmit}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal> */}
       </div>
     );
   }
