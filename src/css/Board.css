@@ -1,0 +1,24 @@
+.board {
+  background-color: lightgray;
+  position: absolute;
+  display: flex;
+  align-self: flex-start;
+  flex-direction: row;
+  justify-content: left;
+  height: 95%;
+  bottom: 0;
+  min-width: 100vw;
+  border: 4px solid grey;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  overflow: hidden;
+  background: darkgreen;
+}
+
+.header {
+  background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  /* text-align: "center"; */
+  height: 6vh;
+}

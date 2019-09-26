@@ -8,6 +8,8 @@ import Cards from "./Cards";
 import Tasks from "./Tasks";
 import axios from "axios";
 import React, { Component } from "react";
+// import BoardDropTarget from "./dnd/Boarddnd";
+import Boarddnd from "./dnd/Boarddnd";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -78,7 +80,7 @@ export default class App extends React.Component {
   render() {
     return (
       <DndProvider backend={HTML5Backend}>
-        {this.state.boardID != -1 && (
+        {/* {this.state.boardID != -1 && (
           <Board
             cards={this.state.cards}
             boardID={this.state.boardID}
@@ -88,7 +90,9 @@ export default class App extends React.Component {
             updatedCardID={this.state.updated}
             resetCheck={this.resetCheck}
           />
-        )}
+        )} */}
+        {/* <BoardDropTarget></BoardDropTarget> */}
+        <Boarddnd cards={this.state.cards}></Boarddnd>
       </DndProvider>
     );
   }

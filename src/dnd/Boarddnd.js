@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
 import thunk from "redux-thunk";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { DropTarget } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { useDrop } from "react-dnd";
-import { ItemTypes } from "./Constants";
+import { ItemTypes } from "../Constants";
 import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
 import React, { Component } from "react";
+import "../css/Board.css";
 
 const boardTarget = {
   drop(props, monitor, component) {
@@ -34,22 +34,31 @@ function collect(connect, monitor) {
 class Boarddnd extends Component {
   constructor(props) {
     super(props);
-    this.props = {};
+    this.state = {};
   }
   render() {
-    return <div></div>;
+    return (
+      <div style={{ backgroundColor: "red" }}>
+        {console.log(this.props.cards)}
+        <h1 className="header">
+          KanBan | Drag-n-Drop | Flask backend API / React frontend UI
+        </h1>
+        <div className="board"> hello</div>
+      </div>
+    );
   }
 }
 
-var boardDropTarget = DropTarget(
-  [ItemTypes.CARD, ItemTypes.TASK],
-  boardTarget,
-  collect
-);
-const mapStateToProps = state => ({
-  cards: state.cards
-});
-export default connect(
-  mapStateToProps,
-  { addCard }
-)(boardDropTarget);
+// var BoardDropTarget = DropTarget(
+//   [ItemTypes.CARD, ItemTypes.TASK],
+//   boardTarget,
+//   collect
+// );
+// const mapStateToProps = state => ({
+//   cards: state.cards
+// });
+export default Boarddnd;
+// export default connect(
+//   mapStateToProps,
+//   { addCard }
+// )(boardDropTarget);
