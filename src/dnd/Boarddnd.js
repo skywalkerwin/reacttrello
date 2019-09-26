@@ -9,6 +9,7 @@ import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
 import React, { Component } from "react";
 import "../css/Board.css";
+import Carddnd from "./Carddnd";
 
 const boardTarget = {
   drop(props, monitor, component) {
@@ -34,16 +35,24 @@ function collect(connect, monitor) {
 class Boarddnd extends Component {
   constructor(props) {
     super(props);
+    this.drawCards = this.drawCards.bind(this);
     this.state = {};
+  }
+  drawCards(allCards) {
+    var cardList = [];
+    if (allCards !== undefined) {
+      allCards.forEach(c => cardList.push(<Carddnd card={c} />));
+    }
+    return cardList;
   }
   render() {
     return (
-      <div style={{ backgroundColor: "red" }}>
+      <div>
         {console.log(this.props.cards)}
         <h1 className="header">
           KanBan | Drag-n-Drop | Flask backend API / React frontend UI
         </h1>
-        <div className="board"> hello</div>
+        <div className="board">{this.drawCards(this.props.cards)}</div>
       </div>
     );
   }

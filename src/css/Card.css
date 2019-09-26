@@ -1,0 +1,33 @@
+.cardBody {
+  align-self: flex-start;
+  position: relative;
+  /* background: white; */
+  background-color: rgba(200, 200, 255, 1);
+  cursor: move;
+  /* // float: left;
+  // display: table-column; */
+  display: flex;
+  max-height: 82vh;
+  /* // minHeight: 15vh;
+  // minWidth: 20%;
+  // height: auto; */
+  flex-direction: column;
+  padding: 4px;
+  border: 4px solid blue;
+  margin: 8px;
+  margin-top: 12px;
+  border-radius: 8px;
+  width: 320px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.cardTitle {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  margin: 4px;
+}

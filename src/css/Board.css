@@ -1,5 +1,6 @@
 .board {
-  background-color: lightgray;
+  /* background-color: lightgray; */
+  background: rgba(0, 100, 255, 0.5);
   position: absolute;
   display: flex;
   align-self: flex-start;
@@ -12,13 +13,13 @@
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   overflow: hidden;
-  background: darkgreen;
+  /* background: darkgreen; */
 }
 
 .header {
-  background-color: lightgray;
+  background-color: rgb(236, 222, 222);
   display: flex;
   justify-content: center;
   /* text-align: "center"; */
-  height: 6vh;
+  height: 5.5vh;
 }
