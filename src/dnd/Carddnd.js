@@ -2,12 +2,83 @@ import React, { Component } from "react";
 import thunk from "redux-thunk";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { DropTarget } from "react-dnd";
+import { DropTarget, DragSource } from "react-dnd";
 import { ItemTypes } from "../Constants";
 import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
 import Taskdnd from "./Taskdnd";
 import "../css/Card.css";
+
+const cardSource = {
+  canDrag(props) {
+    // You can disallow drag based on props
+    return true;
+  },
+
+  isDragging(props, monitor) {
+    // If your component gets unmounted while dragged
+    // (like a card in Kanban board dragged between lists)
+    // you can implement something like this to keep its
+    // appearance dragged:
+    return monitor.getItem().id === props.id;
+  },
+
+  beginDrag(props, monitor, component) {
+    // Return the data describing the dragged item
+    const item = { id: props.id };
+    return item;
+  },
+
+  endDrag(props, monitor, component) {
+    if (!monitor.didDrop()) {
+      // You can check whether the drop was successful
+      // or if the drag ended but nobody handled the drop
+      return;
+    }
+
+    // When dropped on a compatible target, do something.
+    // Read the original dragged item from getItem():
+    const item = monitor.getItem();
+
+    // You may also read the drop result from the drop target
+    // that handled the drop, if it returned an object from
+    // its drop() method.
+    const dropResult = monitor.getDropResult();
+    // This is a good place to call some Flux action
+    // CardActions.moveCardToList(item.id, dropResult.listId);
+  }
+};
+
+function dragCollect(connect, monitor) {
+  return {
+    // Call this function inside render()
+    // to let React DnD handle the drag events:
+    connectDragSource: connect.dragSource(),
+    // You can ask the monitor about the current drag state:
+    isDragging: monitor.isDragging()
+  };
+}
+
+const cardTarget = {
+  drop(props, monitor, component) {
+    if (monitor.didDrop()) {
+      return;
+    }
+    const item = monitor.getItem();
+
+    return { moved: true };
+  }
+};
+
+function dropCollect(connect, monitor) {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    isOverCurrent: monitor.isOver({ shallow: true }),
+    canDrop: monitor.canDrop(),
+    itemType: monitor.getItemType()
+  };
+}
 
 class Carddnd extends Component {
   constructor(props) {
@@ -25,31 +96,40 @@ class Carddnd extends Component {
     return taskList;
   }
   render() {
-    return (
-      <div className="cardBody">
-        <h2 className="cardTitle">{this.props.card.title}</h2>
-        <a className="cardEdit">
-          <button
-            // onClick={handleShow}
-            type="button"
-            className="btn btn-default btn-sm"
-          >
-            Edit
-          </button>
-        </a>
-        {this.drawTasks(this.props.card.tasks)}
-        <div>
-          <Button
-            className="cardAddTask"
-            variant="secondary"
-            // onClick={handleShowTask}
-            type="button"
-          >
-            + Add Task
-          </Button>
-        </div>
+    console.log(this.props);
+    const {
+      isOver,
+      canDrop,
+      connectDropTarget,
+      isDragging,
+      connectDragSource
+    } = this.props;
+    return connectDragSource(
+      connectDropTarget(
+        <div className="cardBody">
+          <h2 className="cardTitle">{this.props.card.title}</h2>
+          <a className="cardEdit">
+            <button
+              // onClick={handleShow}
+              type="button"
+              className="btn btn-default btn-sm"
+            >
+              Edit
+            </button>
+          </a>
+          {this.drawTasks(this.props.card.tasks)}
+          <div>
+            <Button
+              className="cardAddTask"
+              variant="secondary"
+              // onClick={handleShowTask}
+              type="button"
+            >
+              + Add Task
+            </Button>
+          </div>
 
-        {/* <Modal show={showTaskModal} onHide={handleCloseTask}>
+          {/* <Modal show={showTaskModal} onHide={handleCloseTask}>
             <Modal.Header closeButton>
               <Modal.Title>Add Task</Modal.Title>
             </Modal.Header>
@@ -75,8 +155,8 @@ class Carddnd extends Component {
               </Button>
             </Modal.Footer>
           </Modal> */}
-        {/* {------------------------------------------------------------------------------------------------------------------------------} */}
-        {/* <Modal show={show} onHide={handleClose}>
+          {/* {------------------------------------------------------------------------------------------------------------------------------} */}
+          {/* <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
               <Modal.Title>Edit Card Title</Modal.Title>
             </Modal.Header>
@@ -102,9 +182,12 @@ class Carddnd extends Component {
               </Button>
             </Modal.Footer>
           </Modal> */}
-      </div>
+        </div>
+      )
     );
   }
 }
 
-export default Carddnd;
+var dropTarget = DropTarget(ItemTypes.TASK, cardTarget, dropCollect)(Carddnd);
+export default DragSource(ItemTypes.CARD, cardSource, dragCollect)(dropTarget);
+// export default DragSource(ItemTypes.CARD, cardSource, dragCollect)(Carddnd);

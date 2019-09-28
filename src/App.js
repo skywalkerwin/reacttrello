@@ -11,6 +11,9 @@ import React, { Component } from "react";
 import BoardDropTarget from "./dnd/Boarddnd";
 // import Boarddnd from "./dnd/Boarddnd";
 
+import { Provider } from "react-redux";
+// import store from "./store";
+
 export default class App extends React.Component {
   constructor(props) {
     super(props);

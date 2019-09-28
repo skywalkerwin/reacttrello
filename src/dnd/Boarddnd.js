@@ -10,6 +10,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import React, { Component } from "react";
 import "../css/Board.css";
 import Carddnd from "./Carddnd";
+import dropTarget from "./Carddnd";
 
 const boardTarget = {
   drop(props, monitor, component) {
@@ -42,11 +43,13 @@ class Boarddnd extends Component {
     var cardList = [];
     if (allCards !== undefined) {
       allCards.forEach(c => cardList.push(<Carddnd card={c} />));
+      // allCards.forEach(c => cardList.push(<dropTarget card={c} />));
     }
     return cardList;
   }
   render() {
-    return (
+    const { isOver, canDrop, connectDropTarget } = this.props;
+    return connectDropTarget(
       <div>
         {console.log(this.props.cards)}
         <h1 className="header">
@@ -73,16 +76,22 @@ class Boarddnd extends Component {
   }
 }
 
-var BoardDropTarget = DropTarget(
+// var BoardDropTarget = DropTarget(
+//   [ItemTypes.CARD, ItemTypes.TASK],
+//   boardTarget,
+//   collect
+// )(Boarddnd);
+// const mapStateToProps = state => ({
+//   cards: state.cards
+// });
+// export default Boarddnd;
+// export default connect(
+//   mapStateToProps,
+//   {} //{ addCard }
+// )(BoardDropTarget);
+
+export default DropTarget(
   [ItemTypes.CARD, ItemTypes.TASK],
   boardTarget,
   collect
 )(Boarddnd);
-const mapStateToProps = state => ({
-  cards: state.cards
-});
-// export default Boarddnd;
-export default connect(
-  mapStateToProps,
-  {} //{ addCard }
-)(BoardDropTarget);
