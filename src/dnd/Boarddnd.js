@@ -15,11 +15,12 @@ import dropTarget from "./Carddnd";
 const boardTarget = {
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
+      console.log("DID DROP ON BOARD");
       return;
     }
     const item = monitor.getItem();
-
-    return { moved: true };
+    console.log("board item", item);
+    return { droppedOn: "Board", moved: true };
   }
 };
 
@@ -51,7 +52,7 @@ class Boarddnd extends Component {
     const { isOver, canDrop, connectDropTarget } = this.props;
     return connectDropTarget(
       <div>
-        {console.log(this.props.cards)}
+        {/* {console.log(this.props.cards)} */}
         <h1 className="header">
           KanBan | Drag-n-Drop | Flask backend API / React frontend UI
         </h1>

@@ -24,26 +24,30 @@ const cardSource = {
   },
 
   beginDrag(props, monitor, component) {
+    console.log("IS DRAGGING");
     // Return the data describing the dragged item
-    const item = { id: props.id };
+    const item = { id: "card" };
     return item;
   },
 
   endDrag(props, monitor, component) {
+    console.log("end drag test");
     if (!monitor.didDrop()) {
       // You can check whether the drop was successful
       // or if the drag ended but nobody handled the drop
+      console.log("card drop test");
       return;
     }
 
     // When dropped on a compatible target, do something.
     // Read the original dragged item from getItem():
     const item = monitor.getItem();
-
+    console.log(item);
     // You may also read the drop result from the drop target
     // that handled the drop, if it returned an object from
     // its drop() method.
     const dropResult = monitor.getDropResult();
+    console.log(dropResult);
     // This is a good place to call some Flux action
     // CardActions.moveCardToList(item.id, dropResult.listId);
   }
@@ -96,7 +100,6 @@ class Carddnd extends Component {
     return taskList;
   }
   render() {
-    console.log(this.props);
     const {
       isOver,
       canDrop,
