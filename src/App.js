@@ -8,8 +8,8 @@ import Cards from "./Cards";
 import Tasks from "./Tasks";
 import axios from "axios";
 import React, { Component } from "react";
-// import BoardDropTarget from "./dnd/Boarddnd";
-import Boarddnd from "./dnd/Boarddnd";
+import BoardDropTarget from "./dnd/Boarddnd";
+// import Boarddnd from "./dnd/Boarddnd";
 
 export default class App extends React.Component {
   constructor(props) {
@@ -91,7 +91,8 @@ export default class App extends React.Component {
             resetCheck={this.resetCheck}
           />
         )} */}
-        <Boarddnd cards={this.state.cards}></Boarddnd>
+        {/* <Boarddnd cards={this.state.cards}></Boarddnd> */}
+        <BoardDropTarget cards={this.state.cards}></BoardDropTarget>
       </DndProvider>
     );
   }

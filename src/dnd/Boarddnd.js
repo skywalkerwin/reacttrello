@@ -73,16 +73,16 @@ class Boarddnd extends Component {
   }
 }
 
-// var BoardDropTarget = DropTarget(
-//   [ItemTypes.CARD, ItemTypes.TASK],
-//   boardTarget,
-//   collect
-// );
-// const mapStateToProps = state => ({
-//   cards: state.cards
-// });
-export default Boarddnd;
-// export default connect(
-//   mapStateToProps,
-//   { addCard }
-// )(boardDropTarget);
+var BoardDropTarget = DropTarget(
+  [ItemTypes.CARD, ItemTypes.TASK],
+  boardTarget,
+  collect
+)(Boarddnd);
+const mapStateToProps = state => ({
+  cards: state.cards
+});
+// export default Boarddnd;
+export default connect(
+  mapStateToProps,
+  {} //{ addCard }
+)(BoardDropTarget);
