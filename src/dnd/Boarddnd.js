@@ -38,13 +38,73 @@ class Boarddnd extends Component {
   constructor(props) {
     super(props);
     this.drawCards = this.drawCards.bind(this);
-    this.state = {};
+    this.handleChangeTitle = this.handleChangeTitle.bind(this);
+    this.handleShowAdd = this.handleShowAdd.bind(this);
+    this.handleSubmitCard = this.handleSubmitCard.bind(this);
+    console.log(this.props.cards == undefined);
+    const allCards = JSON.parse(JSON.stringify(this.props.cards));
+    this.state = {
+      boardID: this.props.boardID,
+      cards: allCards,
+      showAdd: false,
+      tempTitle: "",
+      numTasks: this.props.numCards
+    };
   }
+  componentDidUpdate(prevProps) {
+    if (this.props.cards !== prevProps.cards) {
+      const allCards = JSON.parse(JSON.stringify(this.props.cards));
+      this.setState({
+        boardID: this.props.boardID,
+        cards: allCards,
+        numCards: this.props.numCards
+      });
+    }
+  }
+  handleChangeTitle(e) {
+    this.setState({
+      tempTitle: e
+    });
+  }
+  handleShowAdd() {
+    this.setState({
+      showAdd: !this.state.showAdd
+    });
+  }
+  handleSubmitCard = e => {
+    e.preventDefault();
+    this.setState({
+      showAdd: !this.state.showAdd
+    });
+    var formdata = new FormData();
+    formdata.set("boardID", this.state.boardID);
+    formdata.set("title", this.state.tempTitle);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/addCard",
+      data: formdata
+    })
+      .then(res => {
+        const extraCard = {
+          boardID: res.data.boardID,
+          cardID: res.data.cardID,
+          cardOrder: res.data.cardOrder,
+          created: res.data.created,
+          numTasks: 0,
+          tasks: [],
+          title: res.data.title
+        };
+        this.setState({
+          cards: [...this.state.cards, extraCard],
+          numCards: this.state.numCards + 1
+        });
+      })
+      .catch(err => console.log(err));
+  };
   drawCards(allCards) {
     var cardList = [];
     if (allCards !== undefined) {
       allCards.forEach(c => cardList.push(<CardDropTarget card={c} />));
-      // allCards.forEach(c => cardList.push(<dropTarget card={c} />));
     }
     return cardList;
   }
@@ -52,19 +112,45 @@ class Boarddnd extends Component {
     const { isOver, canDrop, connectDropTarget } = this.props;
     return connectDropTarget(
       <div>
-        {/* {console.log(this.props.cards)} */}
         <h1 className="header">
           KanBan | Drag-n-Drop | Flask backend API / React frontend UI
         </h1>
         <div className="board">
-          {this.drawCards(this.props.cards)}
+          {this.drawCards(this.state.cards)}
           <Button
-            //   onClick={handleShow}
+            onClick={this.handleShowAdd}
             className="addCard"
             variant="secondary"
           >
             + Add List
           </Button>
+          <Modal show={this.state.showAdd} onHide={this.handleshowAdd}>
+            <Modal.Header closeButton>
+              <Modal.Title>Add Card</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <form onSubmit={this.handleSubmitCard}>
+                <Form.Group controlId="formCardTitle">
+                  <Form.Control
+                    // autofocus="true"
+                    type="cardTitle"
+                    // defaultValue={cardTitle}
+                    placeholder={"Title..."}
+                    onChange={e => this.handleChangeTitle(e.target.value)}
+                    // ref={textInput}
+                  />
+                </Form.Group>
+              </form>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={this.handleShowAdd}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={e => this.handleSubmitCard(e)}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
         <div className="trash">
           <h2 className="trashText">
@@ -76,20 +162,6 @@ class Boarddnd extends Component {
     );
   }
 }
-
-// var BoardDropTarget = DropTarget(
-//   [ItemTypes.CARD, ItemTypes.TASK],
-//   boardTarget,
-//   collect
-// )(Boarddnd);
-// const mapStateToProps = state => ({
-//   cards: state.cards
-// });
-// export default Boarddnd;
-// export default connect(
-//   mapStateToProps,
-//   {} //{ addCard }
-// )(BoardDropTarget);
 
 export default DropTarget(
   [ItemTypes.CARD, ItemTypes.TASK],

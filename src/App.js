@@ -95,7 +95,11 @@ export default class App extends React.Component {
           />
         )} */}
         {/* <Boarddnd cards={this.state.cards}></Boarddnd> */}
-        <BoardDropTarget cards={this.state.cards}></BoardDropTarget>
+        <BoardDropTarget
+          boardID={this.state.boardID}
+          cards={this.state.cards}
+          numCards={this.state.numCards}
+        ></BoardDropTarget>
       </DndProvider>
     );
   }

@@ -25,18 +25,17 @@ const cardSource = {
   },
 
   beginDrag(props, monitor, component) {
-    console.log("IS DRAGGING");
+    // console.log("IS DRAGGING");
     // Return the data describing the dragged item
     const item = { id: "card" };
     return item;
   },
 
   endDrag(props, monitor, component) {
-    console.log("end drag test");
+    // console.log("end drag test");
     if (!monitor.didDrop()) {
       // You can check whether the drop was successful
       // or if the drag ended but nobody handled the drop
-      console.log("card drop test");
       return;
     }
 
@@ -67,11 +66,12 @@ function dragCollect(connect, monitor) {
 const cardTarget = {
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
+      console.log("DID DROP ON CARD");
       return;
     }
     const item = monitor.getItem();
-
-    return { moved: true };
+    console.log("DROPPED ON CARD");
+    return { droppedOn: "card", moved: true };
   }
 };
 
@@ -89,7 +89,23 @@ class Carddnd extends Component {
   constructor(props) {
     super(props);
     this.drawTasks = this.drawTasks.bind(this);
-    this.state = {};
+    this.handleChangeEdit = this.handleChangeEdit.bind(this);
+    this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
+    this.handleShowEdit = this.handleShowEdit.bind(this);
+    this.handleChangeTask = this.handleChangeTask.bind(this);
+    this.handleSubmitTask = this.handleSubmitTask.bind(this);
+    this.handleShowTask = this.handleShowTask.bind(this);
+    this.state = {
+      boardID: this.props.card.boardID,
+      cardID: this.props.card.cardID,
+      numTasks: this.props.card.numTasks,
+      showEdit: false,
+      showTask: false,
+      tempTask: "",
+      tempTitle: this.props.card.title,
+      title: this.props.card.title,
+      tasks: this.props.card.tasks
+    };
   }
   drawTasks(tasks) {
     var taskList = [];
@@ -99,6 +115,74 @@ class Carddnd extends Component {
       });
     }
     return taskList;
+  }
+  handleChangeEdit(e) {
+    this.setState({
+      tempTitle: e
+    });
+  }
+  handleShowEdit() {
+    this.setState({
+      showEdit: !this.state.showEdit
+    });
+  }
+  handleSubmitEdit(e) {
+    e.preventDefault();
+    this.setState({
+      title: this.state.tempTitle,
+      showEdit: !this.state.showEdit
+    });
+    var formdata = new FormData();
+    formdata.set("title", this.state.tempTitle);
+    formdata.set("cardID", this.state.cardID);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/updateCard",
+      data: formdata
+    })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => console.log(err));
+  }
+  handleChangeTask(e) {
+    this.setState({
+      tempTask: e
+    });
+  }
+  handleShowTask() {
+    this.setState({
+      showTask: !this.state.showTask
+    });
+  }
+  handleSubmitTask(e) {
+    e.preventDefault();
+    this.handleShowTask();
+    var formdata = new FormData();
+    formdata.set("boardID", this.state.boardID);
+    formdata.set("body", this.state.tempTask);
+    formdata.set("cardID", this.state.cardID);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/addTask",
+      data: formdata
+    })
+      .then(res => {
+        console.log(res);
+        const extraTask = {
+          boardID: res.data.boardID,
+          body: res.data.body,
+          cardID: res.data.cardID,
+          created: res.data.created,
+          taskID: res.data.taskID,
+          taskOrder: res.data.numTasks
+        };
+        this.setState({
+          tasks: [...this.state.tasks, extraTask],
+          numTasks: this.state.numTasks + 1
+        });
+      })
+      .catch(err => console.log(err));
   }
   render() {
     const {
@@ -111,90 +195,93 @@ class Carddnd extends Component {
     return connectDragSource(
       connectDropTarget(
         <div className="cardBody">
-          <h2 className="cardTitle">{this.props.card.title}</h2>
+          <h2 className="cardTitle">{this.state.title}</h2>
           <a className="cardEdit">
             <button
-              // onClick={handleShow}
+              onClick={this.handleShowEdit}
               type="button"
               className="btn btn-default btn-sm"
             >
               Edit
             </button>
           </a>
-          {this.drawTasks(this.props.card.tasks)}
+          {this.drawTasks(this.state.tasks)}
           <div>
             <Button
               className="cardAddTask"
               variant="secondary"
-              // onClick={handleShowTask}
+              onClick={this.handleShowTask}
               type="button"
             >
               + Add Task
             </Button>
           </div>
 
-          {/* <Modal show={showTaskModal} onHide={handleCloseTask}>
+          <Modal show={this.state.showTask} onHide={this.handleShowTask}>
             <Modal.Header closeButton>
               <Modal.Title>Add Task</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form onSubmit={handleSubmit}>
+              <Form onSubmit={this.handleSubmitTask}>
                 <Form.Group controlId="formCardTitle">
                   <Form.Control
                     as="textarea"
                     rows="3"
                     type="cardTitle"
                     placeholder={"Add Task"}
-                    onChange={e => handleChangeTask(e.target.value)}
+                    onChange={e => this.handleChangeTask(e.target.value)}
                   />
                 </Form.Group>
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseTask}>
+              <Button variant="secondary" onClick={this.handleShowTask}>
                 Close
               </Button>
-              <Button variant="primary" onClick={handleSubmitTask}>
+              <Button variant="primary" onClick={e => this.handleSubmitTask(e)}>
                 Save Changes
               </Button>
             </Modal.Footer>
-          </Modal> */}
+          </Modal>
+
           {/* {------------------------------------------------------------------------------------------------------------------------------} */}
-          {/* <Modal show={show} onHide={handleClose}>
+          <Modal show={this.state.showEdit} onHide={this.handleShowEdit}>
             <Modal.Header closeButton>
               <Modal.Title>Edit Card Title</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={e => this.handleSubmitEdit(e)}>
                 <Form.Group controlId="formCardTitle">
                   <Form.Control
                     // autofocus="true"
                     type="cardTitle"
-                    defaultValue={cardTitle}
-                    onChange={e => handleChange(e.target.value)}
+                    defaultValue={this.state.title}
+                    onChange={e => this.handleChangeEdit(e.target.value)}
                     // ref={textInput}
                   />
                 </Form.Group>
               </form>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
+              <Button variant="secondary" onClick={this.handleShowEdit}>
                 Close
               </Button>
-              <Button variant="primary" onClick={handleSubmit}>
+              <Button variant="primary" onClick={this.handleSubmitEdit}>
                 Save Changes
               </Button>
             </Modal.Footer>
-          </Modal> */}
+          </Modal>
         </div>
       )
     );
   }
 }
 
-var CardDropTarget = DropTarget(ItemTypes.TASK, cardTarget, dropCollect)(
-  Carddnd
-);
+var CardDropTarget = DropTarget(
+  [ItemTypes.CARD, ItemTypes.TASK],
+  cardTarget,
+  dropCollect
+)(Carddnd);
 export default DragSource(ItemTypes.CARD, cardSource, dragCollect)(
   CardDropTarget
 );

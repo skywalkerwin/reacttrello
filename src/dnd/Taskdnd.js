@@ -68,8 +68,8 @@ const taskTarget = {
       return;
     }
     const item = monitor.getItem();
-
-    return { moved: true };
+    console.log("DROPPED ON TASK");
+    return { droppedOn: "task", moved: true };
   }
 };
 
@@ -86,9 +86,47 @@ function dropCollect(connect, monitor) {
 class Taskdnd extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    //may need to copy all aspects of task into state...ie body, taskID, cardID...etc deep copy
+    this.state = {
+      task: this.props.task,
+      show: false,
+      tempBody: this.props.task.body,
+      taskBody: this.props.task.body
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShow = this.handleShow.bind(this);
   }
 
+  handleChange(e) {
+    this.setState({
+      tempBody: e
+    });
+  }
+  handleShow() {
+    this.setState({
+      show: !this.state.show
+    });
+  }
+  handleSubmit(e) {
+    e.preventDefault();
+    this.setState({
+      taskBody: this.state.tempBody,
+      show: !this.state.show
+    });
+    var formdata = new FormData();
+    formdata.set("body", this.state.tempBody);
+    formdata.set("taskID", this.state.task.taskID);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/updateTask",
+      data: formdata
+    })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => console.log(err));
+  }
   render() {
     const {
       isOver,
@@ -97,7 +135,7 @@ class Taskdnd extends Component {
       isDragging,
       connectDragSource
     } = this.props;
-
+    // console.log(this.state.task);
     return connectDragSource(
       connectDropTarget(
         <div className="task">
@@ -105,43 +143,39 @@ class Taskdnd extends Component {
             <button
               type="button"
               className="btn btn-default btn-sm"
-              // onClick={handleShow}
+              onClick={this.handleShow}
             >
-              {" "}
               Edit
             </button>
-
-            {/* need to implement modal stuff -----------------------------------------------*/}
-
-            {/* <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Edit Task Body</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="formCardTitle">
-                  <Form.Control
-                    as="textarea"
-                    rows="3"
-                    defaultValue={taskBody}
-                    type="cardTitle"
-                    onChange={e => handleChange(e.target.value)}
-                  />
-                </Form.Group>
-              </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              <Button variant="primary" onClick={handleSubmit}>
-                Save Changes
-              </Button>
-            </Modal.Footer>
-          </Modal> */}
+            <Modal show={this.state.show} onHide={this.handleShow}>
+              <Modal.Header closeButton>
+                <Modal.Title>Edit Task Body</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Form onSubmit={e => this.handleSubmit(e)}>
+                  <Form.Group controlId="formCardTitle">
+                    <Form.Control
+                      as="textarea"
+                      rows="3"
+                      defaultValue={this.state.taskBody}
+                      type="cardTitle"
+                      onChange={e => this.handleChange(e.target.value)}
+                    />
+                  </Form.Group>
+                </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={this.handleShow}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={this.handleSubmit}>
+                  Save Changes
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </p>
           <p className="taskContent">
-            <h3>{this.props.task.body}</h3>
+            <h3>{this.state.taskBody}</h3>
           </p>
         </div>
       )
