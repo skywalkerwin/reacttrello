@@ -6,7 +6,8 @@ import { DropTarget, DragSource } from "react-dnd";
 import { ItemTypes } from "../Constants";
 import axios from "axios";
 import { Button, Form, Modal } from "react-bootstrap";
-import Taskdnd from "./Taskdnd";
+// import Taskdnd from "./Taskdnd";
+import TaskDropTarget from "./Taskdnd";
 import "../css/Card.css";
 
 const cardSource = {
@@ -94,7 +95,7 @@ class Carddnd extends Component {
     var taskList = [];
     if (this.props.card !== undefined && tasks !== undefined) {
       Array.from(tasks).forEach(t => {
-        taskList.push(<Taskdnd task={t} />);
+        taskList.push(<TaskDropTarget task={t} />);
       });
     }
     return taskList;
@@ -191,6 +192,10 @@ class Carddnd extends Component {
   }
 }
 
-var dropTarget = DropTarget(ItemTypes.TASK, cardTarget, dropCollect)(Carddnd);
-export default DragSource(ItemTypes.CARD, cardSource, dragCollect)(dropTarget);
+var CardDropTarget = DropTarget(ItemTypes.TASK, cardTarget, dropCollect)(
+  Carddnd
+);
+export default DragSource(ItemTypes.CARD, cardSource, dragCollect)(
+  CardDropTarget
+);
 // export default DragSource(ItemTypes.CARD, cardSource, dragCollect)(Carddnd);

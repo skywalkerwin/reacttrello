@@ -10,7 +10,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import React, { Component } from "react";
 import "../css/Board.css";
 import Carddnd from "./Carddnd";
-import dropTarget from "./Carddnd";
+import CardDropTarget from "./Carddnd";
 
 const boardTarget = {
   drop(props, monitor, component) {
@@ -43,7 +43,7 @@ class Boarddnd extends Component {
   drawCards(allCards) {
     var cardList = [];
     if (allCards !== undefined) {
-      allCards.forEach(c => cardList.push(<Carddnd card={c} />));
+      allCards.forEach(c => cardList.push(<CardDropTarget card={c} />));
       // allCards.forEach(c => cardList.push(<dropTarget card={c} />));
     }
     return cardList;
