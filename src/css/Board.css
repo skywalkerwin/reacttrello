@@ -6,7 +6,8 @@
   align-self: flex-start;
   flex-direction: row;
   justify-content: left;
-  height: 95%;
+  /* height: 95%; */
+  height: 100%;
   bottom: 0;
   min-width: 100vw;
   border: 4px solid rgb(21, 160, 214);
@@ -16,12 +17,44 @@
   /* background: darkgreen; */
 }
 
-.header {
-  background-color: rgb(236, 222, 222);
+.backboard {
+  /* background-color: lightgray; */
+  background: rgba(0, 100, 255, 0.5);
+  position: absolute;
   display: flex;
+  align-self: flex-start;
+  flex-direction: row;
+  justify-content: left;
+  height: 100%;
+  bottom: 0;
+  min-width: 100vw;
+  border: 4px solid rgb(21, 160, 214);
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  overflow: hidden;
+  /* background: darkgreen; */
+}
+.header {
+  position: absolute;
+  background-color: rgb(236, 222, 222);
+  align-self: flex-start;
+  margin: 0 auto;
+  /* top: -10%; */
+  /* top: -20px; */
+  top: 0;
+  left: 0;
+  right: 0;
+  /* display: flex; */
+  /* display: inline-flex; */
   justify-content: center;
-  /* text-align: center; */
+  flex-direction: row;
+  text-align: center;
   height: 5vh;
+  /* min-width: 100vw; */
+  /* max-width: 200%; */
+  /* width: 100rem; */
+  /* width: 100vw; */
+  overflow: visible;
 }
 
 .trash {
@@ -34,9 +67,11 @@
   bottom: 0;
   left: 0;
   right: 0;
-  width: 100%;
+  width: auto;
+  /* max-width: 200vw; */
   border-radius: 6px;
   background: rgba(255, 0, 0, 0.5);
+  overflow-y: hidden;
 }
 
 .trashText {
@@ -48,6 +83,8 @@
 }
 
 .addCard {
+  position: relative;
+  top: 5%;
   border-radius: 5px;
   margin: 10px;
   padding: 5px;

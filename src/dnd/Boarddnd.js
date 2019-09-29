@@ -112,10 +112,13 @@ class Boarddnd extends Component {
     const { isOver, canDrop, connectDropTarget } = this.props;
     return connectDropTarget(
       <div>
-        <h1 className="header">
+        {/* <h1 className="header">
           KanBan | Drag-n-Drop | Flask backend API / React frontend UI
-        </h1>
+        </h1> */}
         <div className="board">
+          <h1 className="header">
+            KanBan | Drag-n-Drop | Flask backend API / React frontend UI
+          </h1>
           {this.drawCards(this.state.cards)}
           <Button
             onClick={this.handleShowAdd}
@@ -124,7 +127,7 @@ class Boarddnd extends Component {
           >
             + Add List
           </Button>
-          <Modal show={this.state.showAdd} onHide={this.handleshowAdd}>
+          <Modal show={this.state.showAdd} onHide={this.handleShowAdd}>
             <Modal.Header closeButton>
               <Modal.Title>Add Card</Modal.Title>
             </Modal.Header>
@@ -151,12 +154,12 @@ class Boarddnd extends Component {
               </Button>
             </Modal.Footer>
           </Modal>
-        </div>
-        <div className="trash">
-          <h2 className="trashText">
-            🗑️ TRASH CAN - Drag here to Delete - ... Persistent Data
-            (postgreSQL) - authorization/multi-users/multi-boards coming soon?
-          </h2>
+          <div className="trash">
+            <h2 className="trashText">
+              🗑️ TRASH CAN - Drag here to Delete - ... Persistent Data
+              (postgreSQL) - authorization/multi-users/multi-boards coming soon?
+            </h2>
+          </div>
         </div>
       </div>
     );
