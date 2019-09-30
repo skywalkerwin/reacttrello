@@ -21,13 +21,13 @@ const cardSource = {
     // (like a card in Kanban board dragged between lists)
     // you can implement something like this to keep its
     // appearance dragged:
-    return monitor.getItem().id === props.id;
+    return monitor.getItem().card.cardID === props.card.cardID;
   },
 
   beginDrag(props, monitor, component) {
     // console.log("IS DRAGGING");
     // Return the data describing the dragged item
-    const item = { id: "card" };
+    const item = { id: "card", card: props.card };
     return item;
   },
 
@@ -42,12 +42,12 @@ const cardSource = {
     // When dropped on a compatible target, do something.
     // Read the original dragged item from getItem():
     const item = monitor.getItem();
-    console.log(item);
+    // console.log(item);
     // You may also read the drop result from the drop target
     // that handled the drop, if it returned an object from
     // its drop() method.
     const dropResult = monitor.getDropResult();
-    console.log(dropResult);
+    // console.log("endDrag card", dropResult);
     // This is a good place to call some Flux action
     // CardActions.moveCardToList(item.id, dropResult.listId);
   }
@@ -106,6 +106,18 @@ class Carddnd extends Component {
       title: this.props.card.title,
       tasks: this.props.card.tasks
     };
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.card.cardID !== prevProps.card.cardID) {
+      const newCard = JSON.parse(JSON.stringify(this.props.card));
+      this.setState({
+        cardID: this.props.card.cardID,
+        numTasks: this.props.card.numTasks,
+        tempTitle: this.props.card.title,
+        title: this.props.card.title,
+        tasks: this.props.card.tasks
+      });
+    }
   }
   drawTasks(tasks) {
     var taskList = [];
@@ -192,10 +204,12 @@ class Carddnd extends Component {
       isDragging,
       connectDragSource
     } = this.props;
+    const opacity = isDragging ? 0.2 : 1;
     return connectDragSource(
       connectDropTarget(
-        <div className="cardBody">
+        <div style={{ opacity }} className="cardBody">
           <h2 className="cardTitle">{this.state.title}</h2>
+          <h3>{this.state.cardID}</h3>
           <a className="cardEdit">
             <button
               onClick={this.handleShowEdit}
@@ -266,6 +280,7 @@ class Carddnd extends Component {
               <Button variant="secondary" onClick={this.handleShowEdit}>
                 Close
               </Button>
+              <Button variant="danger">Delete?</Button>
               <Button variant="primary" onClick={this.handleSubmitEdit}>
                 Save Changes
               </Button>

@@ -11,15 +11,45 @@ import React, { Component } from "react";
 import "../css/Board.css";
 import Carddnd from "./Carddnd";
 import CardDropTarget from "./Carddnd";
+import TrashDropTarget from "./Trashdnd";
 
 const boardTarget = {
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
       console.log("DID DROP ON BOARD");
+      const item = monitor.getItem();
+      const dropRes = monitor.getDropResult();
+      console.log(item, dropRes);
+      if (dropRes.droppedOn == "Trash") {
+        if (item.id == "card") {
+          var formdata = new FormData();
+          formdata.set("cardID", item.card.cardID);
+          axios({
+            method: "post",
+            url: "http://127.0.0.1:5000/deleteCard",
+            data: formdata
+          })
+            .then(res => {
+              console.log(res);
+            })
+            .catch(err => console.log(err));
+          const restCards = component.state.cards.filter(
+            c => c.cardID != item.card.cardID
+          );
+          component.setState({
+            cards: restCards,
+            numCards: component.state.numCards - 1
+          });
+        }
+
+        if (item.id == "task") {
+          // deleteTask(item.task);
+        }
+      }
       return;
     }
     const item = monitor.getItem();
-    console.log("board item", item);
+    // console.log("board item", item);
     return { droppedOn: "Board", moved: true };
   }
 };
@@ -41,7 +71,6 @@ class Boarddnd extends Component {
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
     this.handleShowAdd = this.handleShowAdd.bind(this);
     this.handleSubmitCard = this.handleSubmitCard.bind(this);
-    console.log(this.props.cards == undefined);
     const allCards = JSON.parse(JSON.stringify(this.props.cards));
     this.state = {
       boardID: this.props.boardID,
@@ -101,10 +130,10 @@ class Boarddnd extends Component {
       })
       .catch(err => console.log(err));
   };
-  drawCards(allCards) {
+  drawCards() {
     var cardList = [];
-    if (allCards !== undefined) {
-      allCards.forEach(c => cardList.push(<CardDropTarget card={c} />));
+    if (this.state.cards !== undefined) {
+      this.state.cards.forEach(c => cardList.push(<CardDropTarget card={c} />));
     }
     return cardList;
   }
@@ -119,7 +148,7 @@ class Boarddnd extends Component {
           <h1 className="header">
             KanBan | Drag-n-Drop | Flask backend API / React frontend UI
           </h1>
-          {this.drawCards(this.state.cards)}
+          {this.drawCards()}
           <Button
             onClick={this.handleShowAdd}
             className="addCard"
@@ -154,12 +183,13 @@ class Boarddnd extends Component {
               </Button>
             </Modal.Footer>
           </Modal>
-          <div className="trash">
+          {<TrashDropTarget></TrashDropTarget>}
+          {/* <div className="trash">
             <h2 className="trashText">
               🗑️ TRASH CAN - Drag here to Delete - ... Persistent Data
               (postgreSQL) - authorization/multi-users/multi-boards coming soon?
             </h2>
-          </div>
+          </div> */}
         </div>
       </div>
     );

@@ -23,9 +23,10 @@ const taskSource = {
   },
 
   beginDrag(props, monitor, component) {
+    // console.log(props);
     // console.log("IS DRAGGING");
     // Return the data describing the dragged item
-    const item = { id: "task" };
+    const item = { id: "task", task: props.task };
     return item;
   },
 
@@ -41,7 +42,7 @@ const taskSource = {
     // When dropped on a compatible target, do something.
     // Read the original dragged item from getItem():
     const item = monitor.getItem();
-    console.log(item);
+    // console.log(item);
     // You may also read the drop result from the drop target
     // that handled the drop, if it returned an object from
     // its drop() method.
