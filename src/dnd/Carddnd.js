@@ -109,14 +109,17 @@ class Carddnd extends Component {
     };
   }
   componentDidUpdate(prevProps) {
-    if (this.props.card.cardID !== prevProps.card.cardID) {
+    if (
+      this.props.card.cardID !== prevProps.card.cardID ||
+      this.props.card.tasks !== prevProps.card.tasks
+    ) {
       const newCard = JSON.parse(JSON.stringify(this.props.card));
       this.setState({
-        cardID: this.props.card.cardID,
-        numTasks: this.props.card.numTasks,
-        tempTitle: this.props.card.title,
-        title: this.props.card.title,
-        tasks: this.props.card.tasks
+        cardID: newCard.cardID,
+        numTasks: newCard.numTasks,
+        tempTitle: newCard.title,
+        title: newCard.title,
+        tasks: newCard.tasks
       });
     }
   }
@@ -132,7 +135,11 @@ class Carddnd extends Component {
     if (this.props.card !== undefined && tasks !== undefined) {
       Array.from(tasks).forEach(t => {
         taskList.push(
-          <TaskDropTarget task={t} handleDelete={this.alterTasks} />
+          <TaskDropTarget
+            key={t.taskID}
+            task={t}
+            handleDelete={this.alterTasks}
+          />
         );
       });
     }

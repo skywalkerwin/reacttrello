@@ -204,7 +204,7 @@ class Taskdnd extends Component {
             </Modal>
           </p>
           <p className="taskContent">
-            <h3>{this.state.taskBody}</h3>
+            <h4>{this.state.taskBody}</h4>
           </p>
         </div>
       )

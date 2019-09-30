@@ -133,7 +133,9 @@ class Boarddnd extends Component {
   drawCards() {
     var cardList = [];
     if (this.state.cards !== undefined) {
-      this.state.cards.forEach(c => cardList.push(<CardDropTarget card={c} />));
+      this.state.cards.forEach(c =>
+        cardList.push(<CardDropTarget key={c.cardID} card={c} />)
+      );
     }
     return cardList;
   }
