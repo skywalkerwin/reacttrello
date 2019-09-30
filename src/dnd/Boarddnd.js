@@ -19,7 +19,7 @@ const boardTarget = {
       console.log("DID DROP ON BOARD");
       const item = monitor.getItem();
       const dropRes = monitor.getDropResult();
-      console.log(item, dropRes);
+      // console.log(item, dropRes);
       if (dropRes.droppedOn == "Trash") {
         if (item.id == "card") {
           var formdata = new FormData();

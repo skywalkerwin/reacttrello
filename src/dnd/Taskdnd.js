@@ -42,12 +42,27 @@ const taskSource = {
     // When dropped on a compatible target, do something.
     // Read the original dragged item from getItem():
     const item = monitor.getItem();
-    // console.log(item);
+    // consol.e.log(item);
     // You may also read the drop result from the drop target
     // that handled the drop, if it returned an object from
     // its drop() method.
     const dropResult = monitor.getDropResult();
     console.log(dropResult);
+    console.log(item.task.taskID);
+    if (dropResult.droppedOn === "Trash") {
+      var formdata = new FormData();
+      formdata.set("taskID", item.task.taskID);
+      axios({
+        method: "post",
+        url: "http://127.0.0.1:5000/deleteTask",
+        data: formdata
+      })
+        .then(res => {
+          console.log(res);
+          props.handleDelete(item.task.taskID);
+        })
+        .catch(err => console.log(err));
+    }
     // This is a good place to call some Flux action
     // CardActions.moveCardToList(item.id, dropResult.listId);
   }
@@ -90,6 +105,7 @@ class Taskdnd extends Component {
     //may need to copy all aspects of task into state...ie body, taskID, cardID...etc deep copy
     this.state = {
       task: this.props.task,
+      taskID: this.props.task.taskID,
       show: false,
       tempBody: this.props.task.body,
       taskBody: this.props.task.body
@@ -97,6 +113,18 @@ class Taskdnd extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.task.taskID !== prevProps.task.taskID) {
+      const newTask = JSON.parse(JSON.stringify(this.props.task));
+      this.setState({
+        task: this.props.task,
+        taskID: this.props.task.taskID,
+        tempBody: this.props.task.body,
+        taskBody: this.props.task.body
+      });
+    }
   }
 
   handleChange(e) {

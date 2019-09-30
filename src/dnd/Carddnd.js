@@ -88,6 +88,7 @@ function dropCollect(connect, monitor) {
 class Carddnd extends Component {
   constructor(props) {
     super(props);
+    this.alterTasks = this.alterTasks.bind(this);
     this.drawTasks = this.drawTasks.bind(this);
     this.handleChangeEdit = this.handleChangeEdit.bind(this);
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
@@ -119,11 +120,20 @@ class Carddnd extends Component {
       });
     }
   }
+  alterTasks(tid) {
+    const newTasks = this.state.tasks.filter(t => t.taskID !== tid);
+    this.setState({
+      tasks: newTasks,
+      numTasks: this.state.numTasks - 1
+    });
+  }
   drawTasks(tasks) {
     var taskList = [];
     if (this.props.card !== undefined && tasks !== undefined) {
       Array.from(tasks).forEach(t => {
-        taskList.push(<TaskDropTarget task={t} />);
+        taskList.push(
+          <TaskDropTarget task={t} handleDelete={this.alterTasks} />
+        );
       });
     }
     return taskList;
