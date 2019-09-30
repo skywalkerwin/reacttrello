@@ -64,6 +64,12 @@ function dragCollect(connect, monitor) {
 }
 
 const cardTarget = {
+  hover(props, monitor, component) {
+    const coff = monitor.getClientOffset();
+    const item = monitor.getItem();
+    // console.log(item, coff);
+    // console.log(props);
+  },
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
       console.log("DID DROP ON CARD");
@@ -90,6 +96,8 @@ class Carddnd extends Component {
     super(props);
     this.alterTasks = this.alterTasks.bind(this);
     this.drawTasks = this.drawTasks.bind(this);
+    this.hoverTask = this.hoverTask.bind(this);
+
     this.handleChangeEdit = this.handleChangeEdit.bind(this);
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
     this.handleShowEdit = this.handleShowEdit.bind(this);
@@ -97,6 +105,7 @@ class Carddnd extends Component {
     this.handleSubmitTask = this.handleSubmitTask.bind(this);
     this.handleShowTask = this.handleShowTask.bind(this);
     this.state = {
+      card: this.props.card,
       boardID: this.props.card.boardID,
       cardID: this.props.card.cardID,
       numTasks: this.props.card.numTasks,
@@ -115,6 +124,7 @@ class Carddnd extends Component {
     ) {
       const newCard = JSON.parse(JSON.stringify(this.props.card));
       this.setState({
+        card: newCard,
         cardID: newCard.cardID,
         numTasks: newCard.numTasks,
         tempTitle: newCard.title,
@@ -130,15 +140,32 @@ class Carddnd extends Component {
       numTasks: this.state.numTasks - 1
     });
   }
+  hoverTask(above, temp, tid) {
+    const overTask = this.state.tasks.filter(t => t.taskID == tid);
+    const tempTask = {
+      boardID: temp.boardID,
+      body: temp.body,
+      cardID: temp.cardID,
+      created: temp.created,
+      taskID: temp.taskID,
+      taskOrder: temp.taskOrder,
+      temp: true
+    };
+    console.log("TEST", overTask.temp);
+    console.log("TEST", tempTask.temp);
+    console.log(above, temp, tid);
+  }
   drawTasks(tasks) {
     var taskList = [];
-    if (this.props.card !== undefined && tasks !== undefined) {
+    if (this.state.card !== undefined && tasks !== undefined) {
       Array.from(tasks).forEach(t => {
         taskList.push(
           <TaskDropTarget
             key={t.taskID}
             task={t}
             handleDelete={this.alterTasks}
+            handleHover={this.hoverTask}
+            temp={false}
           />
         );
       });

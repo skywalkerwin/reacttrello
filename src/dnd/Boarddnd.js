@@ -14,14 +14,20 @@ import CardDropTarget from "./Carddnd";
 import TrashDropTarget from "./Trashdnd";
 
 const boardTarget = {
+  hover(props, monitor, component) {
+    const coff = monitor.getClientOffset();
+    const item = monitor.getItem();
+    // console.log(item, coff);
+    // console.log(props);
+  },
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
       console.log("DID DROP ON BOARD");
       const item = monitor.getItem();
       const dropRes = monitor.getDropResult();
       // console.log(item, dropRes);
-      if (dropRes.droppedOn == "Trash") {
-        if (item.id == "card") {
+      if (dropRes.droppedOn === "Trash") {
+        if (item.id === "card") {
           var formdata = new FormData();
           formdata.set("cardID", item.card.cardID);
           axios({
@@ -34,7 +40,7 @@ const boardTarget = {
             })
             .catch(err => console.log(err));
           const restCards = component.state.cards.filter(
-            c => c.cardID != item.card.cardID
+            c => c.cardID !== item.card.cardID
           );
           component.setState({
             cards: restCards,
@@ -42,7 +48,7 @@ const boardTarget = {
           });
         }
 
-        if (item.id == "task") {
+        if (item.id === "task") {
           // deleteTask(item.task);
         }
       }

@@ -19,7 +19,7 @@ const taskSource = {
     // (like a card in Kanban board dragged between lists)
     // you can implement something like this to keep its
     // appearance dragged:
-    return monitor.getItem().id === props.id;
+    return monitor.getItem().task.taskID === props.task.taskID;
   },
 
   beginDrag(props, monitor, component) {
@@ -79,6 +79,25 @@ function dragCollect(connect, monitor) {
 }
 
 const taskTarget = {
+  hover(props, monitor, component) {
+    // console.log("HOVERING OVER TASK");
+    const coff = monitor.getClientOffset();
+    const item = monitor.getItem();
+    // console.log(item.task.body);
+    // console.log(item, coff);
+    // console.log(component.state.mid);
+    // console.log(component.taskRef.current.getBoundingClientRect());
+    if (item.task.taskID !== props.task.taskID) {
+      if (coff.y > component.state.mid) {
+        console.log("HOVERED BELOW");
+        component.props.handleHover(false, item.task, props.task.taskID);
+      } else if (coff.y <= component.state.mid) {
+        console.log("HOVERED ABOVE");
+        component.props.handleHover(true, item.task, props.task.taskID);
+      }
+      // console.log("DO HOVER MOVE STUFF");
+    }
+  },
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
       return;
@@ -103,16 +122,20 @@ class Taskdnd extends Component {
   constructor(props) {
     super(props);
     //may need to copy all aspects of task into state...ie body, taskID, cardID...etc deep copy
+    // this.checkRender = this.checkRender.bind(this);
+    this.taskRef = React.createRef();
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleShow = this.handleShow.bind(this);
     this.state = {
       task: this.props.task,
       taskID: this.props.task.taskID,
       show: false,
+      temp: this.props.temp,
       tempBody: this.props.task.body,
       taskBody: this.props.task.body
+      // renderBool: false
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleShow = this.handleShow.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -125,6 +148,12 @@ class Taskdnd extends Component {
         taskBody: this.props.task.body
       });
     }
+  }
+  componentDidMount() {
+    const pos = this.taskRef.current.getBoundingClientRect();
+    this.setState({
+      mid: pos.top + pos.height / 2
+    });
   }
 
   handleChange(e) {
@@ -164,10 +193,12 @@ class Taskdnd extends Component {
       isDragging,
       connectDragSource
     } = this.props;
-    // console.log(this.state.task);
+    const opacity = isDragging ? 0.2 : 1;
+
     return connectDragSource(
       connectDropTarget(
-        <div className="task">
+        <div ref={this.taskRef} style={{ opacity }} className="task">
+          {/* {this.checkRender()} */}
           <p className="taskEdit">
             <button
               type="button"
@@ -203,9 +234,9 @@ class Taskdnd extends Component {
               </Modal.Footer>
             </Modal>
           </p>
-          <p className="taskContent">
+          <div className="taskContent">
             <h4>{this.state.taskBody}</h4>
-          </p>
+          </div>
         </div>
       )
     );
