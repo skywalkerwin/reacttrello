@@ -31,7 +31,7 @@ const taskSource = {
   },
 
   endDrag(props, monitor, component) {
-    // console.log("end drag test");
+    console.log("end drag test");
     if (!monitor.didDrop()) {
       // You can check whether the drop was successful
       // or if the drag ended but nobody handled the drop
@@ -47,7 +47,7 @@ const taskSource = {
     // that handled the drop, if it returned an object from
     // its drop() method.
     const dropResult = monitor.getDropResult();
-    console.log(dropResult);
+    console.log("drop result:", dropResult);
     console.log(item.task.taskID);
     if (dropResult.droppedOn === "Trash") {
       var formdata = new FormData();
@@ -87,22 +87,37 @@ const taskTarget = {
     // console.log(item, coff);
     // console.log(component.state.mid);
     // console.log(component.taskRef.current.getBoundingClientRect());
-    if (item.task.taskID !== props.task.taskID) {
-      if (coff.y > component.state.mid) {
-        // console.log("HOVERED BELOW");
-        component.props.handleHover(false, item.task, props.task.taskID);
-      } else if (coff.y <= component.state.mid) {
-        // console.log("HOVERED ABOVE");
-        component.props.handleHover(true, item.task, props.task.taskID);
+    if (item.id == "task") {
+      if (item.task.taskID !== props.task.taskID) {
+        if (coff.y > component.state.mid) {
+          // console.log("HOVERED BELOW");
+          component.props.handleHover(false, item.task, props.task.taskID);
+        } else if (coff.y <= component.state.mid) {
+          // console.log("HOVERED ABOVE");
+          component.props.handleHover(true, item.task, props.task.taskID);
+        }
       }
     }
   },
   drop(props, monitor, component) {
+    console.log("DROPPED ON TASK");
     if (monitor.didDrop()) {
       return;
     }
+    const coff = monitor.getClientOffset();
     const item = monitor.getItem();
-    console.log("DROPPED ON TASK");
+    const dropRes = monitor.getDropResult();
+    console.log("dropped ID", item.task.taskID);
+    console.log("DROPPED ON ID:", props.task.taskID);
+    if (item.id == "task") {
+      // if (item.task.taskID !== props.task.taskID) {
+      if (coff.y > component.state.mid) {
+        component.props.handleDrop(false, item.task, props.task.taskID);
+      } else if (coff.y <= component.state.mid) {
+        component.props.handleDrop(true, item.task, props.task.taskID);
+      }
+      // }
+    }
     return { droppedOn: "task", moved: true };
   }
 };
@@ -120,13 +135,12 @@ function dropCollect(connect, monitor) {
 class Taskdnd extends Component {
   constructor(props) {
     super(props);
-    //may need to copy all aspects of task into state...ie body, taskID, cardID...etc deep copy
-    // this.checkRender = this.checkRender.bind(this);
     this.taskRef = React.createRef();
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleShow = this.handleShow.bind(this);
     this.state = {
+      parentCardID: this.props.parentCardID,
       task: this.props.task,
       taskID: this.props.task.taskID,
       show: false,
@@ -134,7 +148,6 @@ class Taskdnd extends Component {
       tempBody: this.props.task.body,
       taskBody: this.props.task.body,
       taskOrder: this.props.task.taskOrder
-      // renderBool: false
     };
   }
 
@@ -142,6 +155,7 @@ class Taskdnd extends Component {
     if (this.props.task.taskID !== prevProps.task.taskID) {
       const newTask = JSON.parse(JSON.stringify(this.props.task));
       this.setState({
+        parentCardID: this.props.parentCardID,
         task: this.props.task,
         taskID: this.props.task.taskID,
         tempBody: this.props.task.body,
@@ -193,12 +207,18 @@ class Taskdnd extends Component {
       isDragging,
       connectDragSource
     } = this.props;
-    const opacity = isDragging ? 0.2 : 1;
-
+    const opacity = isDragging ? 1 : 1;
+    const backgroundColor = isDragging ? "yellow" : "white";
+    // if (isDragging && this.state.task.cardID === this.state.parentCardID) {
+    //   return null;
+    // }
     return connectDragSource(
       connectDropTarget(
-        <div ref={this.taskRef} style={{ opacity }} className="task">
-          {/* {this.checkRender()} */}
+        <div
+          ref={this.taskRef}
+          style={{ backgroundColor, opacity }}
+          className="task"
+        >
           <p className="taskEdit">
             <button
               type="button"
@@ -244,7 +264,6 @@ class Taskdnd extends Component {
   }
 }
 
-// export default Taskdnd;
 var TaskDropTarget = DropTarget(ItemTypes.TASK, taskTarget, dropCollect)(
   Taskdnd
 );

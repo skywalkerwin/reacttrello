@@ -67,6 +67,24 @@ const cardTarget = {
   hover(props, monitor, component) {
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
+    if (item.id === "task") {
+      const tempTask = {
+        boardID: item.task.boardID,
+        body: item.task.body,
+        cardID: item.task.cardID,
+        created: item.task.created,
+        taskID: item.task.taskID,
+        taskOrder: 1,
+        temp: true
+      };
+
+      if (component.state.tasks.length < 1) {
+        // var newList=
+        component.setState({
+          tasks: [tempTask]
+        });
+      }
+    }
     // console.log(item, coff);
     // console.log(props);
   },
@@ -96,6 +114,7 @@ class Carddnd extends Component {
     super(props);
     this.alterTasks = this.alterTasks.bind(this);
     this.drawTasks = this.drawTasks.bind(this);
+    this.dropTask = this.dropTask.bind(this);
     this.hoverTask = this.hoverTask.bind(this);
 
     this.handleChangeEdit = this.handleChangeEdit.bind(this);
@@ -147,6 +166,60 @@ class Carddnd extends Component {
       numTasks: this.state.numTasks - 1
     });
   }
+  dropTask(above, temp, tid) {
+    console.log("TASK WAS DROPPED...HANDLING");
+    if (temp.taskID === tid) {
+      var sameTasks = this.state.tasks;
+      sameTasks.forEach(t => {
+        if (t.taskID === tid) {
+          t.temp = false;
+        }
+      });
+      var counter = 1;
+      sameTasks.forEach(t => {
+        t.taskOrder = counter;
+        counter = counter + 1;
+      });
+      this.setState({ tasks: sameTasks });
+      return;
+    }
+    const oldTasks = this.state.tasks.filter(t => t.taskID !== temp.taskID);
+    const overTask = this.state.tasks.filter(t => t.taskID === tid)[0];
+    const overOrder = overTask.taskOrder;
+    const draggedTask = {
+      boardID: temp.boardID,
+      body: temp.body,
+      cardID: temp.cardID,
+      created: temp.created,
+      taskID: temp.taskID,
+      taskOrder: overOrder
+    };
+    var newTasks = [];
+    oldTasks.forEach(t => {
+      if (t.taskOrder >= overOrder) {
+        if (above == false) {
+          newTasks.push(t);
+        }
+        if (t.taskOrder == overOrder) {
+          newTasks.push(draggedTask);
+        }
+        if (above == true) {
+          newTasks.push(t);
+        }
+      } else {
+        newTasks.push(t);
+      }
+    });
+    var counter = 1;
+    newTasks.forEach(t => {
+      t.taskOrder = counter;
+      counter = counter + 1;
+    });
+    //AXIOS
+    this.setState({
+      tasks: newTasks
+    });
+  }
   hoverTask(above, temp, tid) {
     const oldTasks = this.state.tasks.filter(t => t.taskID !== temp.taskID);
     const overTask = this.state.tasks.filter(t => t.taskID === tid)[0];
@@ -162,28 +235,25 @@ class Carddnd extends Component {
     };
     var newTasks = [];
     oldTasks.forEach(t => {
-      if (above == true) {
-        if (t.taskOrder >= overOrder) {
-          if (t.taskOrder == overOrder) {
-            newTasks.push(draggedTask);
-          }
-          newTasks.push(t);
-        } else {
+      if (t.taskOrder >= overOrder) {
+        if (above == false) {
           newTasks.push(t);
         }
-      }
-      if (above == false) {
-        if (t.taskOrder >= overOrder) {
-          newTasks.push(t);
-          if (t.taskOrder == overOrder) {
-            newTasks.push(draggedTask);
-          }
-        } else {
+        if (t.taskOrder == overOrder) {
+          newTasks.push(draggedTask);
+        }
+        if (above == true) {
           newTasks.push(t);
         }
+      } else {
+        newTasks.push(t);
       }
     });
-    // console.log(newTasks);
+    var counter = 1;
+    newTasks.forEach(t => {
+      t.taskOrder = counter;
+      counter = counter + 1;
+    });
     this.setState({
       tasks: newTasks
     });
@@ -196,9 +266,11 @@ class Carddnd extends Component {
         taskList.push(
           <TaskDropTarget
             key={t.taskID}
+            parentCardID={this.state.cardID}
             task={t}
             handleDelete={this.alterTasks}
             handleHover={this.hoverTask}
+            handleDrop={this.dropTask}
           />
         );
       });
