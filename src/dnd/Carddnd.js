@@ -141,19 +141,72 @@ class Carddnd extends Component {
     });
   }
   hoverTask(above, temp, tid) {
-    const overTask = this.state.tasks.filter(t => t.taskID == tid);
-    const tempTask = {
+    console.log("IN HOVER TASK");
+    const overTask = this.state.tasks.filter(t => t.taskID == tid)[0];
+    const overOrder = overTask.taskOrder;
+    var draggedOrder = -1;
+    if (above === true) {
+      draggedOrder = overOrder;
+    } else {
+      draggedOrder = overOrder + 1;
+    }
+    const draggedTask = {
       boardID: temp.boardID,
       body: temp.body,
       cardID: temp.cardID,
       created: temp.created,
       taskID: temp.taskID,
-      taskOrder: temp.taskOrder,
+      taskOrder: draggedOrder,
       temp: true
     };
-    console.log("TEST", overTask.temp);
-    console.log("TEST", tempTask.temp);
-    console.log(above, temp, tid);
+    var newTasks = [];
+    this.state.tasks.forEach(t => {
+      if (above == true) {
+        if (t.taskOrder >= overOrder) {
+          const tempTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder + 1,
+            temp: false
+          };
+          if (t.taskOrder == overOrder) {
+            console.log("DRAG TEST");
+            newTasks.push(draggedTask);
+          }
+          newTasks.push(tempTask);
+        } else {
+          newTasks.push(t);
+        }
+      }
+      if (above == false) {
+        if (t.taskOrder > overOrder) {
+          const tempTask = {
+            boardID: t.boardID,
+            body: t.body,
+            cardID: t.cardID,
+            created: t.created,
+            taskID: t.taskID,
+            taskOrder: t.taskOrder + 1,
+            temp: false
+          };
+          if (t.taskOrder == draggedOrder) {
+            console.log("DRAG TEST");
+            newTasks.push(draggedTask);
+          }
+          newTasks.push(tempTask);
+        } else {
+          newTasks.push(t);
+        }
+      }
+    });
+    if (above == false && draggedOrder > this.state.tasks.length) {
+      newTasks.push(draggedTask);
+    }
+    console.log(newTasks);
+    // console.log(above, temp, tid);
   }
   drawTasks(tasks) {
     var taskList = [];
