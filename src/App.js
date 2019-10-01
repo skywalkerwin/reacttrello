@@ -46,11 +46,11 @@ export default class App extends React.Component {
   resetCheck() {
     // console.log("TRYING TO RESET");
     // console.log(this.state.updated);
-    this.state.updated = 0;
+    // this.state.updated = 0;
     this.setState({
       updated: 0
     });
-    this.state.updated = 0;
+    // this.state.updated = 0;
     // console.log(this.state.updated);
     this.forceUpdate();
   }

@@ -89,13 +89,12 @@ const taskTarget = {
     // console.log(component.taskRef.current.getBoundingClientRect());
     if (item.task.taskID !== props.task.taskID) {
       if (coff.y > component.state.mid) {
-        console.log("HOVERED BELOW");
+        // console.log("HOVERED BELOW");
         component.props.handleHover(false, item.task, props.task.taskID);
       } else if (coff.y <= component.state.mid) {
-        console.log("HOVERED ABOVE");
+        // console.log("HOVERED ABOVE");
         component.props.handleHover(true, item.task, props.task.taskID);
       }
-      // console.log("DO HOVER MOVE STUFF");
     }
   },
   drop(props, monitor, component) {
@@ -113,7 +112,7 @@ function dropCollect(connect, monitor) {
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
     isOverCurrent: monitor.isOver({ shallow: true }),
-    canDrop: monitor.canDrop(),
+    // canDrop: monitor.canDrop(),
     itemType: monitor.getItemType()
   };
 }
@@ -133,7 +132,8 @@ class Taskdnd extends Component {
       show: false,
       temp: this.props.temp,
       tempBody: this.props.task.body,
-      taskBody: this.props.task.body
+      taskBody: this.props.task.body,
+      taskOrder: this.props.task.taskOrder
       // renderBool: false
     };
   }
@@ -235,6 +235,7 @@ class Taskdnd extends Component {
             </Modal>
           </p>
           <div className="taskContent">
+            <h2 style={{ textAlign: "center" }}>{this.state.taskOrder}</h2>
             <h4>{this.state.taskBody}</h4>
           </div>
         </div>

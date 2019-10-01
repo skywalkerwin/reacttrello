@@ -117,21 +117,28 @@ class Carddnd extends Component {
       tasks: this.props.card.tasks
     };
   }
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (
       this.props.card.cardID !== prevProps.card.cardID ||
       this.props.card.tasks !== prevProps.card.tasks
     ) {
       const newCard = JSON.parse(JSON.stringify(this.props.card));
+      const newTasks = newCard.tasks.filter(t => t.temp !== true);
       this.setState({
         card: newCard,
         cardID: newCard.cardID,
         numTasks: newCard.numTasks,
         tempTitle: newCard.title,
         title: newCard.title,
-        tasks: newCard.tasks
+        tasks: newTasks
       });
     }
+    // if (this.state.tasks !== prevState.tasks) {
+    //   const oldTasks = this.state.tasks.filter(t => t.temp != true);
+    //   this.setState({
+    //     tasks: oldTasks
+    //   });
+    // }
   }
   alterTasks(tid) {
     const newTasks = this.state.tasks.filter(t => t.taskID !== tid);
@@ -141,84 +148,57 @@ class Carddnd extends Component {
     });
   }
   hoverTask(above, temp, tid) {
-    console.log("IN HOVER TASK");
-    const overTask = this.state.tasks.filter(t => t.taskID == tid)[0];
+    const oldTasks = this.state.tasks.filter(t => t.taskID !== temp.taskID);
+    const overTask = this.state.tasks.filter(t => t.taskID === tid)[0];
     const overOrder = overTask.taskOrder;
-    var draggedOrder = -1;
-    if (above === true) {
-      draggedOrder = overOrder;
-    } else {
-      draggedOrder = overOrder + 1;
-    }
     const draggedTask = {
       boardID: temp.boardID,
       body: temp.body,
       cardID: temp.cardID,
       created: temp.created,
       taskID: temp.taskID,
-      taskOrder: draggedOrder,
+      taskOrder: overOrder,
       temp: true
     };
     var newTasks = [];
-    this.state.tasks.forEach(t => {
+    oldTasks.forEach(t => {
       if (above == true) {
         if (t.taskOrder >= overOrder) {
-          const tempTask = {
-            boardID: t.boardID,
-            body: t.body,
-            cardID: t.cardID,
-            created: t.created,
-            taskID: t.taskID,
-            taskOrder: t.taskOrder + 1,
-            temp: false
-          };
           if (t.taskOrder == overOrder) {
-            console.log("DRAG TEST");
             newTasks.push(draggedTask);
           }
-          newTasks.push(tempTask);
+          newTasks.push(t);
         } else {
           newTasks.push(t);
         }
       }
       if (above == false) {
-        if (t.taskOrder > overOrder) {
-          const tempTask = {
-            boardID: t.boardID,
-            body: t.body,
-            cardID: t.cardID,
-            created: t.created,
-            taskID: t.taskID,
-            taskOrder: t.taskOrder + 1,
-            temp: false
-          };
-          if (t.taskOrder == draggedOrder) {
-            console.log("DRAG TEST");
+        if (t.taskOrder >= overOrder) {
+          newTasks.push(t);
+          if (t.taskOrder == overOrder) {
             newTasks.push(draggedTask);
           }
-          newTasks.push(tempTask);
         } else {
           newTasks.push(t);
         }
       }
     });
-    if (above == false && draggedOrder > this.state.tasks.length) {
-      newTasks.push(draggedTask);
-    }
-    console.log(newTasks);
-    // console.log(above, temp, tid);
+    // console.log(newTasks);
+    this.setState({
+      tasks: newTasks
+    });
   }
-  drawTasks(tasks) {
+  drawTasks(over, tasks) {
+    const oldTasks = over === true ? tasks : tasks.filter(t => t.temp !== true);
     var taskList = [];
-    if (this.state.card !== undefined && tasks !== undefined) {
-      Array.from(tasks).forEach(t => {
+    if (this.state.card !== undefined && oldTasks !== undefined) {
+      Array.from(oldTasks).forEach(t => {
         taskList.push(
           <TaskDropTarget
             key={t.taskID}
             task={t}
             handleDelete={this.alterTasks}
             handleHover={this.hoverTask}
-            temp={false}
           />
         );
       });
@@ -316,7 +296,7 @@ class Carddnd extends Component {
               Edit
             </button>
           </a>
-          {this.drawTasks(this.state.tasks)}
+          {this.drawTasks(isOver, this.state.tasks)}
           <div>
             <Button
               className="cardAddTask"
