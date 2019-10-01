@@ -49,6 +49,10 @@ const taskSource = {
     const dropResult = monitor.getDropResult();
     console.log("drop result:", dropResult);
     console.log(item.task.taskID);
+    if (dropResult.droppedOn === "Task" || dropResult.droppedOn === "Card") {
+      // const newTasks = component.state
+      //call curried removetask function here
+    }
     if (dropResult.droppedOn === "Trash") {
       var formdata = new FormData();
       formdata.set("taskID", item.task.taskID);

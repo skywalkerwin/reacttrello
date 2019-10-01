@@ -168,11 +168,13 @@ class Carddnd extends Component {
   }
   dropTask(above, temp, tid) {
     console.log("TASK WAS DROPPED...HANDLING");
+    const overTask = this.state.tasks.filter(t => t.taskID === tid)[0];
     if (temp.taskID === tid) {
       var sameTasks = this.state.tasks;
       sameTasks.forEach(t => {
         if (t.taskID === tid) {
           t.temp = false;
+          t.cardID = overTask.cardID;
         }
       });
       var counter = 1;
@@ -184,12 +186,11 @@ class Carddnd extends Component {
       return;
     }
     const oldTasks = this.state.tasks.filter(t => t.taskID !== temp.taskID);
-    const overTask = this.state.tasks.filter(t => t.taskID === tid)[0];
     const overOrder = overTask.taskOrder;
     const draggedTask = {
       boardID: temp.boardID,
       body: temp.body,
-      cardID: temp.cardID,
+      cardID: overTask.cardID,
       created: temp.created,
       taskID: temp.taskID,
       taskOrder: overOrder
