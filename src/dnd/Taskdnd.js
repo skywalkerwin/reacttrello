@@ -29,12 +29,16 @@ const taskSource = {
     // console.log(props);
     // console.log("IS DRAGGING");
     // Return the data describing the dragged item
+    console.log(
+      "--------------------------------BEGIN DRAG-------------------------------------------"
+    );
     const item = { id: "Task", task: props.task };
+    props.handleDrag(item);
     return item;
   },
 
   endDrag(props, monitor, component) {
-    console.log("end drag test");
+    console.log("-----END-DRAG test");
     if (!monitor.didDrop()) {
       // You can check whether the drop was successful
       // or if the drag ended but nobody handled the drop
@@ -50,14 +54,22 @@ const taskSource = {
     // that handled the drop, if it returned an object from
     // its drop() method.
     const dropResult = monitor.getDropResult();
-    console.log("drop result:", dropResult);
-    console.log(item.task.taskID);
-    console.log(dropResult);
-    if (dropResult.droppedOn === "Task" || dropResult.droppedOn === "Card") {
-      console.log("TASK DROPPED, HANDLING DRAG");
-      // const newTasks = component.state
-      //call curried removetask function here
-      component.props.handleEndDrag(item.task);
+    console.log("Drop Result:", dropResult);
+    console.log("Dragged Task:", item.task);
+    // console.log(item.task.taskID);
+    // console.log(dropResult);
+    const droppedOn = dropResult.droppedOn;
+    if (droppedOn === "Task") {
+      // if (dropResult.temp !== true && dropResult.taskID !== item.task.taskID) {
+      // props.handleEndDrag(item.task);
+      // }
+      // console.log("dragged cardID:", item.task.cardID);
+      // console.log("droppedOn cardID:", dropResult.cardID);
+      if (dropResult.cardID !== item.task.cardID) {
+        props.handleEndDrag(item.task);
+      }
+    } else if (droppedOn === "Card" && dropResult.cardID !== item.task.cardID) {
+      props.handleEndDrag(item.task);
     }
     if (dropResult.droppedOn === "Trash") {
       var formdata = new FormData();
@@ -117,8 +129,8 @@ const taskTarget = {
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
     const dropRes = monitor.getDropResult();
-    console.log("dropped ID", item.task.taskID);
-    console.log("DROPPED ON ID:", props.task.taskID);
+    console.log("Dragged TaskID", item.task.taskID);
+    console.log("Dropped --> On --> TaskID:", props.task.taskID);
     if (item.id == "Task") {
       // if (item.task.taskID !== props.task.taskID) {
       if (coff.y > component.state.mid) {
@@ -128,7 +140,13 @@ const taskTarget = {
       }
       // }
     }
-    return { droppedOn: "Task", moved: true };
+    return {
+      droppedOn: "Task",
+      taskID: component.state.taskID,
+      cardID: component.state.parentCardID,
+      temp: component.state.temp,
+      moved: true
+    };
   }
 };
 
@@ -153,6 +171,7 @@ class Taskdnd extends Component {
       parentCardID: this.props.parentCardID,
       task: this.props.task,
       taskID: this.props.task.taskID,
+      // cardID: this.props.task.cardID,
       show: false,
       temp: this.props.temp,
       tempBody: this.props.task.body,
@@ -168,6 +187,8 @@ class Taskdnd extends Component {
         parentCardID: this.props.parentCardID,
         task: this.props.task,
         taskID: this.props.task.taskID,
+        temp: this.props.temp,
+        // cardID: this.props.task.cardID,
         tempBody: this.props.task.body,
         taskBody: this.props.task.body
       });
@@ -266,7 +287,9 @@ class Taskdnd extends Component {
           </p>
           <div className="taskContent">
             <h2 style={{ textAlign: "center" }}>{this.state.taskOrder}</h2>
+            <h3>cardID:{this.state.parentCardID}</h3>
             <h4>{this.state.taskBody}</h4>
+            <h5>temp:{this.state.temp}</h5>
           </div>
         </div>
       )

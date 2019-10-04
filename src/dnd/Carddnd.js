@@ -95,13 +95,13 @@ const cardTarget = {
   },
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
-      console.log("DID DROP ON CARD");
+      console.log("--------------DID DROP ON CARD--------------");
       return;
     }
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
-    console.log("DROPPED ON CARD");
-    return { droppedOn: "Card", moved: true };
+    // console.log("DROPPED ON CARD");
+    return { droppedOn: "Card", cardID: component.state.cardID, moved: true };
   }
 };
 
@@ -121,10 +121,10 @@ class Carddnd extends Component {
     this.cardRef = React.createRef();
     this.alterTasks = this.alterTasks.bind(this);
     this.drawTasks = this.drawTasks.bind(this);
-    // this.dragTask = this.dragTask.bind(this);
+    this.dragTask = this.dragTask.bind(this);
     this.dropTask = this.dropTask.bind(this);
     this.hoverTask = this.hoverTask.bind(this);
-    this.removeTask = this.removeTask.bind(this);
+    this.endDragTask = this.endDragTask.bind(this);
 
     this.handleChangeEdit = this.handleChangeEdit.bind(this);
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
@@ -159,13 +159,13 @@ class Carddnd extends Component {
     //   });
     // }
     if (!this.props.isOver && this.state.hasTemp == true) {
-      console.log("NOT OVER");
+      // console.log("NOT OVER");
       const oldTasks = this.state.tasks.filter(t => t.temp != true);
       this.setState({ hasTemp: false, tasks: oldTasks });
     }
-    if (prevState.tasks !== this.state.tasks) {
-      console.log("different Tasks");
-    }
+    // if (prevState.tasks !== this.state.tasks) {
+    //   console.log("different Tasks");
+    // }
     if (
       this.props.card.cardID !== prevProps.card.cardID ||
       this.props.card.tasks !== prevProps.card.tasks
@@ -201,36 +201,37 @@ class Carddnd extends Component {
       numTasks: this.state.numTasks - 1
     });
   }
-  // dragTask(task) {
-  //   console.log("IN DRAG TASK HANDLER");
-  //   console.log(task);
-  //   var newTasks = this.state.tasks.filter(t => t.taskID !== task.taskID);
-  //   newTasks.forEach(t => {
-  //     if (t.taskOrder > task.taskOrder) {
-  //       t.taskOrder = t.taskOrder - 1;
-  //     }
-  //   });
-  //   this.setState({
-  //     tasks: newTasks
-  //   });
-  // }
+  dragTask(task) {
+    console.log("CARDdnd.js ---- IN DRAG TASK HANDLER");
+    console.log("Task:", task.task);
+    var newTasks = this.state.tasks.filter(t => t.taskID !== task.taskID);
+    newTasks.forEach(t => {
+      if (t.taskOrder > task.taskOrder) {
+        t.taskOrder = t.taskOrder - 1;
+      }
+    });
+    this.setState({
+      tasks: newTasks
+    });
+  }
   dropTask(above, temp, tid) {
-    console.log("TASK WAS DROPPED...HANDLING");
-    const overTask = this.state.tasks.filter(t => t.taskID === tid)[0];
+    // console.log("TASK WAS DROPPED...HANDLING");
+    const overTask = this.state.tasks.filter(t => t.taskID === tid)[0]; //dropped on this task
     if (temp.taskID === tid) {
-      var sameTasks = this.state.tasks;
+      //checking if dropped task is dropping on temp task that was added
+      var sameTasks = this.state.tasks; //setting up new list with updated dropped task
       sameTasks.forEach(t => {
         if (t.taskID === tid) {
-          t.temp = false;
-          t.cardID = overTask.cardID;
+          t.temp = false; //task is no longer temp (for rendering)
+          t.cardID = this.state.cardID; //changing cardID of dropped task
         }
       });
-      var counter = 1;
+      var counter = 1; //updating taskOrders with new task addition
       sameTasks.forEach(t => {
         t.taskOrder = counter;
         counter = counter + 1;
       });
-      this.setState({ hasTemp: false, tasks: sameTasks });
+      this.setState({ hasTemp: false, tasks: sameTasks }); //se hasTemp to false with new tasks
       return;
     }
     const oldTasks = this.state.tasks.filter(t => t.taskID !== temp.taskID);
@@ -238,7 +239,7 @@ class Carddnd extends Component {
     const draggedTask = {
       boardID: temp.boardID,
       body: temp.body,
-      cardID: overTask.cardID,
+      cardID: this.state.cardID,
       created: temp.created,
       taskID: temp.taskID,
       taskOrder: overOrder
@@ -321,19 +322,28 @@ class Carddnd extends Component {
             handleDelete={this.alterTasks}
             handleHover={this.hoverTask}
             handleDrop={this.dropTask}
-            // handleDrag={this.dragTask}
-            handleEndDrag={this.removeTask}
+            handleDrag={this.dragTask}
+            handleEndDrag={this.endDragTask}
           />
         );
       });
     }
     return taskList;
   }
-  removeTask(task) {
-    console.log("CARD HANDLING END DRAG");
+  endDragTask(task) {
+    console.log("--------IN CARD END DRAG-----------");
+    // console.log("dragged task", task);
+    console.log("TRYING TO REMOVE FROM cardID:", this.state.cardID);
+    // console.log("CARD HANDLING END DRAG");
+    // if (task.cardID !== this.state.cardID) {
+    const newTasks = this.state.tasks.filter(t => t.taskID !== task.taskID);
     this.setState({
-      tasks: this.state.tasks.filter(t => t.taskID !== task.taskID)
+      tasks: newTasks
     });
+    // }
+    console.log(
+      "----------------------------------END DRAG-------------------------------------"
+    );
   }
 
   handleChangeEdit(e) {

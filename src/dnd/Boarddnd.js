@@ -22,7 +22,7 @@ const boardTarget = {
   },
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
-      console.log("DID DROP ON BOARD");
+      // console.log("DID DROP ON BOARD");
       const item = monitor.getItem();
       const dropRes = monitor.getDropResult();
       // console.log(item, dropRes);
