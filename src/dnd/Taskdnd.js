@@ -127,6 +127,7 @@ const taskTarget = {
     }
     return {
       droppedOn: "Task",
+      taskOrder: component.state.taskOrder,
       taskID: component.state.taskID,
       cardID: component.state.parentCardID,
       temp: component.state.temp,
@@ -172,6 +173,7 @@ class Taskdnd extends Component {
         parentCardID: this.props.parentCardID,
         task: this.props.task,
         taskID: this.props.task.taskID,
+        taskOrder: this.props.task.taskOrder,
         // temp: this.props.temp,
         // cardID: this.props.task.cardID,
         tempBody: this.props.task.body,
@@ -272,7 +274,9 @@ class Taskdnd extends Component {
               </Modal>
             </p>
             <div className="taskContent">
-              <h2 style={{ textAlign: "center" }}>{this.state.taskOrder}</h2>
+              <h2 style={{ textAlign: "center" }}>
+                Order:{this.state.taskOrder}
+              </h2>
               <h3>cardID:{this.state.parentCardID}</h3>
               <h4>{this.state.taskBody}</h4>
             </div>

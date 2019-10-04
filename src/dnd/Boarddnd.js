@@ -17,6 +17,7 @@ const boardTarget = {
   hover(props, monitor, component) {
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
+    // console.log("HOVERING BOARD ITEM:", item);
     // console.log(item, coff);
     // console.log(props);
   },

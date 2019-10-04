@@ -67,6 +67,7 @@ const cardTarget = {
   hover(props, monitor, component) {
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
+
     if (item.id === "Task") {
       const tempTask = {
         boardID: item.task.boardID,
@@ -85,16 +86,24 @@ const cardTarget = {
         });
       } else {
         const pos = component.cardRef.current.getBoundingClientRect();
-        if (coff.y < pos.top + 55) {
+        if (component.state.tasks.length > 0 && coff.y < pos.top + 55) {
           const topTask = component.state.tasks.filter(
             t => t.taskOrder === 1
           )[0];
-          component.dragTask(true, item.task, topTask.taskID);
-        } else if (coff.y > pos.bottom - 63) {
+          if (topTask !== undefined) {
+            component.dragTask(true, item.task, topTask.taskID);
+          }
+        } else if (
+          component.state.tasks.length > 0 &&
+          coff.y > pos.bottom - 63
+        ) {
           const botTask = component.state.tasks.filter(
             t => t.taskOrder === component.state.tasks.length
           )[0];
-          component.dragTask(false, item.task, botTask.taskID);
+          console.log("BOT TASK:", botTask);
+          if (botTask !== undefined) {
+            component.dragTask(false, item.task, botTask.taskID);
+          }
         }
       }
     }
@@ -116,23 +125,29 @@ const cardTarget = {
       return;
     }
     console.log("------CARD DROP FUNCTION--------");
-    const pos = component.cardRef.current.getBoundingClientRect();
-    if (coff.y < pos.top + 55) {
-      const topTask = component.state.tasks.filter(t => t.taskOrder === 1)[0];
-      component.dropTask(true, item.task, topTask.taskID);
-    } else if (coff.y > pos.bottom - 63) {
-      const topTask = component.state.tasks.filter(
-        t => t.taskOrder === component.state.tasks.length
-      )[0];
-      component.dropTask(false, item.task, topTask.taskID);
+    if (item.id == "Task") {
+      const pos = component.cardRef.current.getBoundingClientRect();
+      if (coff.y < pos.top + 55) {
+        const topTask = component.state.tasks.filter(t => t.taskOrder === 1)[0];
+        if (topTask !== undefined) {
+          component.dropTask(true, item.task, topTask.taskID);
+        }
+      } else if (coff.y > pos.bottom - 63) {
+        const botTask = component.state.tasks.filter(
+          t => t.taskOrder === component.state.tasks.length
+        )[0];
+        if (botTask !== undefined) {
+          component.dropTask(false, item.task, botTask.taskID);
+        }
+      }
+      // console.log("DROPPED ON CARD");
+      return {
+        droppedOn: "Card",
+        cardID: component.state.cardID,
+        above: true,
+        moved: true
+      };
     }
-    // console.log("DROPPED ON CARD");
-    return {
-      droppedOn: "Card",
-      cardID: component.state.cardID,
-      above: true,
-      moved: true
-    };
   }
 };
 
@@ -240,6 +255,7 @@ class Carddnd extends Component {
         t.taskOrder = counter;
         counter = counter + 1;
       });
+      console.log("SAME TASKS:", sameTasks);
       this.setState({
         hasTemp: false,
         tasks: sameTasks,
@@ -248,7 +264,7 @@ class Carddnd extends Component {
       return;
     }
     const oldTasks = this.state.tasks.filter(t => t.taskID !== temp.taskID);
-    const overOrder = overTask.taskOrder;
+    var overOrder = overTask.taskOrder;
     const draggedTask = {
       boardID: temp.boardID,
       body: temp.body,
@@ -278,6 +294,8 @@ class Carddnd extends Component {
       t.taskOrder = counter;
       counter = counter + 1;
     });
+    console.log("DROP NEWTASKS:", newTasks);
+
     //AXIOS
     this.setState({
       hasTemp: false,
@@ -288,8 +306,8 @@ class Carddnd extends Component {
   hoverTask(above, temp, tid) {
     const oldTasks = this.state.tasks.filter(t => t.taskID !== temp.taskID);
     const overTask = this.state.tasks.filter(t => t.taskID === tid)[0];
-    const overOrder = overTask.taskOrder;
-    const draggedTask = {
+    var overOrder = overTask.taskOrder;
+    var draggedTask = {
       boardID: temp.boardID,
       body: temp.body,
       cardID: temp.cardID,
@@ -319,6 +337,7 @@ class Carddnd extends Component {
       t.taskOrder = counter;
       counter = counter + 1;
     });
+    // console.log("NEWTASKS:", newTasks);
     this.setState({
       hasTemp: true,
       tasks: newTasks
