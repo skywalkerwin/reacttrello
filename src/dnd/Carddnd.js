@@ -100,7 +100,6 @@ const cardTarget = {
           const botTask = component.state.tasks.filter(
             t => t.taskOrder === component.state.tasks.length
           )[0];
-          console.log("BOT TASK:", botTask);
           if (botTask !== undefined) {
             component.dragTask(false, item.task, botTask.taskID);
           }
@@ -238,8 +237,10 @@ class Carddnd extends Component {
     });
   }
   dropTask(above, temp, tid) {
-    console.log("TASK WAS DROPPED...HANDLING");
-
+    // console.log("TASK WAS DROPPED...HANDLING");
+    // console.log("TEMP TaskID:", temp.taskID);
+    // console.log("TEMP CardID:", temp.cardID);
+    // console.log("Card CardID:", this.state.cardID);
     const overTask = this.state.tasks.filter(t => t.taskID === tid)[0]; //dropped on this task
     if (temp.taskID === tid) {
       //checking if dropped task is dropping on temp task that was added
@@ -253,14 +254,31 @@ class Carddnd extends Component {
       var counter = 1; //updating taskOrders with new task addition
       sameTasks.forEach(t => {
         t.taskOrder = counter;
+        if (t.taskID == temp.taskID) {
+          console.log("AXIOS");
+          //do axios call here with this taskOrder
+          var formdata = new FormData();
+          formdata.set("taskID", temp.taskID);
+          formdata.set("oldCardID", temp.cardID);
+          formdata.set("newCardID", this.state.cardID);
+          formdata.set("targetOrder", counter);
+          axios({
+            method: "post",
+            url: "http://127.0.0.1:5000/moveTask",
+            data: formdata
+          })
+            .then(res => {
+              console.log(res);
+            })
+            .catch(err => console.log(err));
+        }
         counter = counter + 1;
       });
-      console.log("SAME TASKS:", sameTasks);
       this.setState({
         hasTemp: false,
         tasks: sameTasks,
         numTasks: this.state.numTasks + 1
-      }); //se hasTemp to false with new tasks
+      });
       return;
     }
     const oldTasks = this.state.tasks.filter(t => t.taskID !== temp.taskID);
@@ -292,11 +310,28 @@ class Carddnd extends Component {
     var counter = 1;
     newTasks.forEach(t => {
       t.taskOrder = counter;
+      console.log(t);
+      if (t.taskID == temp.taskID) {
+        console.log("AXIOS");
+        //do axios call here with this taskOrder
+        var formdata = new FormData();
+        formdata.set("taskID", temp.taskID);
+        formdata.set("oldCardID", temp.cardID);
+        formdata.set("newCardID", this.state.cardID);
+        formdata.set("targetOrder", counter);
+        axios({
+          method: "post",
+          url: "http://127.0.0.1:5000/moveTask",
+          data: formdata
+        })
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => console.log(err));
+      }
       counter = counter + 1;
     });
-    console.log("DROP NEWTASKS:", newTasks);
-
-    //AXIOS
+    // console.log("DROP NEWTASKS:", newTasks);
     this.setState({
       hasTemp: false,
       tasks: newTasks,
@@ -348,13 +383,10 @@ class Carddnd extends Component {
     var taskList = [];
     if (this.state.card !== undefined && oldTasks !== undefined) {
       Array.from(oldTasks).forEach(t => {
-        console.log("torder:", t.taskOrder);
-        // console.log("task:", t);
         taskList.push(
           <TaskDropTarget
             key={t.taskID}
             parentCardID={this.state.cardID}
-            // taskOrder={t.taskOrder}
             task={JSON.parse(JSON.stringify(t))}
             // task={t}
             handleDelete={this.alterTasks}

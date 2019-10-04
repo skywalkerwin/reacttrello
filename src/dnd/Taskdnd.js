@@ -277,10 +277,10 @@ class Taskdnd extends Component {
             </p>
             <div className="taskContent">
               <h2 style={{ textAlign: "center" }}>
-                Order:{this.state.taskOrder}
+                Order: {this.state.taskOrder}
               </h2>
               <h3>cardID:{this.state.parentCardID}</h3>
-              <h4>{this.state.taskBody}</h4>
+              <h2>{this.state.taskBody}</h2>
             </div>
           </div>
         </div>
