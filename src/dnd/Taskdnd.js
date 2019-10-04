@@ -29,7 +29,7 @@ const taskSource = {
     // console.log(props);
     // console.log("IS DRAGGING");
     // Return the data describing the dragged item
-    const item = { id: "task", task: props.task };
+    const item = { id: "Task", task: props.task };
     return item;
   },
 
@@ -52,9 +52,12 @@ const taskSource = {
     const dropResult = monitor.getDropResult();
     console.log("drop result:", dropResult);
     console.log(item.task.taskID);
+    console.log(dropResult);
     if (dropResult.droppedOn === "Task" || dropResult.droppedOn === "Card") {
+      console.log("TASK DROPPED, HANDLING DRAG");
       // const newTasks = component.state
       //call curried removetask function here
+      component.props.handleEndDrag(item.task);
     }
     if (dropResult.droppedOn === "Trash") {
       var formdata = new FormData();
@@ -94,7 +97,7 @@ const taskTarget = {
     // console.log(item, coff);
     // console.log(component.state.mid);
     // console.log(component.taskRef.current.getBoundingClientRect());
-    if (item.id == "task") {
+    if (item.id == "Task") {
       if (item.task.taskID !== props.task.taskID) {
         if (coff.y > component.state.mid) {
           // console.log("HOVERED BELOW");
@@ -116,7 +119,7 @@ const taskTarget = {
     const dropRes = monitor.getDropResult();
     console.log("dropped ID", item.task.taskID);
     console.log("DROPPED ON ID:", props.task.taskID);
-    if (item.id == "task") {
+    if (item.id == "Task") {
       // if (item.task.taskID !== props.task.taskID) {
       if (coff.y > component.state.mid) {
         component.props.handleDrop(false, item.task, props.task.taskID);
@@ -125,7 +128,7 @@ const taskTarget = {
       }
       // }
     }
-    return { droppedOn: "task", moved: true };
+    return { droppedOn: "Task", moved: true };
   }
 };
 

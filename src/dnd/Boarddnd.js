@@ -27,7 +27,7 @@ const boardTarget = {
       const dropRes = monitor.getDropResult();
       // console.log(item, dropRes);
       if (dropRes.droppedOn === "Trash") {
-        if (item.id === "card") {
+        if (item.id === "Card") {
           var formdata = new FormData();
           formdata.set("cardID", item.card.cardID);
           axios({
@@ -48,7 +48,7 @@ const boardTarget = {
           });
         }
 
-        if (item.id === "task") {
+        if (item.id === "Task") {
           // deleteTask(item.task);
         }
       }

@@ -27,7 +27,7 @@ const cardSource = {
   beginDrag(props, monitor, component) {
     // console.log("IS DRAGGING");
     // Return the data describing the dragged item
-    const item = { id: "card", card: props.card };
+    const item = { id: "Card", card: props.card };
     return item;
   },
 
@@ -67,7 +67,7 @@ const cardTarget = {
   hover(props, monitor, component) {
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
-    if (item.id === "task") {
+    if (item.id === "Task") {
       const tempTask = {
         boardID: item.task.boardID,
         body: item.task.body,
@@ -101,7 +101,7 @@ const cardTarget = {
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
     console.log("DROPPED ON CARD");
-    return { droppedOn: "card", moved: true };
+    return { droppedOn: "Card", moved: true };
   }
 };
 
@@ -124,6 +124,7 @@ class Carddnd extends Component {
     // this.dragTask = this.dragTask.bind(this);
     this.dropTask = this.dropTask.bind(this);
     this.hoverTask = this.hoverTask.bind(this);
+    this.removeTask = this.removeTask.bind(this);
 
     this.handleChangeEdit = this.handleChangeEdit.bind(this);
     this.handleSubmitEdit = this.handleSubmitEdit.bind(this);
@@ -321,12 +322,20 @@ class Carddnd extends Component {
             handleHover={this.hoverTask}
             handleDrop={this.dropTask}
             // handleDrag={this.dragTask}
+            handleEndDrag={this.removeTask}
           />
         );
       });
     }
     return taskList;
   }
+  removeTask(task) {
+    console.log("CARD HANDLING END DRAG");
+    this.setState({
+      tasks: this.state.tasks.filter(t => t.taskID !== task.taskID)
+    });
+  }
+
   handleChangeEdit(e) {
     this.setState({
       tempTitle: e
