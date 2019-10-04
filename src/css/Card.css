@@ -1,16 +1,10 @@
 .cardBody {
   align-self: flex-start;
   position: relative;
-  /* background: white; */
   background-color: rgba(200, 200, 255, 1);
   cursor: move;
-  /* // float: left;
-  // display: table-column; */
   display: flex;
   max-height: 82vh;
-  /* // minHeight: 15vh;
-  // minWidth: 20%;
-  // height: auto; */
   top: 5%;
   flex-direction: column;
   padding: 4px;
@@ -19,8 +13,7 @@
   margin-top: 12px;
   border-radius: 8px;
   width: 320px;
-  overflow: hidden;
-  overflow-y: auto;
+  overflow: auto;
 }
 
 .cardTitle {

@@ -1,13 +1,13 @@
 .task {
-  /* // position: absolute; */
   background: white;
   overflow: hidden;
   display: flex;
   padding: 2px;
-  /* // width: 300px; */
+  height: auto;
   border: 4px solid green;
   margin: 3px;
   border-radius: 6px;
+  overflow: visible;
 }
 
 .taskContent {
