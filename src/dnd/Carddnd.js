@@ -348,11 +348,15 @@ class Carddnd extends Component {
     var taskList = [];
     if (this.state.card !== undefined && oldTasks !== undefined) {
       Array.from(oldTasks).forEach(t => {
+        console.log("torder:", t.taskOrder);
+        // console.log("task:", t);
         taskList.push(
           <TaskDropTarget
             key={t.taskID}
             parentCardID={this.state.cardID}
-            task={t}
+            // taskOrder={t.taskOrder}
+            task={JSON.parse(JSON.stringify(t))}
+            // task={t}
             handleDelete={this.alterTasks}
             handleHover={this.hoverTask}
             handleDrop={this.dropTask}
@@ -366,11 +370,13 @@ class Carddnd extends Component {
   }
   endDragTask(task) {
     console.log("--------IN CARD END DRAG-----------");
-    // console.log("dragged task", task);
     console.log("TRYING TO REMOVE FROM cardID:", this.state.cardID);
-    // console.log("CARD HANDLING END DRAG");
-    // if (task.cardID !== this.state.cardID) {
-    const newTasks = this.state.tasks.filter(t => t.taskID !== task.taskID);
+    var newTasks = this.state.tasks.filter(t => t.taskID !== task.taskID);
+    var counter = 1;
+    newTasks.forEach(t => {
+      t.taskOrder = counter;
+      counter = counter + 1;
+    });
     this.setState({
       tasks: newTasks
     });

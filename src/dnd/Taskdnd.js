@@ -158,7 +158,6 @@ class Taskdnd extends Component {
       task: this.props.task,
       taskID: this.props.task.taskID,
       // cardID: this.props.task.cardID,
-      show: false,
       // temp: this.props.temp,
       tempBody: this.props.task.body,
       taskBody: this.props.task.body,
@@ -167,7 +166,10 @@ class Taskdnd extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.task.taskID !== prevProps.task.taskID) {
+    if (
+      this.props.task.taskID !== prevProps.task.taskID ||
+      this.props.task.taskOrder !== prevProps.task.taskOrder
+    ) {
       const newTask = JSON.parse(JSON.stringify(this.props.task));
       this.setState({
         parentCardID: this.props.parentCardID,
