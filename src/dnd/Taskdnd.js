@@ -40,36 +40,21 @@ const taskSource = {
   endDrag(props, monitor, component) {
     console.log("-----END-DRAG test");
     if (!monitor.didDrop()) {
-      // You can check whether the drop was successful
-      // or if the drag ended but nobody handled the drop
       console.log("task drop test");
       return;
     }
 
-    // When dropped on a compatible target, do something.
-    // Read the original dragged item from getItem():
     const item = monitor.getItem();
-    // consol.e.log(item);
-    // You may also read the drop result from the drop target
-    // that handled the drop, if it returned an object from
-    // its drop() method.
     const dropResult = monitor.getDropResult();
     console.log("Drop Result:", dropResult);
     console.log("Dragged Task:", item.task);
-    // console.log(item.task.taskID);
-    // console.log(dropResult);
     const droppedOn = dropResult.droppedOn;
     if (droppedOn === "Task") {
-      // if (dropResult.temp !== true && dropResult.taskID !== item.task.taskID) {
-      // props.handleEndDrag(item.task);
-      // }
-      // console.log("dragged cardID:", item.task.cardID);
-      // console.log("droppedOn cardID:", dropResult.cardID);
       if (dropResult.cardID !== item.task.cardID) {
-        props.handleEndDrag(item.task);
+        props.handleEndDrag(item.task); //removes task from previous card if dropped on a different task on a different card
       }
     } else if (droppedOn === "Card" && dropResult.cardID !== item.task.cardID) {
-      props.handleEndDrag(item.task);
+      props.handleEndDrag(item.task); //removes task from previous card if dropped on a different card
     }
     if (dropResult.droppedOn === "Trash") {
       var formdata = new FormData();
@@ -245,50 +230,52 @@ class Taskdnd extends Component {
     // }
     return connectDragSource(
       connectDropTarget(
-        <div
-          ref={this.taskRef}
-          style={{ backgroundColor, opacity }}
-          className="task"
-        >
-          <p className="taskEdit">
-            <button
-              type="button"
-              className="btn btn-default btn-sm"
-              onClick={this.handleShow}
-            >
-              Edit
-            </button>
-            <Modal show={this.state.show} onHide={this.handleShow}>
-              <Modal.Header closeButton>
-                <Modal.Title>Edit Task Body</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Form onSubmit={e => this.handleSubmit(e)}>
-                  <Form.Group controlId="formCardTitle">
-                    <Form.Control
-                      as="textarea"
-                      rows="3"
-                      defaultValue={this.state.taskBody}
-                      type="cardTitle"
-                      onChange={e => this.handleChange(e.target.value)}
-                    />
-                  </Form.Group>
-                </Form>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={this.handleShow}>
-                  Close
-                </Button>
-                <Button variant="primary" onClick={this.handleSubmit}>
-                  Save Changes
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </p>
-          <div className="taskContent">
-            <h2 style={{ textAlign: "center" }}>{this.state.taskOrder}</h2>
-            <h3>cardID:{this.state.parentCardID}</h3>
-            <h4>{this.state.taskBody}</h4>
+        <div ref={this.taskRef} className={"taskBackground"}>
+          <div
+            // ref={this.taskRef}
+            style={{ backgroundColor, opacity }}
+            className="task"
+          >
+            <p className="taskEdit">
+              <button
+                type="button"
+                className="btn btn-default btn-sm"
+                onClick={this.handleShow}
+              >
+                Edit
+              </button>
+              <Modal show={this.state.show} onHide={this.handleShow}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Edit Task Body</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <Form onSubmit={e => this.handleSubmit(e)}>
+                    <Form.Group controlId="formCardTitle">
+                      <Form.Control
+                        as="textarea"
+                        rows="3"
+                        defaultValue={this.state.taskBody}
+                        type="cardTitle"
+                        onChange={e => this.handleChange(e.target.value)}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={this.handleShow}>
+                    Close
+                  </Button>
+                  <Button variant="primary" onClick={this.handleSubmit}>
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+            </p>
+            <div className="taskContent">
+              <h2 style={{ textAlign: "center" }}>{this.state.taskOrder}</h2>
+              <h3>cardID:{this.state.parentCardID}</h3>
+              <h4>{this.state.taskBody}</h4>
+            </div>
           </div>
         </div>
       )
