@@ -79,20 +79,26 @@ const cardTarget = {
       };
 
       if (component.state.tasks.length < 1) {
-        // var newList=
         component.setState({
+          hasTemp: true,
           tasks: [tempTask]
         });
       }
     }
-    // console.log(item, coff);
-    // console.log(props);
+    // console.log(coff);
+    // console.log(component.state.pos);
+    // if (coff.y < component.state.topLine) {
+    //   console.log("ABOVE");
+    // } else if (coff.y > component.state.topLine) {
+    //   console.log("BELOW");
+    // }
   },
   drop(props, monitor, component) {
     if (monitor.didDrop()) {
       console.log("DID DROP ON CARD");
       return;
     }
+    const coff = monitor.getClientOffset();
     const item = monitor.getItem();
     console.log("DROPPED ON CARD");
     return { droppedOn: "card", moved: true };
@@ -112,8 +118,10 @@ function dropCollect(connect, monitor) {
 class Carddnd extends Component {
   constructor(props) {
     super(props);
+    this.cardRef = React.createRef();
     this.alterTasks = this.alterTasks.bind(this);
     this.drawTasks = this.drawTasks.bind(this);
+    // this.dragTask = this.dragTask.bind(this);
     this.dropTask = this.dropTask.bind(this);
     this.hoverTask = this.hoverTask.bind(this);
 
@@ -127,6 +135,7 @@ class Carddnd extends Component {
       card: this.props.card,
       boardID: this.props.card.boardID,
       cardID: this.props.card.cardID,
+      hasTemp: false,
       numTasks: this.props.card.numTasks,
       showEdit: false,
       showTask: false,
@@ -136,7 +145,26 @@ class Carddnd extends Component {
       tasks: this.props.card.tasks
     };
   }
+
   componentDidUpdate(prevProps, prevState) {
+    // const pos = this.cardRef.current.getBoundingClientRect();
+    // if (prevState.height !== pos.height) {
+    //   console.log("DIFFERENT POS");
+    //   this.setState({
+    //     height: pos.height,
+    //     mid: pos.top + pos.height / 2,
+    //     topLine: pos.top + 55,
+    //     botLine: pos.bottom - 50
+    //   });
+    // }
+    if (!this.props.isOver && this.state.hasTemp == true) {
+      console.log("NOT OVER");
+      const oldTasks = this.state.tasks.filter(t => t.temp != true);
+      this.setState({ hasTemp: false, tasks: oldTasks });
+    }
+    if (prevState.tasks !== this.state.tasks) {
+      console.log("different Tasks");
+    }
     if (
       this.props.card.cardID !== prevProps.card.cardID ||
       this.props.card.tasks !== prevProps.card.tasks
@@ -152,13 +180,19 @@ class Carddnd extends Component {
         tasks: newTasks
       });
     }
-    // if (this.state.tasks !== prevState.tasks) {
-    //   const oldTasks = this.state.tasks.filter(t => t.temp != true);
-    //   this.setState({
-    //     tasks: oldTasks
-    //   });
-    // }
   }
+
+  componentDidMount() {
+    const pos = this.cardRef.current.getBoundingClientRect();
+    this.setState({
+      pos: pos,
+      height: pos.height,
+      mid: pos.top + pos.height / 2,
+      topLine: pos.top + 45,
+      botLine: pos.bottom - 50
+    });
+  }
+
   alterTasks(tid) {
     const newTasks = this.state.tasks.filter(t => t.taskID !== tid);
     this.setState({
@@ -166,6 +200,19 @@ class Carddnd extends Component {
       numTasks: this.state.numTasks - 1
     });
   }
+  // dragTask(task) {
+  //   console.log("IN DRAG TASK HANDLER");
+  //   console.log(task);
+  //   var newTasks = this.state.tasks.filter(t => t.taskID !== task.taskID);
+  //   newTasks.forEach(t => {
+  //     if (t.taskOrder > task.taskOrder) {
+  //       t.taskOrder = t.taskOrder - 1;
+  //     }
+  //   });
+  //   this.setState({
+  //     tasks: newTasks
+  //   });
+  // }
   dropTask(above, temp, tid) {
     console.log("TASK WAS DROPPED...HANDLING");
     const overTask = this.state.tasks.filter(t => t.taskID === tid)[0];
@@ -182,7 +229,7 @@ class Carddnd extends Component {
         t.taskOrder = counter;
         counter = counter + 1;
       });
-      this.setState({ tasks: sameTasks });
+      this.setState({ hasTemp: false, tasks: sameTasks });
       return;
     }
     const oldTasks = this.state.tasks.filter(t => t.taskID !== temp.taskID);
@@ -256,6 +303,7 @@ class Carddnd extends Component {
       counter = counter + 1;
     });
     this.setState({
+      hasTemp: true,
       tasks: newTasks
     });
   }
@@ -272,6 +320,7 @@ class Carddnd extends Component {
             handleDelete={this.alterTasks}
             handleHover={this.hoverTask}
             handleDrop={this.dropTask}
+            // handleDrag={this.dragTask}
           />
         );
       });
@@ -357,9 +406,9 @@ class Carddnd extends Component {
     const opacity = isDragging ? 0.2 : 1;
     return connectDragSource(
       connectDropTarget(
-        <div style={{ opacity }} className="cardBody">
+        <div ref={this.cardRef} style={{ opacity }} className="cardBody">
           <h2 className="cardTitle">{this.state.title}</h2>
-          <h3>{this.state.cardID}</h3>
+          {/* <h3>{this.state.cardID}</h3> */}
           <a className="cardEdit">
             <button
               onClick={this.handleShowEdit}

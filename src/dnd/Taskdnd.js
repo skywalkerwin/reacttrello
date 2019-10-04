@@ -19,6 +19,9 @@ const taskSource = {
     // (like a card in Kanban board dragged between lists)
     // you can implement something like this to keep its
     // appearance dragged:
+    const item = monitor.getItem();
+    // props.handleDrag(item);
+    // console.log(item.task);
     return monitor.getItem().task.taskID === props.task.taskID;
   },
 
