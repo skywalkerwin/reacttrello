@@ -83,23 +83,49 @@ const cardTarget = {
           hasTemp: true,
           tasks: [tempTask]
         });
+      } else {
+        const pos = component.cardRef.current.getBoundingClientRect();
+        if (coff.y < pos.top + 55) {
+          const topTask = component.state.tasks.filter(
+            t => t.taskOrder === 1
+          )[0];
+          component.dragTask(true, item.task, topTask.taskID);
+        } else if (coff.y > pos.bottom - 63) {
+          const botTask = component.state.tasks.filter(
+            t => t.taskOrder === component.state.tasks.length
+          )[0];
+          component.dragTask(false, item.task, botTask.taskID);
+        }
       }
     }
+    //   topLine: pos.top + 45,
+    //   botLine: pos.bottom - 50
     // console.log(coff);
-    // console.log(component.state.pos);
-    // if (coff.y < component.state.topLine) {
+    // const pos = component.cardRef.current.getBoundingClientRect();
+    // if (coff.y < pos.top + 55) {
     //   console.log("ABOVE");
-    // } else if (coff.y > component.state.topLine) {
+    // } else if (coff.y > pos.bottom - 63) {
     //   console.log("BELOW");
     // }
   },
   drop(props, monitor, component) {
+    const coff = monitor.getClientOffset();
+    const item = monitor.getItem();
     if (monitor.didDrop()) {
       console.log("--------------DID DROP ON CARD--------------");
       return;
     }
-    const coff = monitor.getClientOffset();
-    const item = monitor.getItem();
+    console.log("------CARD DROP FUNCTION--------");
+    const pos = component.cardRef.current.getBoundingClientRect();
+    if (coff.y < pos.top + 55) {
+      const topTask = component.state.tasks.filter(t => t.taskOrder === 1)[0];
+      component.dropTask(true, item.task, topTask.taskID);
+    } else if (coff.y > pos.bottom - 63) {
+      const topTask = component.state.tasks.filter(
+        t => t.taskOrder === component.state.tasks.length
+      )[0];
+      component.dropTask(false, item.task, topTask.taskID);
+    }
     // console.log("DROPPED ON CARD");
     return { droppedOn: "Card", cardID: component.state.cardID, moved: true };
   }
@@ -148,16 +174,6 @@ class Carddnd extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // const pos = this.cardRef.current.getBoundingClientRect();
-    // if (prevState.height !== pos.height) {
-    //   console.log("DIFFERENT POS");
-    //   this.setState({
-    //     height: pos.height,
-    //     mid: pos.top + pos.height / 2,
-    //     topLine: pos.top + 55,
-    //     botLine: pos.bottom - 50
-    //   });
-    // }
     if (!this.props.isOver && this.state.hasTemp == true) {
       // console.log("NOT OVER");
       const oldTasks = this.state.tasks.filter(t => t.temp != true);
@@ -184,14 +200,14 @@ class Carddnd extends Component {
   }
 
   componentDidMount() {
-    const pos = this.cardRef.current.getBoundingClientRect();
-    this.setState({
-      pos: pos,
-      height: pos.height,
-      mid: pos.top + pos.height / 2,
-      topLine: pos.top + 45,
-      botLine: pos.bottom - 50
-    });
+    // const pos = this.cardRef.current.getBoundingClientRect();
+    // this.setState({
+    //   pos: pos,
+    //   height: pos.height,
+    //   mid: pos.top + pos.height / 2,
+    //   topLine: pos.top + 45,
+    //   botLine: pos.bottom - 50
+    // });
   }
 
   alterTasks(tid) {
@@ -202,8 +218,8 @@ class Carddnd extends Component {
     });
   }
   dragTask(task) {
-    console.log("CARDdnd.js ---- IN DRAG TASK HANDLER");
-    console.log("Task:", task.task);
+    // console.log("---- IN CARD's DRAG TASK HANDLER");
+    // console.log("Task:", task.task);
     var newTasks = this.state.tasks.filter(t => t.taskID !== task.taskID);
     newTasks.forEach(t => {
       if (t.taskOrder > task.taskOrder) {
@@ -215,7 +231,24 @@ class Carddnd extends Component {
     });
   }
   dropTask(above, temp, tid) {
-    // console.log("TASK WAS DROPPED...HANDLING");
+    console.log("TASK WAS DROPPED...HANDLING");
+    console.log(above, temp, tid);
+    //if there are no previous tasks on card
+    if (tid === undefined) {
+      console.log("NO TASK ON CARD YET");
+      const firstTask = {
+        boardID: temp.boardID,
+        body: temp.body,
+        cardID: this.state.cardID,
+        created: temp.created,
+        taskID: temp.taskID,
+        taskOrder: 1
+      };
+      this.setState({
+        tasks: [firstTask]
+      });
+      return;
+    }
     const overTask = this.state.tasks.filter(t => t.taskID === tid)[0]; //dropped on this task
     if (temp.taskID === tid) {
       //checking if dropped task is dropping on temp task that was added

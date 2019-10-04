@@ -173,7 +173,7 @@ class Taskdnd extends Component {
       taskID: this.props.task.taskID,
       // cardID: this.props.task.cardID,
       show: false,
-      temp: this.props.temp,
+      // temp: this.props.temp,
       tempBody: this.props.task.body,
       taskBody: this.props.task.body,
       taskOrder: this.props.task.taskOrder
@@ -187,7 +187,7 @@ class Taskdnd extends Component {
         parentCardID: this.props.parentCardID,
         task: this.props.task,
         taskID: this.props.task.taskID,
-        temp: this.props.temp,
+        // temp: this.props.temp,
         // cardID: this.props.task.cardID,
         tempBody: this.props.task.body,
         taskBody: this.props.task.body
@@ -289,7 +289,6 @@ class Taskdnd extends Component {
             <h2 style={{ textAlign: "center" }}>{this.state.taskOrder}</h2>
             <h3>cardID:{this.state.parentCardID}</h3>
             <h4>{this.state.taskBody}</h4>
-            <h5>temp:{this.state.temp}</h5>
           </div>
         </div>
       )
