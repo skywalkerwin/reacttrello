@@ -34,7 +34,7 @@ export default class App extends React.Component {
     formdata.set("cardID", cid);
     return axios({
       method: "post",
-      url: "http://127.0.0.1:5000/getTasks",
+      url: "http://flaskbe.herokuapp.com/getTasks",
       data: formdata
     }).then(res => {
       console.log(res);
@@ -55,7 +55,7 @@ export default class App extends React.Component {
     this.forceUpdate();
   }
   componentDidMount() {
-    axios.get("http://127.0.0.1:5000/boardData").then(res => {
+    axios.get("http://flaskbe.herokuapp.com/boardData").then(res => {
       // console.log(res);
       // console.log(res.data);
       //   console.log(res.data.cards);

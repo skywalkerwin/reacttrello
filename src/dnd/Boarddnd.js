@@ -37,7 +37,7 @@ const boardTarget = {
           formdata.set("cardID", item.card.cardID);
           axios({
             method: "post",
-            url: "http://127.0.0.1:5000/deleteCard",
+            url: "http://flaskbe.herokuapp.com/deleteCard",
             data: formdata
           })
             .then(res => {
@@ -131,7 +131,7 @@ class Boarddnd extends Component {
     formdata.set("title", this.state.tempTitle);
     axios({
       method: "post",
-      url: "http://127.0.0.1:5000/addCard",
+      url: "http://flaskbe.herokuapp.com/addCard",
       data: formdata
     })
       .then(res => {
@@ -189,7 +189,7 @@ class Boarddnd extends Component {
     formdata.set("newOrder", newOrder);
     axios({
       method: "post",
-      url: "http://127.0.0.1:5000/moveCard",
+      url: "http://flaskbe.herokuapp.com/moveCard",
       data: formdata
     })
       .then(res => {

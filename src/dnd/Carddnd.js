@@ -271,7 +271,7 @@ class Carddnd extends Component {
           formdata.set("targetOrder", counter);
           axios({
             method: "post",
-            url: "http://127.0.0.1:5000/moveTask",
+            url: "http://flaskbe.herokuapp.com/moveTask",
             data: formdata
           })
             .then(res => {
@@ -328,7 +328,7 @@ class Carddnd extends Component {
         formdata.set("targetOrder", counter);
         axios({
           method: "post",
-          url: "http://127.0.0.1:5000/moveTask",
+          url: "http://flaskbe.herokuapp.com/moveTask",
           data: formdata
         })
           .then(res => {
@@ -446,7 +446,7 @@ class Carddnd extends Component {
     formdata.set("cardID", this.state.cardID);
     axios({
       method: "post",
-      url: "http://127.0.0.1:5000/updateCard",
+      url: "http://flaskbe.herokuapp.com/updateCard",
       data: formdata
     })
       .then(res => {
@@ -473,7 +473,7 @@ class Carddnd extends Component {
     formdata.set("cardID", this.state.cardID);
     axios({
       method: "post",
-      url: "http://127.0.0.1:5000/addTask",
+      url: "http://flaskbe.herokuapp.com/addTask",
       data: formdata
     })
       .then(res => {
@@ -512,8 +512,8 @@ class Carddnd extends Component {
           className="cardBody"
         >
           <h2 className="cardTitle">{this.state.title}</h2>
-          <h3>ID: {this.state.cardID}</h3>
-          <h4>Order: {this.state.card.cardOrder}</h4>
+          {/* <h3>ID: {this.state.cardID}</h3>
+          <h4>Order: {this.state.card.cardOrder}</h4> */}
           <a className="cardEdit">
             <button
               onClick={this.handleShowEdit}
