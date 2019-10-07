@@ -61,7 +61,7 @@ const taskSource = {
       formdata.set("taskID", item.task.taskID);
       axios({
         method: "post",
-        url: "http://flaskbe.herokuapp.com/deleteTask",
+        url: "https://flaskbe.herokuapp.com/deleteTask",
         data: formdata
       })
         .then(res => {
@@ -204,7 +204,7 @@ class Taskdnd extends Component {
     formdata.set("taskID", this.state.task.taskID);
     axios({
       method: "post",
-      url: "http://flaskbe.herokuapp.com/updateTask",
+      url: "https://flaskbe.herokuapp.com/updateTask",
       data: formdata
     })
       .then(res => {

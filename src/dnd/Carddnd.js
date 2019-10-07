@@ -271,7 +271,7 @@ class Carddnd extends Component {
           formdata.set("targetOrder", counter);
           axios({
             method: "post",
-            url: "http://flaskbe.herokuapp.com/moveTask",
+            url: "https://flaskbe.herokuapp.com/moveTask",
             data: formdata
           })
             .then(res => {
@@ -328,7 +328,7 @@ class Carddnd extends Component {
         formdata.set("targetOrder", counter);
         axios({
           method: "post",
-          url: "http://flaskbe.herokuapp.com/moveTask",
+          url: "https://flaskbe.herokuapp.com/moveTask",
           data: formdata
         })
           .then(res => {
@@ -446,7 +446,7 @@ class Carddnd extends Component {
     formdata.set("cardID", this.state.cardID);
     axios({
       method: "post",
-      url: "http://flaskbe.herokuapp.com/updateCard",
+      url: "https://flaskbe.herokuapp.com/updateCard",
       data: formdata
     })
       .then(res => {
@@ -473,7 +473,7 @@ class Carddnd extends Component {
     formdata.set("cardID", this.state.cardID);
     axios({
       method: "post",
-      url: "http://flaskbe.herokuapp.com/addTask",
+      url: "https://flaskbe.herokuapp.com/addTask",
       data: formdata
     })
       .then(res => {
