@@ -27,6 +27,9 @@ const cardSource = {
   beginDrag(props, monitor, component) {
     // console.log("IS DRAGGING");
     // Return the data describing the dragged item
+    // const pos = component.cardRef.current.getBoundingClientRect();
+    // const pos = component.decoratedRef.current.cardRef.current.getBoundingClientRect();
+    // console.log(pos);
     const item = { id: "Card", card: props.card };
     return item;
   },
@@ -67,7 +70,11 @@ const cardTarget = {
   hover(props, monitor, component) {
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
-
+    // if (item.id == "Card") {
+    // const pos = component.cardRef.current.getBoundingClientRect();
+    //   console.log(pos);
+    //   console.log(item, coff);
+    // }
     if (item.id === "Task") {
       const tempTask = {
         boardID: item.task.boardID,
@@ -312,7 +319,7 @@ class Carddnd extends Component {
       t.taskOrder = counter;
       console.log(t);
       if (t.taskID == temp.taskID) {
-        console.log("AXIOS");
+        // console.log("AXIOS");
         //do axios call here with this taskOrder
         var formdata = new FormData();
         formdata.set("taskID", temp.taskID);
@@ -494,12 +501,19 @@ class Carddnd extends Component {
       isDragging,
       connectDragSource
     } = this.props;
-    const opacity = isDragging ? 0.2 : 1;
+    // const opacity = isDragging ? 0.2 : 1;
+    const opacity = isDragging ? 1 : 1;
+    const backgroundColor = isDragging ? "violet" : "rgba(200, 200, 255, 1)";
     return connectDragSource(
       connectDropTarget(
-        <div ref={this.cardRef} style={{ opacity }} className="cardBody">
+        <div
+          ref={this.cardRef}
+          style={{ opacity, backgroundColor }}
+          className="cardBody"
+        >
           <h2 className="cardTitle">{this.state.title}</h2>
-          {/* <h3>{this.state.cardID}</h3> */}
+          <h3>ID: {this.state.cardID}</h3>
+          <h4>Order: {this.state.card.cardOrder}</h4>
           <a className="cardEdit">
             <button
               onClick={this.handleShowEdit}
@@ -582,11 +596,9 @@ class Carddnd extends Component {
   }
 }
 
-var CardDropTarget = DropTarget(
-  [ItemTypes.CARD, ItemTypes.TASK],
-  cardTarget,
-  dropCollect
-)(Carddnd);
+var CardDropTarget = DropTarget([ItemTypes.TASK], cardTarget, dropCollect)(
+  Carddnd
+);
 export default DragSource(ItemTypes.CARD, cardSource, dragCollect)(
   CardDropTarget
 );

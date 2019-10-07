@@ -17,14 +17,18 @@ const boardTarget = {
   hover(props, monitor, component) {
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
-    // console.log("HOVERING BOARD ITEM:", item);
-    // console.log(item, coff);
-    // console.log(props);
+    if (item.id == "Card") {
+      // console.log(coff, item);
+      const corder = Math.floor(coff.x / 330 + 1);
+      // console.log("Card Order:", corder);
+      component.hoverCard(item.card, corder);
+    }
   },
   drop(props, monitor, component) {
+    const item = monitor.getItem();
+    const coff = monitor.getClientOffset();
     if (monitor.didDrop()) {
       // console.log("DID DROP ON BOARD");
-      const item = monitor.getItem();
       const dropRes = monitor.getDropResult();
       // console.log(item, dropRes);
       if (dropRes.droppedOn === "Trash") {
@@ -48,15 +52,15 @@ const boardTarget = {
             numCards: component.state.numCards - 1
           });
         }
-
-        if (item.id === "Task") {
-          // deleteTask(item.task);
-        }
       }
       return;
     }
-    const item = monitor.getItem();
-    // console.log("board item", item);
+    if (item.id == "Card") {
+      console.log("CARD DROPPED ON BOARD");
+      const corder = Math.floor(coff.x / 330 + 1);
+      // console.log(corder);
+      component.dropCard(item.card, corder);
+    }
     return { droppedOn: "Board", moved: true };
   }
 };
@@ -78,25 +82,35 @@ class Boarddnd extends Component {
     this.handleChangeTitle = this.handleChangeTitle.bind(this);
     this.handleShowAdd = this.handleShowAdd.bind(this);
     this.handleSubmitCard = this.handleSubmitCard.bind(this);
+    this.hoverCard = this.hoverCard.bind(this);
+    this.dropCard = this.dropCard.bind(this);
     const allCards = JSON.parse(JSON.stringify(this.props.cards));
     this.state = {
       boardID: this.props.boardID,
       cards: allCards,
+      hasHover: false,
+      hoverID: 0,
+      hoverHeight: 0,
+      hoverOrder: 0,
       showAdd: false,
       tempTitle: "",
       numTasks: this.props.numCards
     };
   }
+
   componentDidUpdate(prevProps) {
     if (this.props.cards !== prevProps.cards) {
       const allCards = JSON.parse(JSON.stringify(this.props.cards));
+      console.log(allCards[0]);
       this.setState({
         boardID: this.props.boardID,
         cards: allCards,
         numCards: this.props.numCards
       });
     }
+    // console.log("UPDATED");
   }
+
   handleChangeTitle(e) {
     this.setState({
       tempTitle: e
@@ -137,6 +151,57 @@ class Boarddnd extends Component {
       })
       .catch(err => console.log(err));
   };
+  hoverCard(card, corder) {
+    if (corder != this.state.hoverOrder) {
+      console.log("----------DRAG CARD POSTION:", corder);
+      console.log("-----------------TEMP HOVER:", this.state.hoverOrder);
+      console.log("------------------OLD ORDER:", this.state.oldOrder);
+      var newCards = [];
+      this.state.cards.forEach(c => {
+        if (c.cardOrder > card.cardOrder) {
+          newCards.push(c);
+        }
+        if (c.cardOrder == corder) {
+          newCards.push(card);
+        }
+        if (c.cardOrder < card.cardOrder) {
+          newCards.push(c);
+        }
+      });
+      var i = 1;
+      newCards.forEach(c => {
+        c.cardOrder = i;
+        i = i + 1;
+      });
+      this.setState({
+        hasHover: true,
+        hoverOrder: corder,
+        cards: newCards,
+        oldOrder: !this.state.hasHover ? card.cardOrder : this.state.oldOrder
+      });
+    }
+  }
+  dropCard(card, newOrder) {
+    var formdata = new FormData();
+    formdata.set("boardID", card.boardID);
+    formdata.set("cardID", card.cardID);
+    formdata.set("oldOrder", this.state.oldOrder);
+    formdata.set("newOrder", newOrder);
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:5000/moveCard",
+      data: formdata
+    })
+      .then(res => {
+        console.log(res);
+        this.setState({
+          hasHover: false,
+          hoverOrder: 0,
+          oldOrder: 0
+        });
+      })
+      .catch(err => console.log(err));
+  }
   drawCards() {
     var cardList = [];
     if (this.state.cards !== undefined) {
@@ -150,9 +215,6 @@ class Boarddnd extends Component {
     const { isOver, canDrop, connectDropTarget } = this.props;
     return connectDropTarget(
       <div>
-        {/* <h1 className="header">
-          KanBan | Drag-n-Drop | Flask backend API / React frontend UI
-        </h1> */}
         <div className="board">
           <h1 className="header">
             KanBan | Drag-n-Drop | Flask backend API / React frontend UI
@@ -193,12 +255,6 @@ class Boarddnd extends Component {
             </Modal.Footer>
           </Modal>
           {<TrashDropTarget></TrashDropTarget>}
-          {/* <div className="trash">
-            <h2 className="trashText">
-              🗑️ TRASH CAN - Drag here to Delete - ... Persistent Data
-              (postgreSQL) - authorization/multi-users/multi-boards coming soon?
-            </h2>
-          </div> */}
         </div>
       </div>
     );

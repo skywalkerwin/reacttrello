@@ -77,10 +77,7 @@ const taskSource = {
 
 function dragCollect(connect, monitor) {
   return {
-    // Call this function inside render()
-    // to let React DnD handle the drag events:
     connectDragSource: connect.dragSource(),
-    // You can ask the monitor about the current drag state:
     isDragging: monitor.isDragging()
   };
 }
@@ -90,10 +87,6 @@ const taskTarget = {
     // console.log("HOVERING OVER TASK");
     const coff = monitor.getClientOffset();
     const item = monitor.getItem();
-    // console.log(item.task.body);
-    // console.log(item, coff);
-    // console.log(component.state.mid);
-    // console.log(component.taskRef.current.getBoundingClientRect());
     if (item.id == "Task") {
       if (item.task.taskID !== props.task.taskID) {
         if (coff.y > component.state.mid) {
@@ -276,10 +269,10 @@ class Taskdnd extends Component {
               </Modal>
             </p>
             <div className="taskContent">
-              <h2 style={{ textAlign: "center" }}>
+              {/* <h2 style={{ textAlign: "center" }}>
                 Order: {this.state.taskOrder}
-              </h2>
-              <h3>cardID:{this.state.parentCardID}</h3>
+              </h2> */}
+              {/* <h3>cardID:{this.state.parentCardID}</h3> */}
               <h2>{this.state.taskBody}</h2>
             </div>
           </div>
